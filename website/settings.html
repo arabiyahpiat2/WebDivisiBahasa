@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pengaturan Akun | Divisi Bahasa</title>
+    <link rel="stylesheet" href="./assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="./assets/css/all.min.css">
+    <style>
+        /* Sakkal Majalla untuk Arab */
+        @font-face {
+            font-family: 'Sakkal Majalla';
+            src: local('Sakkal Majalla'), local('Traditional Arabic');
+            font-weight: normal;
+        }
+        * { transition: background-color 0.2s ease, color 0.2s ease; }
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: #f5f3ff;
+            color: #1e1b2f;
+        }
+        /* Dark Theme */
+        body.dark {
+            background-color: #121212;
+            color: #f0f0f0;
+        }
+        body.dark .card {
+            background-color: #1e2a3a;
+            border-color: #334152;
+            color: #fff;
+        }
+        body.dark .form-control, body.dark .form-select {
+            background-color: #2a2a3a;
+            border-color: #3a3a4a;
+            color: #fff;
+        }
+        body.dark .btn-outline-secondary {
+            color: #fff;
+            border-color: #4a627a;
+        }
+        body.dark .text-muted {
+            color: #adb5bd !important;
+        }
+        
+        /* Header tanpa sidebar - hanya tombol keluar di kiri atas */
+        .header-simple {
+            background: #ffffff;
+            padding: 0.75rem 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 99;
+        }
+        body.dark .header-simple {
+            background: #0a0a12;
+            border-bottom-color: #2a2a3a;
+        }
+        .btn-exit {
+            background: #ffcdd2;
+            border: none;
+            color: #c62828;
+            border-radius: 2rem;
+            padding: 0.5rem 1.2rem;
+            font-weight: 500;
+        }
+        body.dark .btn-exit {
+            background: #c62828;
+            color: white;
+        }
+        .btn-exit:hover {
+            background: #ef9a9a;
+            transform: translateY(-2px);
+        }
+        body.dark .btn-exit:hover {
+            background: #b71c1c;
+        }
+        
+        /* Jam */
+        .datetime-container {
+            background: #f0edff;
+            border-radius: 2rem;
+            padding: 0.4rem 1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        body.dark .datetime-container {
+            background: #1e2a3a;
+            color: #e0e0e0;
+        }
+        .arabic-clock {
+            font-family: 'Sakkal Majalla', 'Traditional Arabic', serif;
+            font-size: 1rem;
+        }
+        
+        /* Tombol Pastel */
+        .btn-pastel-primary {
+            background: #b7abff;
+            border: none;
+            color: #1e1b2f;
+            border-radius: 2rem;
+            padding: 0.5rem 1.2rem;
+        }
+        body.dark .btn-pastel-primary {
+            background: #5e4bcc;
+            color: white;
+        }
+        .btn-pastel-danger {
+            background: #ffcdd2;
+            border: none;
+            color: #c62828;
+            border-radius: 2rem;
+            padding: 0.5rem 1.2rem;
+        }
+        body.dark .btn-pastel-danger {
+            background: #c62828;
+            color: white;
+        }
+        
+        /* Avatar Preview */
+        .avatar-preview {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 3px solid #b7abff;
+            margin-bottom: 1rem;
+        }
+        body.dark .avatar-preview {
+            border-color: #5e4bcc;
+        }
+        .avatar-option {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 50%;
+            margin: 5px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+        }
+        .avatar-option:hover, .avatar-option.selected {
+            border-color: #5e4bcc;
+            transform: scale(1.05);
+        }
+        
+        .footer {
+            background: #fefcff;
+            border-top: 1px solid #e9e6f5;
+            padding: 1rem 0;
+            margin-top: 2rem;
+        }
+        body.dark .footer {
+            background: #0f172a;
+            border-top-color: #1e293b;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header tanpa sidebar - hanya tombol keluar di kiri -->
+    <div class="header-simple">
+        <button id="btnExit" class="btn-exit"><i class="fas fa-arrow-left me-2"></i> Kembali ke Pusat Data</button>
+        <div class="datetime-container">
+            <i class="far fa-clock"></i>
+            <span id="jamIndo">--:--:--</span>
+            <span class="arabic-clock" id="jamArab">--:--:--</span>
+        </div>
+    </div>
+
+    <div class="container py-4">
+        <div class="row justify-content-center">
+            <div class="col-xl-8 col-lg-10">
+                <!-- Profil Card -->
+                <div class="card p-4 mb-4">
+                    <h4 class="mb-3"><i class="fas fa-user-circle me-2" style="color: #5e4bcc;"></i> Profil Saya</h4>
+                    <div class="text-center mb-3">
+                        <img id="avatarPreview" src="./assets/images/avatar/default.jpg" alt="Avatar" class="avatar-preview">
+                        <h4 id="profileName">-</h4>
+                        <span class="badge bg-secondary" id="profileRole">-</span>
+                    </div>
+                    <hr>
+                    <form id="profileForm">
+                        <div class="mb-3">
+                            <label class="form-label"><i class="fas fa-user me-2"></i> Nama Lengkap</label>
+                            <input type="text" class="form-control" id="fullName" placeholder="Masukkan nama lengkap">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label"><i class="fas fa-image me-2"></i> Pilih Avatar</label>
+                            <div class="d-flex flex-wrap" id="avatarOptions">
+                                <!-- Akan diisi dengan daftar avatar -->
+                            </div>
+                            <small class="text-muted">Klik pada gambar avatar untuk memilih</small>
+                        </div>
+                        <button type="submit" class="btn btn-pastel-primary"><i class="fas fa-save me-2"></i> Simpan Perubahan</button>
+                    </form>
+                </div>
+
+                <!-- Ubah Password Card -->
+                <div class="card p-4 mb-4">
+                    <h4 class="mb-3"><i class="fas fa-lock me-2" style="color: #5e4bcc;"></i> Ubah Password</h4>
+                    <form id="passwordForm">
+                        <div class="mb-3">
+                            <label class="form-label">Password Lama</label>
+                            <input type="password" class="form-control" id="oldPassword" placeholder="Masukkan password lama" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Password Baru</label>
+                            <input type="password" class="form-control" id="newPassword" placeholder="Masukkan password baru" required>
+                            <small class="text-muted">Minimal 6 karakter</small>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Konfirmasi Password Baru</label>
+                            <input type="password" class="form-control" id="confirmPassword" placeholder="Konfirmasi password baru" required>
+                        </div>
+                        <button type="submit" class="btn btn-pastel-primary"><i class="fas fa-key me-2"></i> Ubah Password</button>
+                    </form>
+                </div>
+
+                <!-- Pengaturan Tampilan Card -->
+                <div class="card p-4 mb-4">
+                    <h4 class="mb-3"><i class="fas fa-palette me-2" style="color: #5e4bcc;"></i> Tampilan</h4>
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="darkModeSwitch">
+                        <label class="form-check-label" for="darkModeSwitch">Mode Gelap (Dark Mode)</label>
+                    </div>
+                    <p class="text-muted small mt-2">Mode gelap akan diterapkan di semua halaman.</p>
+                </div>
+
+                <!-- Informasi Akun Card -->
+                <div class="card p-4 mb-4">
+                    <h4 class="mb-3"><i class="fas fa-info-circle me-2" style="color: #5e4bcc;"></i> Informasi Akun</h4>
+                    <table class="table table-borderless">
+                        <tr><td style="width: 120px;"><strong>Username</strong></td><td id="infoUsername">-</td></tr>
+                        <tr><td><strong>Role</strong></td><td id="infoRole">-</td></tr>
+                        <tr><td><strong>Terdaftar Sejak</strong></td><td id="infoSince">-</td></tr>
+                        <tr><td><strong>Versi Aplikasi</strong></td><td>1.0.0</td></tr>
+                    </table>
+                </div>
+
+                <!-- Tombol Logout (opsional, tetap ada tapi keluar ke login) -->
+                <div class="text-center mb-4">
+                    <button onclick="logoutToLogin()" class="btn btn-pastel-danger"><i class="fas fa-sign-out-alt me-2"></i> Logout</button>
+                    <p class="text-muted small mt-2">Keluar dari akun dan kembali ke halaman login</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer text-center small py-3">© LEGION 8.0 | Website ini dapat digunakan tanpa koneksi internet</footer>
+
+    <script src="./assets/js/jquery.min.js"></script>
+    <script src="./assets/js/bootstrap.bundle.min.js"></script>
+    <script src="./src/usbFileManager.js"></script>
+
+    <script>
+        (function() {
+            "use strict";
+
+            // ===== CEK LOGIN =====
+            let currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            if (!currentUser) {
+                window.location.href = '../WebDivisiBahasa.html';
+                return;
+            }
+
+            // ===== TOMBOL KEMBALI KE PUSAT DATA (pojok kiri atas) =====
+            document.getElementById('btnExit').addEventListener('click', function() {
+                window.location.href = 'pusat_data.html';
+            });
+
+            // ===== FUNGSI USB =====
+            async function ensureFolder() {
+                if (!usbFileManager.isSupported()) {
+                    alert('Browser tidak mendukung akses USB. Gunakan Chrome/Edge.');
+                    return null;
+                }
+                let handle = await usbFileManager.getRootHandle();
+                if (!handle) {
+                    handle = await usbFileManager.pilihFolder();
+                    if (!handle) {
+                        alert('Anda harus memilih folder LugohDrive terlebih dahulu.');
+                        return null;
+                    }
+                }
+                return handle;
+            }
+
+            async function loadUserData() {
+                const handle = await ensureFolder();
+                if (!handle) return null;
+                try {
+                    const usersData = await usbFileManager.readJSONFile('users_data.json');
+                    if (usersData && usersData[currentUser.username]) {
+                        return usersData[currentUser.username];
+                    }
+                } catch (e) {
+                    console.warn('users_data.json tidak ditemukan');
+                }
+                return null;
+            }
+
+            async function saveUserData(username, userData) {
+                const handle = await ensureFolder();
+                if (!handle) return false;
+                try {
+                    let usersData = await usbFileManager.readJSONFile('users_data.json') || {};
+                    usersData[username] = userData;
+                    await usbFileManager.saveData('users_data.json', usersData);
+                    return true;
+                } catch (err) {
+                    console.error('Gagal menyimpan data user:', err);
+                    alert('Gagal menyimpan data user ke USB.');
+                    return false;
+                }
+            }
+
+            // ===== TAMPILKAN USER INFO =====
+            function updateHeaderInfo() {
+                if (currentUser) {
+                    document.getElementById('profileName').textContent = currentUser.name || 'User';
+                    let roleText = '';
+                    if (currentUser.role === 'admin') roleText = 'Administrator';
+                    else if (currentUser.role === 'guru') roleText = 'Guru';
+                    else if (currentUser.role === 'musyrif') roleText = 'Musyrif';
+                    else roleText = currentUser.role || 'Pengguna';
+                    document.getElementById('profileRole').textContent = roleText;
+                    
+                    let avatarSrc = currentUser.avatar ? `./assets/images/avatar/${currentUser.avatar}` : './assets/images/avatar/default.jpg';
+                    const savedAvatar = localStorage.getItem('userAvatar');
+                    if (savedAvatar) avatarSrc = savedAvatar;
+                    document.getElementById('avatarPreview').src = avatarSrc;
+                }
+            }
+            updateHeaderInfo();
+
+            // ===== JAM BERJALAN =====
+            function updateClock() {
+                const now = new Date();
+                document.getElementById('jamIndo').innerText = now.toLocaleTimeString('id-ID');
+                document.getElementById('jamArab').innerText = now.toLocaleTimeString('ar-SA');
+            }
+            updateClock();
+            setInterval(updateClock, 1000);
+
+            // ===== DARK MODE =====
+            let darkMode = localStorage.getItem('darkMode') === 'true';
+            function applyDarkMode() { if (darkMode) document.body.classList.add('dark'); else document.body.classList.remove('dark'); }
+            applyDarkMode();
+            const darkModeSwitch = document.getElementById('darkModeSwitch');
+            darkModeSwitch.checked = darkMode;
+            darkModeSwitch.addEventListener('change', function() {
+                darkMode = this.checked;
+                localStorage.setItem('darkMode', darkMode);
+                applyDarkMode();
+            });
+
+            // ===== PROFIL =====
+            const avatarPreview = document.getElementById('avatarPreview');
+            const fullNameInput = document.getElementById('fullName');
+            fullNameInput.value = currentUser.name;
+            
+            let currentAvatar = localStorage.getItem('userAvatar') || (currentUser.avatar ? `./assets/images/avatar/${currentUser.avatar}` : './assets/images/avatar/default.jpg');
+            avatarPreview.src = currentAvatar;
+            
+            // Informasi Akun
+            document.getElementById('infoUsername').textContent = currentUser.username;
+            let roleDisplay = currentUser.role === 'admin' ? 'Administrator' : (currentUser.role === 'guru' ? 'Guru' : 'Musyrif');
+            document.getElementById('infoRole').textContent = roleDisplay;
+            document.getElementById('infoSince').textContent = new Date().toLocaleDateString('id-ID');
+            
+            // Daftar avatar yang tersedia
+            const avatarList = [
+                'default.jpg', 'admin.jpg', 'guru1.jpg', 'musyrif.jpg',
+                'avatar1.png', 'avatar2.png', 'avatar3.png'
+            ];
+            
+            const avatarOptionsDiv = document.getElementById('avatarOptions');
+            function renderAvatarOptions() {
+                avatarOptionsDiv.innerHTML = '';
+                avatarList.forEach(avatar => {
+                    const img = document.createElement('img');
+                    img.src = `./assets/images/avatar/${avatar}`;
+                    img.className = 'avatar-option';
+                    img.dataset.avatar = avatar;
+                    if (currentAvatar.includes(avatar)) img.classList.add('selected');
+                    img.onclick = () => {
+                        document.querySelectorAll('.avatar-option').forEach(opt => opt.classList.remove('selected'));
+                        img.classList.add('selected');
+                        currentAvatar = `./assets/images/avatar/${avatar}`;
+                        avatarPreview.src = currentAvatar;
+                    };
+                    avatarOptionsDiv.appendChild(img);
+                });
+            }
+            renderAvatarOptions();
+            
+            // Simpan Profil
+            document.getElementById('profileForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const newName = fullNameInput.value.trim();
+                if (!newName) {
+                    alert('Nama tidak boleh kosong');
+                    return;
+                }
+                
+                // Update currentUser
+                currentUser.name = newName;
+                const avatarFileName = currentAvatar.split('/').pop();
+                currentUser.avatar = avatarFileName;
+                
+                // Simpan ke localStorage untuk session
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                localStorage.setItem('userAvatar', currentAvatar);
+                
+                // Simpan ke USB
+                const userData = {
+                    name: newName,
+                    role: currentUser.role,
+                    avatar: avatarFileName,
+                    password: currentUser.password || 'admin123'
+                };
+                
+                const saved = await saveUserData(currentUser.username, userData);
+                if (saved) {
+                    alert('Profil berhasil diperbarui dan disimpan ke USB!');
+                } else {
+                    alert('Profil diperbarui tetapi GAGAL disimpan ke USB.');
+                }
+                
+                updateHeaderInfo();
+            });
+            
+            // Ubah Password
+            document.getElementById('passwordForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const oldPass = document.getElementById('oldPassword').value;
+                const newPass = document.getElementById('newPassword').value;
+                const confirmPass = document.getElementById('confirmPassword').value;
+                
+                const userDataFromUSB = await loadUserData();
+                const storedPassword = userDataFromUSB ? userDataFromUSB.password : 'admin123';
+                
+                if (oldPass !== storedPassword) {
+                    alert('Password lama salah!');
+                    return;
+                }
+                if (newPass.length < 6) {
+                    alert('Password baru minimal 6 karakter');
+                    return;
+                }
+                if (newPass !== confirmPass) {
+                    alert('Konfirmasi password baru tidak cocok');
+                    return;
+                }
+                
+                const updatedUserData = {
+                    name: currentUser.name,
+                    role: currentUser.role,
+                    avatar: currentUser.avatar,
+                    password: newPass
+                };
+                
+                const saved = await saveUserData(currentUser.username, updatedUserData);
+                if (saved) {
+                    alert('Password berhasil diubah dan disimpan ke USB!');
+                    document.getElementById('passwordForm').reset();
+                } else {
+                    alert('Gagal menyimpan password ke USB.');
+                }
+            });
+            
+            // Logout ke halaman login
+            window.logoutToLogin = function() {
+                if (confirm('Yakin ingin keluar?')) {
+                    localStorage.removeItem('currentUser');
+                    localStorage.removeItem('rememberedUser');
+                    window.location.href = '../WebDivisiBahasa.html';
+                }
+            };
+        })();
+    </script>
+</body>
+</html>

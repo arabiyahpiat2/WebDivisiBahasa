@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="shortcut icon" type="image/x-icon" href="./website/assets/images/favicon/favicon.ico">
+    
+    <!-- Bootstrap CSS (offline) -->
+    <link rel="stylesheet" href="./website/assets/css/bootstrap.min.css">
+    <!-- Font Awesome (offline) -->
+    <link rel="stylesheet" href="./website/assets/css/all.min.css">
+    
+    <title>Sign In | Divisi Bahasa</title>
+    <style>
+        /* ----- RESET & GLOBAL MODERN ----- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #ffffff;
+            font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            transition: background-color 0.3s ease, color 0.2s ease;
+        }
+
+        /* Dark Theme Global */
+        body.dark-theme {
+            background-color: #121212;
+            color: #ffffff;
+        }
+
+        body.dark-theme .card {
+            background-color: #1e1e2f;
+            border: 1px solid #2c2c3a;
+            box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.3);
+        }
+
+        body.dark-theme .card-body {
+            background-color: #1e1e2f;
+        }
+
+        body.dark-theme .form-control {
+            background-color: #2a2a3a;
+            border-color: #3a3a4a;
+            color: #ffffff;
+        }
+
+        body.dark-theme .form-control:focus {
+            background-color: #2a2a3a;
+            border-color: #a29bfe;
+            box-shadow: 0 0 0 4px rgba(162, 155, 254, 0.2);
+        }
+
+        body.dark-theme .input-icon,
+        body.dark-theme .toggle-pwd {
+            color: #9a9ac0;
+        }
+
+        body.dark-theme .form-label {
+            color: #e0e0e0;
+        }
+
+        body.dark-theme .text-muted-soft {
+            color: #b0b0c0;
+        }
+
+        body.dark-theme .link-pastel {
+            color: #b8b5ff;
+        }
+
+        body.dark-theme .link-pastel:hover {
+            color: #d9c8ff;
+        }
+
+        body.dark-theme footer {
+            background-color: #0a0a12;
+            border-top-color: #2a2a3a;
+            color: #c0c0d0;
+        }
+
+        body.dark-theme footer a {
+            color: #b8b5ff;
+        }
+
+        body.dark-theme .alert-pastel {
+            background-color: #2a1a2a;
+            border-left-color: #ff9eb5;
+            color: #ffb8c5;
+        }
+
+        body.dark-theme .btn-primary-pastel {
+            background: linear-gradient(105deg, #7a6ecc 0%, #9a8eec 100%);
+            box-shadow: 0 8px 18px -8px rgba(100, 90, 200, 0.4);
+        }
+
+        body.dark-theme .btn-primary-pastel:hover {
+            background: linear-gradient(105deg, #6a5ebc, #8a7edc);
+        }
+
+        body.dark-theme .form-check-label {
+            color: #d0d0e0;
+        }
+
+        /* subtle pattern overlay (soft pastel dots) */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: radial-gradient(#f0eef7 1.2px, transparent 1.2px);
+            background-size: 28px 28px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        body.dark-theme::before {
+            background-image: radial-gradient(#2a2a3a 1.2px, transparent 1.2px);
+        }
+
+        /* main container bring to front */
+        .container {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* ----- CARD MODERN ----- */
+        .card {
+            border: none;
+            border-radius: 2rem;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(0px);
+            box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.08), 0 8px 18px rgba(0, 0, 0, 0.02);
+            transition: transform 0.25s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 30px 50px -18px rgba(0, 0, 0, 0.12);
+        }
+
+        .card-body {
+            padding: 2.5rem 2rem;
+        }
+
+        /* brand section */
+        .brand-icon {
+            font-size: 3.2rem;
+            background: linear-gradient(145deg, #b8b5ff, #d9c8ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            display: inline-block;
+            margin-bottom: 0.5rem;
+        }
+
+        h2 {
+            font-weight: 700;
+            font-size: 1.9rem;
+            background: linear-gradient(135deg, #7c6ee7, #b48eff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.3px;
+        }
+
+        .text-muted-soft {
+            color: #8d8ba7;
+            font-size: 0.9rem;
+        }
+
+        /* ----- INPUT FIELD MODERN PASTEL ----- */
+        .form-label {
+            font-weight: 500;
+            color: #4a4a6a;
+            margin-bottom: 0.5rem;
+            font-size: 0.85rem;
+            letter-spacing: 0.3px;
+        }
+
+        .input-group-custom {
+            position: relative;
+        }
+
+        .form-control {
+            border: 1.5px solid #edeef5;
+            border-radius: 1.2rem;
+            padding: 0.8rem 1rem 0.8rem 2.6rem;
+            font-size: 0.95rem;
+            background-color: #fefefe;
+            transition: all 0.2s ease;
+            color: #1f1b3a;
+        }
+
+        .form-control:focus {
+            border-color: #c7b9ff;
+            box-shadow: 0 0 0 4px rgba(183, 181, 255, 0.2);
+            outline: none;
+            background-color: #ffffff;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #b1adcf;
+            font-size: 1rem;
+            pointer-events: none;
+            transition: color 0.2s;
+        }
+
+        .form-control:focus + .input-icon {
+            color: #8b7bdd;
+        }
+
+        /* toggle password eye */
+        .toggle-pwd {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: transparent;
+            border: none;
+            color: #b1adcf;
+            cursor: pointer;
+            font-size: 1rem;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            transition: color 0.2s;
+        }
+
+        .toggle-pwd:hover {
+            color: #6c5bce;
+        }
+
+        /* custom checkbox modern */
+        .form-check-input {
+            width: 1.1rem;
+            height: 1.1rem;
+            border-radius: 0.35rem;
+            border: 1.8px solid #dbd8f0;
+            background-color: #fff;
+            margin-top: 0.1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .form-check-input:checked {
+            background-color: #a29bfe;
+            border-color: #a29bfe;
+            box-shadow: 0 0 0 2px rgba(162, 155, 254, 0.2);
+        }
+
+        .form-check-label {
+            color: #5a5a7a;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        /* link pastel */
+        .link-pastel {
+            color: #8b7bdd;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+
+        .link-pastel:hover {
+            color: #6c5bce;
+            text-decoration: underline;
+            transform: translateX(2px);
+        }
+
+        /* BUTTON PRIMARY MODERN */
+        .btn-primary-pastel {
+            background: linear-gradient(105deg, #a29bfe 0%, #b5aeff 100%);
+            border: none;
+            border-radius: 2rem;
+            padding: 0.8rem 1.5rem;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.25s ease;
+            color: white;
+            box-shadow: 0 8px 18px -8px rgba(162, 155, 254, 0.4);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.6rem;
+        }
+
+        .btn-primary-pastel:hover {
+            background: linear-gradient(105deg, #9289f5, #a49bff);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 22px -10px rgba(162, 155, 254, 0.55);
+        }
+
+        .btn-primary-pastel:active {
+            transform: translateY(1px);
+        }
+
+        /* alert custom modern */
+        .alert-pastel {
+            background-color: #ffe8f0;
+            border-left: 4px solid #ff9eb5;
+            color: #b13e5c;
+            border-radius: 1rem;
+            padding: 0.7rem 1rem;
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            animation: fadeSlideDown 0.3s ease;
+        }
+
+        @keyframes fadeSlideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-12px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* loading spinner on button */
+        .btn-loading {
+            pointer-events: none;
+            opacity: 0.85;
+        }
+
+        .spinner-sm {
+            display: inline-block;
+            width: 1rem;
+            height: 1rem;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 0.6s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* footer modern */
+        footer {
+            background: #faf9fe;
+            border-top: 1px solid #edeef2;
+            padding: 1.2rem 0;
+            margin-top: auto;
+            color: #6f6b8a;
+        }
+
+        footer a {
+            color: #8b7bdd;
+            transition: color 0.2s;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            color: #5c4bbd;
+            text-decoration: underline;
+        }
+
+        /* responsive improvements */
+        @media (max-width: 576px) {
+            .card-body {
+                padding: 1.8rem;
+            }
+            .btn-primary-pastel {
+                padding: 0.7rem 1rem;
+            }
+        }
+
+        /* divider or extra micro-interactions */
+        .create-account {
+            border-top: 1px solid #efedfa;
+            padding-top: 1.2rem;
+            margin-top: 0.5rem;
+        }
+
+        /* Navbar Hitam */
+        .navbar-dark-custom {
+            background-color: #000000 !important;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .navbar-dark-custom .navbar-brand,
+        .navbar-dark-custom .nav-link {
+            color: #ffffff !important;
+        }
+        .navbar-dark-custom .nav-link:hover {
+            color: #d9c8ff !important;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container d-flex flex-column min-vh-100">
+        <div class="row align-items-center justify-content-center flex-grow-1 py-4">
+            <div class="col-12 col-md-8 col-lg-5 col-xxl-4">
+                <div class="card animate__fade-in">
+                    <div class="card-body">
+                        <div class="text-center mb-4">
+                            <div class="brand-icon">
+                                <i class="fas fa-chalkboard-user"></i>
+                            </div>
+                            <h2 class="fw-bold mt-2">Divisi Bahasa</h2>
+                            <p class="text-muted-soft mt-2">Selamat datang kembali ✨</p>
+                        </div>
+
+                        <!-- dynamic error message container -->
+                        <div id="errorContainer" style="min-height: 62px;"></div>
+
+                        <form id="loginForm">
+                            <div class="mb-3">
+                                <label class="form-label"><i class="fas fa-user me-1"></i> Username</label>
+                                <div class="input-group-custom">
+                                    <i class="fas fa-user input-icon"></i>
+                                    <input type="text" id="username" class="form-control" placeholder="admin / guru / musyrif" autocomplete="username" required autofocus>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label"><i class="fas fa-lock me-1"></i> Password</label>
+                                <div class="input-group-custom">
+                                    <i class="fas fa-key input-icon"></i>
+                                    <input type="password" id="password" class="form-control" placeholder="Kata sandi" autocomplete="current-password" required>
+                                    <button type="button" class="toggle-pwd" id="togglePasswordBtn" tabindex="-1">
+                                        <i class="far fa-eye-slash" id="toggleIcon"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="rememberme">
+                                    <label class="form-check-label" for="rememberme">Ingat saya</label>
+                                </div>
+                                <div>
+                                    <a href="#" class="link-pastel" id="forgotLink"><i class="fas fa-question-circle me-1"></i>Lupa password?</a>
+                                </div>
+                            </div>
+
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary-pastel" id="loginBtn">
+                                    <i class="fas fa-arrow-right-to-bracket"></i> Masuk
+                                </button>
+                            </div>
+
+                            <div class="text-center create-account">
+                                <a href="#" class="link-pastel" id="createAccountLink">
+                                    <i class="fas fa-user-plus me-1"></i> Buat Akun Baru
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6 text-center text-md-start">
+                    <span class="small">© LEGION 8.0 | Website ini dapat digunakan tanpa koneksi internet</span>
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <a href="#" class="small me-3" id="emailLink"><i class="fas fa-envelope me-1"></i>Email</a>
+                    <a href="#" class="small" id="contactLink"><i class="fas fa-phone-alt me-1"></i>Kontak</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- jQuery & Bootstrap JS (offline) -->
+    <script src="./website/assets/js/jquery.min.js"></script>
+    <script src="./website/assets/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // ---------- DATABASE USERS ----------
+        const users = [
+            { username: 'admin', password: 'admin123', name: 'Administrator', role: 'admin', avatar: 'admin.jpg' },
+            { username: 'guru', password: 'guru123', name: 'Ustadz', role: 'guru', avatar: 'guru1.jpg' },
+            { username: 'musyrif', password: 'musyrif123', name: 'Musyrif Santri', role: 'musyrif', avatar: 'musyrif.jpg' }
+        ];
+
+        // Redirect if already logged in
+        if (localStorage.getItem('currentUser')) {
+            window.location.href = 'website/pusat_data.html';
+        }
+
+        // ----- Remember Me Load -----
+        const remembered = localStorage.getItem('rememberedUser');
+        if (remembered) {
+            try {
+                const { username } = JSON.parse(remembered);
+                if (username) {
+                    document.getElementById('username').value = username;
+                    document.getElementById('rememberme').checked = true;
+                }
+            } catch(e) { console.warn(e); }
+        }
+
+        // ----- DOM Elements -----
+        const loginForm = document.getElementById('loginForm');
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+        const rememberCheck = document.getElementById('rememberme');
+        const loginBtn = document.getElementById('loginBtn');
+        const errorContainer = document.getElementById('errorContainer');
+        const togglePasswordBtn = document.getElementById('togglePasswordBtn');
+        const toggleIcon = document.getElementById('toggleIcon');
+
+        // ----- Helper: show error message (modern, not alert) -----
+        function showError(message) {
+            errorContainer.innerHTML = `
+                <div class="alert-pastel">
+                    <i class="fas fa-exclamation-circle" style="font-size: 1rem;"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+            errorContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            setTimeout(() => {
+                if (errorContainer.firstChild && errorContainer.firstChild.classList && errorContainer.firstChild.classList.contains('alert-pastel')) {
+                    errorContainer.innerHTML = '';
+                }
+            }, 3800);
+        }
+
+        function clearError() {
+            if (errorContainer.innerHTML.trim() !== '') {
+                errorContainer.innerHTML = '';
+            }
+        }
+
+        // ----- Toggle Password Visibility (Interaktif) -----
+        if (togglePasswordBtn) {
+            togglePasswordBtn.addEventListener('click', function () {
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+                if (type === 'text') {
+                    toggleIcon.classList.remove('fa-eye-slash');
+                    toggleIcon.classList.add('fa-eye');
+                } else {
+                    toggleIcon.classList.remove('fa-eye');
+                    toggleIcon.classList.add('fa-eye-slash');
+                }
+                passwordInput.focus();
+            });
+        }
+
+        // ----- Button Loading State -----
+        function setButtonLoading(isLoading) {
+            if (isLoading) {
+                loginBtn.disabled = true;
+                loginBtn.classList.add('btn-loading');
+                loginBtn.innerHTML = `<span class="spinner-sm"></span> Memproses...`;
+            } else {
+                loginBtn.disabled = false;
+                loginBtn.classList.remove('btn-loading');
+                loginBtn.innerHTML = `<i class="fas fa-arrow-right-to-bracket"></i> Masuk`;
+            }
+        }
+
+        // ----- Simulasi interactive subtle shake on invalid field (optional) -----
+        function shakeField(field) {
+            field.style.transition = 'all 0.1s ease';
+            field.style.transform = 'translateX(4px)';
+            setTimeout(() => { field.style.transform = 'translateX(-4px)'; }, 80);
+            setTimeout(() => { field.style.transform = 'translateX(2px)'; }, 150);
+            setTimeout(() => { field.style.transform = 'translateX(0)'; }, 220);
+        }
+
+        // ----- LOGIN HANDLER MODERN (tanpa alert) -----
+        loginForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            clearError();
+            
+            const username = usernameInput.value.trim();
+            const password = passwordInput.value;
+            
+            if (!username) {
+                showError('Username tidak boleh kosong ✨');
+                shakeField(usernameInput);
+                usernameInput.focus();
+                return;
+            }
+            if (!password) {
+                showError('Password tidak boleh kosong 🔐');
+                shakeField(passwordInput);
+                passwordInput.focus();
+                return;
+            }
+            
+            setButtonLoading(true);
+            await new Promise(resolve => setTimeout(resolve, 450));
+            
+            const foundUser = users.find(u => u.username === username && u.password === password);
+            
+            if (foundUser) {
+                const userData = {
+                    username: foundUser.username,
+                    name: foundUser.name,
+                    role: foundUser.role,
+                    avatar: foundUser.avatar
+                };
+                localStorage.setItem('currentUser', JSON.stringify(userData));
+                
+                if (rememberCheck.checked) {
+                    localStorage.setItem('rememberedUser', JSON.stringify({ username: foundUser.username }));
+                } else {
+                    localStorage.removeItem('rememberedUser');
+                }
+                
+                loginBtn.style.transform = 'scale(0.97)';
+                setTimeout(() => {
+                    window.location.href = 'website/pusat_data.html';
+                }, 150);
+            } else {
+                setButtonLoading(false);
+                const userExists = users.some(u => u.username === username);
+                if (userExists) {
+                    showError('Password salah. Coba lagi atau gunakan "Lupa password"');
+                } else {
+                    showError('Akun tidak ditemukan. Periksa username atau hubungi admin.');
+                }
+                shakeField(passwordInput);
+                passwordInput.value = '';
+                passwordInput.focus();
+            }
+        });
+        
+        // ----- interaktif: Lupa password & Buat akun (modern feedback instead of raw alert) -----
+        const forgotLink = document.getElementById('forgotLink');
+        const createAccountLink = document.getElementById('createAccountLink');
+        const emailLink = document.getElementById('emailLink');
+        const contactLink = document.getElementById('contactLink');
+        
+        // Helper: notifikasi modern sementara (toast-like tanpa library)
+        function showFloatingMessage(message, type = 'info') {
+            const toastDiv = document.createElement('div');
+            toastDiv.className = 'position-fixed bottom-0 end-0 m-3 p-3 rounded-4 shadow-lg bg-white';
+            toastDiv.style.zIndex = '9999';
+            toastDiv.style.minWidth = '240px';
+            toastDiv.style.borderLeft = `4px solid ${type === 'info' ? '#a29bfe' : '#ffb7c5'}`;
+            toastDiv.style.animation = 'fadeSlideDown 0.25s ease';
+            toastDiv.innerHTML = `
+                <div class="d-flex align-items-center gap-2">
+                    <i class="fas ${type === 'info' ? 'fa-info-circle' : 'fa-envelope'} text-secondary" style="color: #a29bfe;"></i>
+                    <span class="small fw-medium text-dark">${message}</span>
+                    <button type="button" class="btn-close ms-auto btn-sm" style="font-size: 0.7rem;" aria-label="Close"></button>
+                </div>
+            `;
+            document.body.appendChild(toastDiv);
+            const closeBtn = toastDiv.querySelector('.btn-close');
+            const removeToast = () => {
+                toastDiv.style.opacity = '0';
+                setTimeout(() => toastDiv.remove(), 200);
+            };
+            closeBtn.addEventListener('click', removeToast);
+            setTimeout(removeToast, 3500);
+        }
+        
+        if (forgotLink) {
+            forgotLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                showFloatingMessage('🔐 Hubungi admin divisi bahasa untuk reset password. (admin@divisi.bahasa)', 'info');
+            });
+        }
+        
+        if (createAccountLink) {
+            createAccountLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                showFloatingMessage('📝 Pendaftaran akun baru: silakan hubungi admin melalui email atau kontak resmi.', 'info');
+            });
+        }
+        
+        if (emailLink) {
+            emailLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                showFloatingMessage('📧 Email: arabiyah.piat2@gmail.com', 'info');
+            });
+        }
+        
+        if (contactLink) {
+            contactLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                showFloatingMessage('📞 Kontak: +62 812 3456 7890 (Jam kerja 08.00 - 16.00)', 'info');
+            });
+        }
+        
+        // Interaktif: saat mengetik password, hilangkan error jika ada
+        passwordInput.addEventListener('input', () => {
+            if (errorContainer.innerHTML) clearError();
+        });
+        usernameInput.addEventListener('input', () => {
+            if (errorContainer.innerHTML) clearError();
+        });
+        
+        // smooth hover effect card entrance subtle (body loaded)
+        document.querySelector('.card').style.opacity = '0';
+        document.querySelector('.card').style.transform = 'translateY(12px)';
+        setTimeout(() => {
+            const cardEl = document.querySelector('.card');
+            cardEl.style.transition = 'opacity 0.45s cubic-bezier(0.2, 0.9, 0.4, 1.1), transform 0.45s ease';
+            cardEl.style.opacity = '1';
+            cardEl.style.transform = 'translateY(0)';
+        }, 20);
+        
+        // Dark Mode Toggle (manual untuk halaman login)
+        const savedDarkMode = localStorage.getItem('darkMode') === 'true';
+        if (savedDarkMode) {
+            document.body.classList.add('dark-theme');
+        }
+        // Tambahkan tombol dark mode di navbar (meskipun navbar tidak ada, kita bisa tambahkan floating)
+        const darkModeBtn = document.createElement('button');
+        darkModeBtn.innerHTML = '<i class="fas fa-moon"></i>';
+        darkModeBtn.className = 'btn btn-sm btn-outline-secondary position-fixed bottom-3 end-0 m-3 rounded-circle';
+        darkModeBtn.style.zIndex = '9999';
+        darkModeBtn.style.width = '45px';
+        darkModeBtn.style.height = '45px';
+        darkModeBtn.style.borderRadius = '50%';
+        darkModeBtn.style.backgroundColor = '#fff';
+        darkModeBtn.style.boxShadow = '0 2px 10px rgba(0,0,0,0.2)';
+        document.body.appendChild(darkModeBtn);
+        
+        darkModeBtn.addEventListener('click', () => {
+            document.body.classList.toggle('dark-theme');
+            const isDark = document.body.classList.contains('dark-theme');
+            localStorage.setItem('darkMode', isDark);
+            darkModeBtn.innerHTML = isDark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+        });
+        if (savedDarkMode) darkModeBtn.innerHTML = '<i class="fas fa-sun"></i>';
+    </script>
+</body>
+</html>

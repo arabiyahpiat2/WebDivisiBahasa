@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Input Reward | Divisi Bahasa</title>
+    <link rel="stylesheet" href="./assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="./assets/css/all.min.css">
+    <style>
+        /* Sakkal Majalla untuk Arab */
+        @font-face {
+            font-family: 'Sakkal Majalla';
+            src: local('Sakkal Majalla'), local('Traditional Arabic');
+            font-weight: normal;
+        }
+        * { transition: background-color 0.2s ease, color 0.2s ease; }
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: #f5f3ff;
+            color: #1e1b2f;
+        }
+        /* Dark Theme */
+        body.dark {
+            background-color: #121212;
+            color: #f0f0f0;
+        }
+        body.dark .card, body.dark .modal-content {
+            background-color: #1e2a3a;
+            border-color: #334152;
+            color: #fff;
+        }
+        body.dark .table, body.dark .table td, body.dark .table th {
+            background-color: #1a1a2e;
+            color: #e0e0e0;
+            border-color: #2a2a4a;
+        }
+        body.dark .table thead th {
+            background-color: #0f0f1a;
+            color: #fff;
+            border-color: #2a2a4a;
+        }
+        body.dark .text-muted { color: #adb5bd !important; }
+        body.dark .btn-outline-secondary { color: #fff; border-color: #4a627a; }
+        body.dark .form-control, body.dark .form-select {
+            background-color: #2a2a3a;
+            border-color: #3a3a4a;
+            color: #fff;
+        }
+        body.dark .ac-list {
+            background-color: #1e2a3a;
+            border-color: #334152;
+        }
+        body.dark .ac-item:hover {
+            background-color: #2a3a4a;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            background: #ffffff;
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            box-shadow: 2px 0 12px rgba(0,0,0,0.05);
+            z-index: 1000;
+        }
+        body.dark .sidebar { background: #0f172a; box-shadow: none; }
+        .sidebar a { color: #2d3a4b; padding: 0.75rem 1rem; display: block; text-decoration: none; font-weight: 500; }
+        body.dark .sidebar a { color: #cbd5e6; }
+        .sidebar a:hover { background: #f0edff; }
+        body.dark .sidebar a:hover { background: #1e2a3a; }
+        .sidebar .active { background: #e9e6ff; color: #5e4bcc; border-left: 3px solid #5e4bcc; }
+        body.dark .sidebar .active { background: #2d3e5a; color: #b9aaff; }
+        .main-content { margin-left: 260px; }
+        @media (max-width: 768px) { .sidebar { transform: translateX(-100%); transition: 0.2s; } .sidebar.show { transform: translateX(0); } .main-content { margin-left: 0; } }
+        
+        /* Header - putih di mode terang, gelap di mode gelap */
+        .header {
+            background: #ffffff;
+            padding: 0.6rem 1.2rem;
+            border-bottom: 1px solid #e2e8f0;
+            position: sticky;
+            top: 0;
+            z-index: 99;
+        }
+        body.dark .header {
+            background: #0a0a12;
+            border-bottom-color: #2a2a3a;
+        }
+        .navbar-classic { display: flex; justify-content: space-between; align-items: center; }
+        #nav-toggle { color: #2d3a4b; font-size: 1.2rem; cursor: pointer; }
+        body.dark #nav-toggle { color: #ffffff; }
+        .avatar-md { width: 38px; height: 38px; border-radius: 50%; object-fit: cover; }
+        
+        /* Footer */
+        .footer { background: #fefcff; border-top: 1px solid #e9e6f5; padding: 1rem 0; margin-top: 2rem; }
+        body.dark .footer { background: #0f172a; border-top-color: #1e293b; }
+        
+        /* Kelas Badge */
+        .kelas-badge { display: inline-block; padding: 0.25rem 0.6rem; border-radius: 30px; font-size: 0.7rem; font-weight: 600; }
+        .kelas-vii { background: #e3f2fd; color: #0d47a1; }
+        .kelas-viii { background: #e8f5e9; color: #1e5e2e; }
+        .kelas-ix { background: #fff3e0; color: #b75d0a; }
+        .kelas-il { background: #e0f7fa; color: #006064; }
+        .kelas-x { background: #ede7f6; color: #512da8; }
+        .kelas-xi { background: #fbe9e7; color: #bf360c; }
+        .kelas-xii { background: #ffebee; color: #b71c1c; }
+        body.dark .kelas-vii { background: #1a3a5c; color: #90caf9; }
+        body.dark .kelas-viii { background: #1a4a2a; color: #a5d6a7; }
+        body.dark .kelas-ix { background: #5a3a1a; color: #ffcc80; }
+        body.dark .kelas-il { background: #1a5a5a; color: #80deea; }
+        body.dark .kelas-x { background: #2a1a5a; color: #b39ddb; }
+        body.dark .kelas-xi { background: #5a1a1a; color: #ffab91; }
+        body.dark .kelas-xii { background: #5a1a2a; color: #ef9a9a; }
+        
+        .datetime-container {
+            background: #f0edff;
+            border-radius: 2rem;
+            padding: 0.4rem 1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        body.dark .datetime-container {
+            background: #1e2a3a;
+            color: #e0e0e0;
+        }
+        .arabic-clock {
+            font-family: 'Sakkal Majalla', 'Traditional Arabic', serif;
+            font-size: 1rem;
+        }
+        
+        /* Tombol Pastel */
+        .btn-pastel-primary {
+            background: #b7abff;
+            border: none;
+            color: #1e1b2f;
+            border-radius: 2rem;
+            padding: 0.5rem 1.2rem;
+        }
+        body.dark .btn-pastel-primary {
+            background: #5e4bcc;
+            color: white;
+        }
+        .btn-pastel-success {
+            background: #c8e6c9;
+            border: none;
+            color: #1e1b2f;
+        }
+        body.dark .btn-pastel-success {
+            background: #2e7d32;
+            color: white;
+        }
+        .btn-pastel-danger {
+            background: #ffcdd2;
+            border: none;
+            color: #1e1b2f;
+        }
+        body.dark .btn-pastel-danger {
+            background: #c62828;
+            color: white;
+        }
+        .btn-pastel-info {
+            background: #b3e5fc;
+            border: none;
+            color: #1e1b2f;
+        }
+        body.dark .btn-pastel-info {
+            background: #0288d1;
+            color: white;
+        }
+        
+        /* Autocomplete */
+        .ac-wrapper { position: relative; }
+        .ac-list {
+            position: absolute; left: 0; right: 0; z-index: 1050;
+            background: white; border: 1px solid #dee2e6; border-radius: 0.5rem;
+            margin-top: 4px; max-height: 260px; overflow-y: auto;
+            box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15);
+        }
+        .ac-item {
+            padding: 0.75rem 1rem; cursor: pointer; border-bottom: 1px solid #f1f1f1;
+            display: flex; flex-direction: column;
+        }
+        .ac-item:hover { background: #f8f9fa; }
+        .ac-sub { font-size: 0.75rem; color: #5e4bcc; margin-top: 4px; }
+        
+        .prestasi-badge {
+            background: #ffd700;
+            color: #1e1b2f;
+            padding: 0.2rem 0.5rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            margin-left: 0.5rem;
+        }
+        body.dark .prestasi-badge {
+            background: #ffc107;
+            color: #1a1a2e;
+        }
+    </style>
+</head>
+<body>
+<div id="db-wrapper">
+    <div class="sidebar" id="sidebar">
+        <div class="p-3"><h4 class="fw-bold">Divisi Bahasa</h4></div>
+        <ul class="nav flex-column">
+            <li><a href="pusat_data.html"><i class="fas fa-database me-2"></i> Darur Rekap</a></li>
+            <li><a href="daftar_santri.html"><i class="fas fa-users me-2"></i> Daftar Santri</a></li>
+            <li><a href="tentang.html"><i class="fas fa-info-circle me-2"></i> Tentang</a></li>
+            <li><div class="navbar-heading text-muted small px-3 mt-3">Form Input</div></li>
+            <li><a href="form_pelanggaran.html"><i class="fas fa-exclamation-triangle me-2"></i> Input Pelanggaran</a></li>
+            <li><a class="active" href="form_reward.html"><i class="fas fa-gift me-2"></i> Input Reward</a></li>
+            <li><a href="arabic_keyboard.html"><i class="fas fa-keyboard me-2"></i> Keyboard Arab</a></li>
+        </ul>
+    </div>
+
+    <div class="main-content">
+        <div class="header">
+            <div class="navbar-classic">
+                <a id="nav-toggle" href="#"><i class="fas fa-bars"></i></a>
+                <div class="d-flex align-items-center gap-3">
+                    <button id="darkModeBtn" class="btn btn-sm btn-outline-secondary"><i class="fas fa-moon"></i></button>
+                    <div class="dropdown">
+                        <a href="#" data-bs-toggle="dropdown">
+                            <img src="./assets/images/avatar/default.jpg" class="avatar-md" id="userAvatar">
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-end">
+                            <div class="px-3 py-2"><strong id="userFullName">User</strong><br><span class="small text-muted" id="userRole"></span></div>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="settings.html"><i class="fas fa-user-cog me-2"></i> Pengaturan</a>
+                            <a class="dropdown-item text-danger" href="#" onclick="logout()"><i class="fas fa-sign-out-alt me-2"></i> Keluar</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container-fluid px-4 py-4">
+            <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap">
+                <h3 class="fw-semibold">Form Input Reward <span class="badge bg-secondary ms-2">Divisi Bahasa</span></h3>
+                <div class="datetime-container">
+                    <i class="far fa-clock"></i>
+                    <span id="jamIndo">--:--:--</span>
+                    <span class="arabic-clock" id="jamArab">--:--:--</span>
+                </div>
+            </div>
+
+            <!-- Tombol Pilih Folder LugohDrive -->
+            <div class="mb-3">
+                <button id="folderStatusBtn" class="btn btn-pastel-primary"><i class="fas fa-folder-open me-2"></i><span id="folderStatus">Pilih Folder LugohDrive</span></button>
+            </div>
+
+            <!-- Form Input -->
+            <div class="card p-4 mb-4">
+                <form id="formRecord" onsubmit="return false;">
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <label class="form-label"><i class="fas fa-calendar me-1"></i> Tanggal</label>
+                            <input type="date" class="form-control" id="inp_tanggal" required>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label"><i class="fas fa-gift me-1"></i> Reward</label>
+                            <select class="form-select" id="inp_reward" required>
+                                <option value="">-- pilih --</option>
+                                <option value="Hiwar Jama'i">Hiwar Jama'i</option>
+                                <option value="Daur Lughoh">Daur Lughoh</option>
+                                <option value="Santri Berprestasi">Santri Berprestasi ⭐ (bobot 4x)</option>
+                                <option value="Lainnya">Lainnya</option>
+                            </select>
+                            <small class="text-muted" id="rewardInfo"></small>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label"><i class="fas fa-user-check me-1"></i> Pencatat</label>
+                            <input class="form-control" id="inp_pencatat" placeholder="Nama guru / musrif" required>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label"><i class="fas fa-map-pin me-1"></i> Tempat (opsional)</label>
+                            <input class="form-control" id="inp_tempat" placeholder="Ruang bahasa, kantin...">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label"><i class="fas fa-id-card me-1"></i> NIS</label>
+                            <select class="form-select" id="inp_nis"></select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label"><i class="fas fa-user-graduate me-1"></i> Nama Santri</label>
+                            <div class="ac-wrapper">
+                                <input class="form-control" id="inp_nama" type="text" placeholder="Ketik nama atau NIS..." autocomplete="off">
+                                <div id="ac_list" class="ac-list" style="display:none"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label"><i class="fas fa-layer-group me-1"></i> Kelas</label>
+                            <select class="form-select" id="inp_kelas"></select>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label"><i class="fas fa-pen me-1"></i> Keterangan</label>
+                            <textarea class="form-control" id="inp_keterangan" rows="3" placeholder="Catatan tambahan..."></textarea>
+                        </div>
+                    </div>
+                    <div class="d-flex gap-2 justify-content-end mt-4">
+                        <button type="button" id="btn_add" class="btn btn-pastel-primary"><i class="fas fa-plus-circle me-1"></i> Tambah</button>
+                        <button type="button" id="btn_clear" class="btn btn-outline-secondary"><i class="fas fa-eraser me-1"></i> Bersihkan</button>
+                        <button type="button" id="btn_export" class="btn btn-pastel-success"><i class="fas fa-file-csv me-1"></i> CSV</button>
+                        <button type="button" id="btn_export_xlsx" class="btn btn-pastel-success"><i class="fas fa-file-excel me-1"></i> XLSX</button>
+                        <button type="button" id="btn_print" class="btn btn-outline-secondary"><i class="fas fa-print me-1"></i> Cetak</button>
+                        <button type="button" id="btn_upload_pusat" class="btn btn-pastel-info"><i class="fas fa-database me-1"></i> Upload ke Pusat Data</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Tabel Reward -->
+            <div class="card p-3">
+                <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap">
+                    <h5><i class="fas fa-list-alt me-2 text-primary"></i> Daftar Reward <span class="badge bg-secondary" id="totalRewardCount">0</span></h5>
+                    <button onclick="deleteAllRecords()" class="btn btn-pastel-danger btn-sm"><i class="fas fa-trash-can me-1"></i> Hapus Semua</button>
+                </div>
+                <div class="row g-3 mb-3">
+                    <div class="col-md-5">
+                        <input id="search_name" type="text" class="form-control" placeholder="Cari berdasarkan nama, NIS, atau kelas...">
+                    </div>
+                    <div class="col-md-3">
+                        <select id="filterKelas" class="form-select">
+                            <option value="">Semua Kelas</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <select id="minRepeat" class="form-select">
+                            <option value="0">Min. Poin: Semua</option>
+                            <option value="2">≥ 2 Poin</option>
+                            <option value="4" selected>≥ 4 Poin</option>
+                            <option value="6">≥ 6 Poin</option>
+                        </select>
+                        <small class="text-muted">*Santri Berprestasi = 4 poin</small>
+                    </div>
+                    <div class="col-md-1">
+                        <button id="refreshFilterBtn" class="btn btn-outline-secondary w-100" title="Refresh"><i class="fas fa-sync-alt"></i></button>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover" id="tblRecords">
+                        <thead class="table-light">
+                            <tr>
+                                <th onclick="sortTable('no')"># <i class="fas fa-sort"></i></th>
+                                <th onclick="sortTable('tanggal')">Tanggal <i class="fas fa-sort"></i></th>
+                                <th onclick="sortTable('nis')">NIS <i class="fas fa-sort"></i></th>
+                                <th onclick="sortTable('nama')">Nama <i class="fas fa-sort"></i></th>
+                                <th onclick="sortByKelas()">Kelas <i class="fas fa-sort"></i></th>
+                                <th onclick="sortTable('reward')">Reward <i class="fas fa-sort"></i></th>
+                                <th>Pencatat</th><th>Tempat</th><th>Keterangan</th>
+                                <th onclick="sortTable('poin')">Poin <i class="fas fa-sort"></i></th><th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tblBody"></tbody>
+                    </table>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mt-3">
+                    <div class="text-muted small"><i class="fas fa-database me-1"></i> Menampilkan <span id="showingStart">0</span>–<span id="showingEnd">0</span> dari <span id="totalRecords">0</span> reward</div>
+                    <div class="d-flex gap-2 align-items-center">
+                        <button id="prevPageBtn" class="btn btn-outline-secondary btn-sm" disabled><i class="fas fa-chevron-left me-1"></i> Sebelumnya</button>
+                        <span class="badge bg-light text-dark p-2" id="pageInfo">Halaman 1 / 1</span>
+                        <button id="nextPageBtn" class="btn btn-outline-secondary btn-sm" disabled>Selanjutnya <i class="fas fa-chevron-right ms-1"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer class="footer text-center small py-3">© LEGION 8.0 | Website ini dapat digunakan tanpa koneksi internet</footer>
+    </div>
+</div>
+
+<script src="./assets/js/jquery.min.js"></script>
+<script src="./assets/js/bootstrap.bundle.min.js"></script>
+<script src="./assets/js/xlsx.full.min.js"></script>
+<script src="./src/usbFileManager.js"></script>
+
+<script>
+    (function() {
+        "use strict";
+        // ==================== CEK LOGIN ====================
+        if(!localStorage.getItem('currentUser')) { window.location.href = '../WebDivisiBahasa.html'; return; }
+        let currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        document.getElementById('userFullName').innerText = currentUser.name;
+        document.getElementById('userRole').innerText = currentUser.role === 'admin' ? 'Administrator' : (currentUser.role === 'guru' ? 'Guru' : 'Musyrif');
+        let avatarSrc = currentUser.avatar ? `./assets/images/avatar/${currentUser.avatar}` : './assets/images/avatar/default.jpg';
+        document.getElementById('userAvatar').src = avatarSrc;
+        
+        window.logout = () => { if(confirm('Keluar?')){ localStorage.removeItem('currentUser'); localStorage.removeItem('rememberedUser'); window.location.href='../WebDivisiBahasa.html'; } };
+        
+        // ==================== DARK MODE ====================
+        let darkMode = localStorage.getItem('darkMode') === 'true';
+        if(darkMode) document.body.classList.add('dark');
+        document.getElementById('darkModeBtn')?.addEventListener('click',()=>{ document.body.classList.toggle('dark'); localStorage.setItem('darkMode',document.body.classList.contains('dark')); });
+        document.getElementById('nav-toggle')?.addEventListener('click',()=>{ document.getElementById('sidebar').classList.toggle('show'); });
+        
+        // ==================== JAM BERJALAN ====================
+        function updateClock() { const now = new Date(); document.getElementById('jamIndo').innerText = now.toLocaleTimeString('id-ID'); document.getElementById('jamArab').innerText = now.toLocaleTimeString('ar-SA'); }
+        updateClock(); setInterval(updateClock, 1000);
+        
+        // ==================== DATA STORAGE ====================
+        const STORAGE_KEY = 'reward_bahasa_v6';
+        let records = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+        let santriList = [];
+        let currentPage = 1, itemsPerPage = 15, filteredRecords = [], sortColumn = 'tanggal', sortAsc = false, kelasSortAsc = true;
+        const kelasOrder = { 'VII':1, 'VIII':2, 'IX':3, 'IL':4, 'X':5, 'XI':6, 'XII':7 };
+        
+        // Fungsi untuk mendapatkan poin reward (Santri Berprestasi = 4, lainnya = 1)
+        function getRewardPoint(rewardName) {
+            return rewardName === 'Santri Berprestasi' ? 4 : 1;
+        }
+        
+        // ==================== FUNGSI USB ====================
+        async function ensureFolder() {
+            if (!usbFileManager.isSupported()) { alert('Browser tidak mendukung USB'); return null; }
+            let handle = await usbFileManager.getRootHandle();
+            if (!handle) { handle = await usbFileManager.pilihFolder(); if (!handle) { alert('Pilih folder LugohDrive'); return null; } }
+            return handle;
+        }
+        async function loadDefaultSantri() {
+            try { let r = await fetch('./src/students-data.js'); let text = await r.text(); eval(text); return students; } catch(e) { return []; }
+        }
+        async function loadSantriFromUSB() {
+            let handle = await ensureFolder(); if (!handle) return [];
+            try { let data = await usbFileManager.readJSONFile('santri_data.json'); if (data && data.length) return data; } catch(e) {}
+            let defaultData = await loadDefaultSantri();
+            if (defaultData.length) await usbFileManager.saveData('santri_data.json', defaultData);
+            return defaultData;
+        }
+        
+        // ==================== AUTOCOMPLETE ====================
+        let acItems = [], acIndex = -1;
+        function normalize(s) { return (s||'').toString().trim().toLowerCase().replace(/\s+/g,' '); }
+        function escapeHtml(s) { return s ? s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') : ''; }
+        function showAc(matches) {
+            let acList = document.getElementById('ac_list');
+            acList.innerHTML = '';
+            if (!matches.length) { acList.style.display = 'none'; return; }
+            matches.forEach((m, i) => {
+                let div = document.createElement('div');
+                div.className = 'ac-item';
+                div.dataset.idx = i;
+                div.innerHTML = '<div style="font-weight:600;">'+escapeHtml(m.name)+'</div><div class="ac-sub">'+escapeHtml(m.kelas)+' • '+escapeHtml(m.nis)+'</div>';
+                div.addEventListener('mousedown', (e) => { e.preventDefault(); chooseAc(i); });
+                acList.appendChild(div);
+            });
+            acList.style.display = 'block';
+        }
+        function chooseAc(i) { let s = acItems[i]; if(!s) return; document.getElementById('inp_nama').value = s.name; document.getElementById('inp_nis').value = s.nis; document.getElementById('inp_kelas').value = s.kelas; document.getElementById('ac_list').style.display = 'none'; }
+        let inpNama = document.getElementById('inp_nama');
+        inpNama.addEventListener('input', function(e) { if(!santriList.length) return; let q = normalize(e.target.value); if(!q) { document.getElementById('ac_list').style.display = 'none'; return; } let matches = santriList.filter(s => normalize(s.name).includes(q) || normalize(s.nis).includes(q)).slice(0,50); acItems = matches; acIndex = -1; showAc(matches); });
+        inpNama.addEventListener('keydown', function(e) { let acList = document.getElementById('ac_list'); if(acList.style.display === 'block') { if(e.key === 'ArrowDown') { e.preventDefault(); acIndex = Math.min(acIndex+1, acItems.length-1); highlightAc(); } else if(e.key === 'ArrowUp') { e.preventDefault(); acIndex = Math.max(acIndex-1, 0); highlightAc(); } else if(e.key === 'Enter') { e.preventDefault(); if(acIndex >= 0) chooseAc(acIndex); } else if(e.key === 'Escape') { acList.style.display = 'none'; } } });
+        inpNama.addEventListener('blur', function() { setTimeout(() => { let acList = document.getElementById('ac_list'); if(acList.style.display === 'block') acList.style.display = 'none'; }, 200); });
+        function highlightAc() { let children = document.getElementById('ac_list').children; Array.from(children).forEach((c,i) => c.classList.toggle('active', i===acIndex)); if(acIndex>=0 && children[acIndex]) children[acIndex].scrollIntoView({block:'nearest'}); }
+        document.getElementById('inp_nis').addEventListener('change', function() { let v = this.value; let s = santriList.find(x => x.nis == v); if(s) { inpNama.value = s.name; document.getElementById('inp_kelas').value = s.kelas; } else { inpNama.value = ''; document.getElementById('inp_kelas').value = ''; } });
+        
+        // Informasi bobot reward
+        document.getElementById('inp_reward').addEventListener('change', function() {
+            let info = document.getElementById('rewardInfo');
+            if(this.value === 'Santri Berprestasi') {
+                info.innerHTML = '<span class="prestasi-badge"><i class="fas fa-star"></i> Bobot 4 poin (setara 4x reward biasa)</span>';
+            } else {
+                info.innerHTML = '';
+            }
+        });
+        
+        // ==================== CRUD & RENDER ====================
+        function saveRecords() { localStorage.setItem(STORAGE_KEY, JSON.stringify(records)); renderTable(); }
+        function formatTanggal(isoDate) { if (!isoDate) return ''; let p = isoDate.split('-'); return p.length === 3 ? p[2]+'/'+p[1]+'/'+p[0] : isoDate; }
+        function getKelasClass(k) { if(k.includes('VII')) return 'kelas-vii'; if(k.includes('VIII')) return 'kelas-viii'; if(k.includes('IX')) return 'kelas-ix'; if(k.includes('IL')) return 'kelas-il'; if(k.includes('X')) return 'kelas-x'; if(k.includes('XI')) return 'kelas-xi'; if(k.includes('XII')) return 'kelas-xii'; return ''; }
+        
+        // Hitung total poin per santri
+        function getTotalPoin() {
+            let poinMap = {};
+            records.forEach(r => { let point = getRewardPoint(r.reward); poinMap[r.nis] = (poinMap[r.nis] || 0) + point; });
+            return poinMap;
+        }
+        
+        function applyFilterAndSort() {
+            let filtered = records;
+            let q = (document.getElementById('search_name').value || '').toLowerCase().trim();
+            if(q) filtered = filtered.filter(r => (r.nama||'').toLowerCase().includes(q) || (r.nis||'').toLowerCase().includes(q) || (r.kelas||'').toLowerCase().includes(q));
+            let kelasVal = document.getElementById('filterKelas').value;
+            if(kelasVal) filtered = filtered.filter(r => r.kelas === kelasVal);
+            let minPoin = parseInt(document.getElementById('minRepeat').value) || 0;
+            if(minPoin > 0) {
+                let poinMap = getTotalPoin();
+                filtered = filtered.filter(r => (poinMap[r.nis] || 0) >= minPoin);
+            }
+            if(sortColumn === 'kelas') {
+                filtered.sort((a,b) => { let aOrd = kelasOrder[(a.kelas||'').split(' ')[0]] || 999, bOrd = kelasOrder[(b.kelas||'').split(' ')[0]] || 999; if(aOrd !== bOrd) return kelasSortAsc ? aOrd - bOrd : bOrd - aOrd; return kelasSortAsc ? (a.kelas||'').localeCompare(b.kelas||'') : (b.kelas||'').localeCompare(a.kelas||''); });
+            } else if(sortColumn === 'poin') {
+                let poinMap = getTotalPoin();
+                filtered.sort((a,b) => { let aPoin = poinMap[a.nis]||0, bPoin = poinMap[b.nis]||0; return sortAsc ? aPoin - bPoin : bPoin - aPoin; });
+            } else {
+                filtered.sort((a,b) => { let A = a[sortColumn]||'', B = b[sortColumn]||''; if(sortColumn === 'tanggal') { A = new Date(A).getTime()||0; B = new Date(B).getTime()||0; } else if(sortColumn === 'nis') { A = String(A).padStart(10,'0'); B = String(B).padStart(10,'0'); } else { A = String(A).toLowerCase(); B = String(B).toLowerCase(); } return sortAsc ? (A>B?1:-1) : (A<B?1:-1); });
+            }
+            filteredRecords = filtered; return filtered;
+        }
+        
+        function renderTable() {
+            let filtered = applyFilterAndSort();
+            let total = filtered.length, totalPages = Math.ceil(total/itemsPerPage)||1;
+            if(currentPage > totalPages) currentPage = totalPages;
+            let start = (currentPage-1)*itemsPerPage, end = Math.min(start+itemsPerPage, total);
+            let pageData = filtered.slice(start, end);
+            let poinMap = getTotalPoin();
+            let tbody = document.getElementById('tblBody');
+            tbody.innerHTML = '';
+            pageData.forEach((r, idx) => {
+                let rowIdx = start+idx+1;
+                let rewardDisplay = r.reward;
+                if(r.reward === 'Santri Berprestasi') rewardDisplay += ' <span class="prestasi-badge">⭐4x</span>';
+                tbody.innerHTML += `<tr>
+                    <td class="text-center">${rowIdx}</td>
+                    <td>${formatTanggal(r.tanggal)||''}</td>
+                    <td>${r.nis||''}</td>
+                    <td>${escapeHtml(r.nama||'')}</td>
+                    <td><span class="kelas-badge ${getKelasClass(r.kelas)}">${r.kelas||''}</span></td>
+                    <td>${rewardDisplay}</td>
+                    <td>${escapeHtml(r.pencatat||'')}</td>
+                    <td>${escapeHtml(r.tempat||'')}</td>
+                    <td>${escapeHtml(r.keterangan||'')}</td>
+                    <td class="text-center"><strong>${poinMap[r.nis]||0}</strong></td>
+                    <td><button data-i='${records.indexOf(r)}' class="btn btn-sm btn-pastel-danger del"><i class="fas fa-trash"></i> Hapus</button></td>
+                </tr>`;
+            });
+            document.getElementById('showingStart').textContent = total ? start+1 : 0;
+            document.getElementById('showingEnd').textContent = end;
+            document.getElementById('totalRecords').textContent = total;
+            document.getElementById('totalRewardCount').textContent = records.length;
+            document.getElementById('pageInfo').textContent = `Halaman ${currentPage} / ${totalPages||1}`;
+            document.getElementById('prevPageBtn').disabled = currentPage <= 1;
+            document.getElementById('nextPageBtn').disabled = currentPage >= totalPages || totalPages === 0;
+            document.querySelectorAll('.del').forEach(btn => btn.addEventListener('click', onDelete));
+        }
+        
+        function onDelete(e) { let i = Number(e.currentTarget.dataset.i); if(confirm('Hapus reward ini?')) { records.splice(i,1); saveRecords(); } }
+        window.deleteAllRecords = function() { if(confirm('Hapus SEMUA data reward?')) { records = []; localStorage.removeItem(STORAGE_KEY); renderTable(); } };
+        window.sortTable = function(col) { if(col === 'kelas') { sortByKelas(); return; } if(col === 'no') return; if(sortColumn === col) sortAsc = !sortAsc; else { sortColumn = col; sortAsc = true; } renderTable(); };
+        window.sortByKelas = function() { sortColumn = 'kelas'; kelasSortAsc = !kelasSortAsc; renderTable(); };
+        
+        document.getElementById('btn_add').addEventListener('click', (e) => {
+            e.preventDefault();
+            let tanggal = document.getElementById('inp_tanggal').value;
+            let nis = document.getElementById('inp_nis').value;
+            let nama = inpNama.value.trim();
+            let kelas = document.getElementById('inp_kelas').value;
+            let reward = document.getElementById('inp_reward').value;
+            let pencatat = document.getElementById('inp_pencatat').value;
+            let tempat = document.getElementById('inp_tempat').value;
+            let keterangan = document.getElementById('inp_keterangan').value;
+            if(!tanggal || !nama || !nis || !reward || !pencatat) { alert('Harap isi semua field wajib!'); return; }
+            records.push({ tanggal, nis, nama, kelas, reward, pencatat, tempat, keterangan });
+            saveRecords();
+            document.getElementById('inp_keterangan').value = ''; document.getElementById('inp_tempat').value = ''; inpNama.value = ''; document.getElementById('inp_nis').value = ''; document.getElementById('inp_kelas').value = ''; document.getElementById('inp_reward').value = ''; document.getElementById('rewardInfo').innerHTML = ''; document.getElementById('inp_pencatat').focus();
+        });
+        document.getElementById('btn_clear').addEventListener('click', () => { document.getElementById('formRecord').reset(); document.getElementById('inp_tanggal').value = new Date().toISOString().slice(0,10); inpNama.value = ''; document.getElementById('ac_list').style.display = 'none'; document.getElementById('inp_nis').value = ''; document.getElementById('inp_kelas').value = ''; document.getElementById('rewardInfo').innerHTML = ''; });
+        document.getElementById('btn_export').addEventListener('click', () => { let h = ['tanggal','nis','nama','kelas','reward','pencatat','tempat','keterangan']; let lines = [h.join(',')]; records.forEach(r => { let vals = h.map(k => { let val = r[k]||''; if(k==='tanggal') val = formatTanggal(val); return '"'+val.replace(/"/g,'""')+'"'; }); lines.push(vals.join(',')); }); let blob = new Blob([lines.join('\n')], {type:'text/csv'}); let a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'reward.csv'; a.click(); });
+        document.getElementById('btn_export_xlsx').addEventListener('click', () => { let header = ["Tanggal","NIS","Nama","Kelas","Reward","Pencatat","Tempat","Keterangan"]; let data = records.map(r => [formatTanggal(r.tanggal||""), r.nis||"", r.nama||"", r.kelas||"", r.reward||"", r.pencatat||"", r.tempat||"", r.keterangan||""]); let ws = XLSX.utils.aoa_to_sheet([header, ...data]); let wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Laporan"); XLSX.writeFile(wb, "reward.xlsx"); });
+        document.getElementById('btn_print').addEventListener('click', () => { let html = '<html><head><meta charset="utf-8"><title>Laporan Reward</title><style>body{font-family:Arial;padding:20px} table{border-collapse:collapse;width:100%} th,td{border:1px solid #999;padding:8px}</style></head><body><h3>Laporan Reward Divisi Bahasa</h3><table><thead><tr><th>No</th><th>Tanggal</th><th>NIS</th><th>Nama</th><th>Kelas</th><th>Reward</th><th>Pencatat</th><th>Tempat</th><th>Keterangan</th></tr></thead><tbody>'; records.forEach((r,i) => { html += `<tr><td class="text-center">${i+1}</td><td>${formatTanggal(r.tanggal)||''}</td><td>${r.nis||''}</td><td>${r.nama||''}</td><td>${r.kelas||''}</td><td>${r.reward||''}</td><td>${r.pencatat||''}</td><td>${r.tempat||''}</td><td>${r.keterangan||''}</td></tr>`; }); html += '</tbody></table></body></html>'; let w = window.open('','_blank'); w.document.write(html); w.document.close(); w.focus(); w.print(); });
+        document.getElementById('btn_upload_pusat').addEventListener('click', async () => { if(!usbFileManager.isSupported()){ alert('Browser tidak mendukung USB'); return; } let handle = await usbFileManager.getRootHandle(); if(!handle){ handle = await usbFileManager.pilihFolder(); if(!handle){ alert('Pilih folder LugohDrive'); return; } } try { await usbFileManager.saveData('data_reward.json', records); alert('Data reward berhasil diupload ke Pusat Data!'); window.location.href = 'pusat_data.html'; } catch(err) { alert('Gagal upload: '+err.message); } });
+        
+        document.getElementById('search_name').addEventListener('input', () => { currentPage = 1; renderTable(); });
+        document.getElementById('filterKelas').addEventListener('change', () => { currentPage = 1; renderTable(); });
+        document.getElementById('minRepeat').addEventListener('change', () => { currentPage = 1; renderTable(); });
+        document.getElementById('refreshFilterBtn').addEventListener('click', () => { document.getElementById('search_name').value = ''; document.getElementById('filterKelas').value = ''; document.getElementById('minRepeat').value = '4'; currentPage = 1; renderTable(); });
+        document.getElementById('prevPageBtn').addEventListener('click', () => { if(currentPage > 1) { currentPage--; renderTable(); } });
+        document.getElementById('nextPageBtn').addEventListener('click', () => { let totalPages = Math.ceil(filteredRecords.length / itemsPerPage); if(currentPage < totalPages) { currentPage++; renderTable(); } });
+        
+        document.getElementById('folderStatusBtn').addEventListener('click', async() => { let handle = await usbFileManager.pilihFolder(); if(handle) document.getElementById('folderStatus').innerHTML = `<i class="fas fa-check-circle me-1"></i> LugohDrive: ${handle.name}`; });
+        
+        document.getElementById('inp_tanggal').value = new Date().toISOString().slice(0,10);
+        
+        function initKelasFilter() { let kelasSet = new Set(records.map(r => r.kelas).filter(k => k)); let filter = document.getElementById('filterKelas'); filter.innerHTML = '<option value="">Semua Kelas</option>'; [...kelasSet].sort().forEach(k => filter.appendChild(new Option(k, k))); }
+        
+        (async function init() {
+            santriList = await loadSantriFromUSB();
+            let nisSelect = document.getElementById('inp_nis');
+            nisSelect.innerHTML = '<option value="">-- pilih --</option>';
+            [...new Set(santriList.map(s => s.nis))].sort().forEach(nis => nisSelect.appendChild(new Option(nis, nis)));
+            let kelasSelect = document.getElementById('inp_kelas');
+            kelasSelect.innerHTML = '<option value="">-- pilih --</option>';
+            [...new Set(santriList.map(s => s.kelas))].sort().forEach(kelas => kelasSelect.appendChild(new Option(kelas, kelas)));
+            initKelasFilter();
+            renderTable();
+        })();
+    })();
+</script>
+</body>
+</html>

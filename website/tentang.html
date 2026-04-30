@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tentang | Divisi Bahasa</title>
+    <link rel="stylesheet" href="./assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="./assets/css/all.min.css">
+    <style>
+        /* Font Sakkal Majalla untuk Arab */
+        @font-face {
+            font-family: 'Sakkal Majalla';
+            src: local('Sakkal Majalla'), local('Traditional Arabic');
+            font-weight: normal;
+        }
+        * { transition: background-color 0.2s ease, color 0.2s ease; }
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: #f5f3ff;
+            color: #1e1b2f;
+        }
+        body.dark {
+            background-color: #121212;
+            color: #f0f0f0;
+        }
+        body.dark .card {
+            background-color: #1e2a3a;
+            border-color: #334152;
+            color: #fff;
+        }
+        body.dark .text-muted { color: #adb5bd !important; }
+        body.dark .btn-outline-secondary { color: #fff; border-color: #4a627a; }
+        
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            background: #ffffff;
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            box-shadow: 2px 0 12px rgba(0,0,0,0.05);
+            z-index: 1000;
+        }
+        body.dark .sidebar { background: #0f172a; box-shadow: none; }
+        .sidebar a { color: #2d3a4b; padding: 0.75rem 1rem; display: block; text-decoration: none; font-weight: 500; }
+        body.dark .sidebar a { color: #cbd5e6; }
+        .sidebar a:hover { background: #f0edff; }
+        body.dark .sidebar a:hover { background: #1e2a3a; }
+        .sidebar .active { background: #e9e6ff; color: #5e4bcc; border-left: 3px solid #5e4bcc; }
+        body.dark .sidebar .active { background: #2d3e5a; color: #b9aaff; }
+        .main-content { margin-left: 260px; }
+        @media (max-width: 768px) { 
+            .sidebar { transform: translateX(-100%); transition: 0.2s; } 
+            .sidebar.show { transform: translateX(0); } 
+            .main-content { margin-left: 0; } 
+        }
+        
+        .header {
+            background: #ffffff;
+            padding: 0.6rem 1.2rem;
+            border-bottom: 1px solid #e2e8f0;
+            position: sticky;
+            top: 0;
+            z-index: 99;
+        }
+        body.dark .header {
+            background: #0a0a12;
+            border-bottom-color: #2a2a3a;
+        }
+        .navbar-classic { display: flex; justify-content: space-between; align-items: center; }
+        #nav-toggle { color: #2d3a4b; font-size: 1.2rem; cursor: pointer; }
+        body.dark #nav-toggle { color: #ffffff; }
+        .avatar-md { width: 38px; height: 38px; border-radius: 50%; object-fit: cover; }
+        
+        .footer { background: #fefcff; border-top: 1px solid #e9e6f5; padding: 1rem 0; margin-top: 2rem; }
+        body.dark .footer { background: #0f172a; border-top-color: #1e293b; }
+        
+        .datetime-container {
+            background: #f0edff;
+            border-radius: 2rem;
+            padding: 0.4rem 1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        body.dark .datetime-container {
+            background: #1e2a3a;
+            color: #e0e0e0;
+        }
+        .arabic-clock {
+            font-family: 'Sakkal Majalla', 'Traditional Arabic', serif;
+            font-size: 1rem;
+        }
+        
+        .btn-pastel-primary {
+            background: #b7abff;
+            border: none;
+            color: #1e1b2f;
+            border-radius: 2rem;
+            padding: 0.5rem 1.2rem;
+        }
+        body.dark .btn-pastel-primary { background: #5e4bcc; color: white; }
+        
+        /* Bagan Struktur yang Rapi */
+        .org-chart {
+            margin: 2rem 0;
+            overflow-x: auto;
+        }
+        .org-row {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+        /* garis penghubung vertikal antar level */
+        .org-row:not(:last-child)::after {
+            content: '';
+            display: block;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #b7abff, #b7abff, transparent);
+            position: absolute;
+            bottom: -1rem;
+            left: 0;
+        }
+        body.dark .org-row:not(:last-child)::after {
+            background: linear-gradient(90deg, transparent, #5e4bcc, #5e4bcc, transparent);
+        }
+        .org-card {
+            background: white;
+            border-radius: 1rem;
+            padding: 0.8rem 1.2rem;
+            min-width: 180px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            border: 1px solid #e9e6f5;
+            transition: transform 0.2s;
+        }
+        body.dark .org-card {
+            background: #1e2a3a;
+            border-color: #334152;
+        }
+        .org-card:hover { transform: translateY(-5px); }
+        .org-title {
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            color: #5e4bcc;
+        }
+        body.dark .org-title { color: #b9aaff; }
+        .org-name { font-size: 0.95rem; font-weight: 500; }
+        .org-sub { font-size: 0.7rem; color: #6c757d; margin-top: 0.25rem; }
+        body.dark .org-sub { color: #adb5bd; }
+        
+        .two-columns {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 2rem;
+            width: 100%;
+        }
+        .column {
+            flex: 1;
+            min-width: 280px;
+            background: rgba(183, 171, 255, 0.05);
+            border-radius: 1rem;
+            padding: 1rem;
+        }
+        body.dark .column {
+            background: rgba(90, 75, 204, 0.1);
+        }
+        .column-title {
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 1.2rem;
+            color: #5e4bcc;
+            border-bottom: 2px dashed #b7abff;
+            display: inline-block;
+            width: 100%;
+        }
+        body.dark .column-title {
+            color: #b9aaff;
+            border-bottom-color: #5e4bcc;
+        }
+        .subdiv-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+        .subdiv-item {
+            background: white;
+            border-radius: 0.8rem;
+            padding: 0.6rem 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            border-left: 4px solid #b7abff;
+        }
+        body.dark .subdiv-item {
+            background: #2a3a4a;
+            border-left-color: #5e4bcc;
+        }
+        .subdiv-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        .subdiv-person {
+            font-size: 0.85rem;
+            color: #5e4bcc;
+        }
+        body.dark .subdiv-person { color: #b9aaff; }
+        
+        @media (max-width: 768px) {
+            .org-card { min-width: 140px; padding: 0.5rem; }
+            .subdiv-item { flex-direction: column; text-align: center; gap: 0.3rem; }
+        }
+    </style>
+</head>
+<body>
+<div id="db-wrapper">
+    <div class="sidebar" id="sidebar">
+        <div class="p-3"><h4 class="fw-bold">Divisi Bahasa</h4></div>
+        <ul class="nav flex-column">
+            <li><a href="pusat_data.html"><i class="fas fa-database me-2"></i> Darur Rekap</a></li>
+            <li><a href="daftar_santri.html"><i class="fas fa-users me-2"></i> Daftar Santri</a></li>
+            <li><a class="active" href="tentang.html"><i class="fas fa-info-circle me-2"></i> Tentang</a></li>
+            <li><div class="navbar-heading text-muted small px-3 mt-3">Form Input</div></li>
+            <li><a href="form_pelanggaran.html"><i class="fas fa-exclamation-triangle me-2"></i> Input Pelanggaran</a></li>
+            <li><a href="form_reward.html"><i class="fas fa-gift me-2"></i> Input Reward</a></li>
+            <li><a href="arabic_keyboard.html"><i class="fas fa-keyboard me-2"></i> Keyboard Arab</a></li>
+        </ul>
+    </div>
+
+    <div class="main-content">
+        <div class="header">
+            <div class="navbar-classic">
+                <a id="nav-toggle" href="#"><i class="fas fa-bars"></i></a>
+                <div class="d-flex align-items-center gap-3">
+                    <button id="darkModeBtn" class="btn btn-sm btn-outline-secondary"><i class="fas fa-moon"></i></button>
+                    <div class="dropdown">
+                        <a href="#" data-bs-toggle="dropdown">
+                            <img src="./assets/images/avatar/default.jpg" class="avatar-md" id="userAvatar">
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-end">
+                            <div class="px-3 py-2"><strong id="userFullName">User</strong><br><span class="small text-muted" id="userRole"></span></div>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="settings.html"><i class="fas fa-user-cog me-2"></i> Pengaturan</a>
+                            <a class="dropdown-item text-danger" href="#" onclick="logout()"><i class="fas fa-sign-out-alt me-2"></i> Keluar</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container-fluid px-4 py-4">
+            <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap">
+                <h3 class="fw-semibold">Tentang Aplikasi <span class="badge bg-secondary ms-2">Divisi Bahasa</span></h3>
+                <div class="datetime-container">
+                    <i class="far fa-clock"></i>
+                    <span id="jamIndo">--:--:--</span>
+                    <span class="arabic-clock" id="jamArab">--:--:--</span>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <button id="folderStatusBtn" class="btn btn-pastel-primary"><i class="fas fa-folder-open me-2"></i><span id="folderStatus">Pilih Folder LugohDrive</span></button>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-10 mx-auto">
+                    <div class="card p-4 mb-4">
+                        <div class="text-center mb-4">
+                            <i class="fas fa-chalkboard-teacher fa-4x mb-3" style="color: #5e4bcc;"></i>
+                            <h3>Divisi Pengembangan Bahasa Arab</h3>
+                            <p class="text-muted">Pesantren Islam Al Irsyad Tengaran 2</p>
+                            <span class="badge bg-secondary">Periode 2025/2026</span>
+                        </div>
+                        <hr>
+
+                        <h5 class="mt-2"><i class="fas fa-sitemap me-2" style="color: #5e4bcc;"></i> Struktur Kepengurusan Divisi Bahasa 8.0</h5>
+                        <div class="org-chart">
+                            <!-- Level 1: Pembina -->
+                            <div class="org-row">
+                                <div class="org-card"><div class="org-title"><i class="fas fa-chalkboard-user"></i> Pembina</div><div class="org-name">Ust. Suharmin Muslimin, M.Pd</div></div>
+                                <div class="org-card"><div class="org-title"><i class="fas fa-chalkboard-user"></i> Pembina</div><div class="org-name">Ust. Tamimi Hanafi</div></div>
+                            </div>
+
+                            <!-- Level 2: Ketua -->
+                            <div class="org-row">
+                                <div class="org-card"><div class="org-title"><i class="fas fa-crown"></i> Ketua</div><div class="org-name">Umar</div></div>
+                            </div>
+
+                            <!-- Level 3: Wakil Ketua & Sekretaris -->
+                            <div class="org-row">
+                                <div class="org-card"><div class="org-title"><i class="fas fa-user-friends"></i> Wakil Ketua</div><div class="org-name">Abdullah Hanief</div></div>
+                                <div class="org-card"><div class="org-title"><i class="fas fa-file-alt"></i> Sekretaris</div><div class="org-name">M. Irsya Fathurrahman A.</div></div>
+                            </div>
+
+                            <!-- Level 4: Dua Koordinator Besar (Ihya dan Tatwir) -->
+                            <div class="two-columns">
+                                <!-- Kolom Ihya -->
+                                <div class="column">
+                                    <div class="column-title"><i class="fas fa-heart me-2"></i> Ihya (Pembinaan)</div>
+                                    <div class="subdiv-list">
+                                        <div class="subdiv-item"><span class="subdiv-name">Uqubah</span><span class="subdiv-person">Ismail Difaul Haq</span></div>
+                                        <div class="subdiv-item"><span class="subdiv-name">Muroqobah</span><span class="subdiv-person">Maliq Azhar A.</span></div>
+                                        <div class="subdiv-item"><span class="subdiv-name">Daur Mabani</span><span class="subdiv-person">M. Hilal Mumtaz R.</span></div>
+                                        <div class="subdiv-item"><span class="subdiv-name">I'lan</span><span class="subdiv-person">M. Ghozi Arroyan A.</span></div>
+                                    </div>
+                                </div>
+                                <!-- Kolom Tatwir -->
+                                <div class="column">
+                                    <div class="column-title"><i class="fas fa-chart-line me-2"></i> Tatwir (Pengembangan)</div>
+                                    <div class="subdiv-list">
+                                        <div class="subdiv-item"><span class="subdiv-name">Daur Lughoh</span><span class="subdiv-person">Abdullah Ammar</span></div>
+                                        <div class="subdiv-item"><span class="subdiv-name">Ta'lim Shobahi</span><span class="subdiv-person">M. Daffa Nur Dzaki</span></div>
+                                        <div class="subdiv-item"><span class="subdiv-name">Hiwar Jama'i</span><span class="subdiv-person">Athaya Muhammad R.</span></div>
+                                        <div class="subdiv-item"><span class="subdiv-name">Mufrodat Usbu'iyyah</span><span class="subdiv-person">Ahmad Abu Zaid</span></div>
+                                        <div class="subdiv-item"><span class="subdiv-name">Tashih Ta'birot</span><span class="subdiv-person">M. Zhafran Khalid</span></div>
+                                        <div class="subdiv-item"><span class="subdiv-name">Tasmi' Mufrodat</span><span class="subdiv-person">Kemas M. Varis</span></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="text-muted small mt-3 text-center">* Struktur berdasarkan SK Divisi Pengembangan Bahasa Arab periode 2025/2026</p>
+                        <hr>
+
+                        <h5><i class="fas fa-bullseye me-2" style="color: #5e4bcc;"></i> Misi</h5>
+                        <p>Mendukung kegiatan Divisi Bahasa dalam mencatat dan memantau pelanggaran serta reward santri secara digital, terintegrasi, dan mudah diakses.</p>
+
+                        <h5 class="mt-4"><i class="fas fa-cogs me-2" style="color: #5e4bcc;"></i> Fitur Utama</h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="d-flex align-items-center mb-2"><i class="fas fa-check-circle text-success me-2"></i> Pencatatan Pelanggaran & Reward</div>
+                                <div class="d-flex align-items-center mb-2"><i class="fas fa-check-circle text-success me-2"></i> Manajemen Data Santri</div>
+                                <div class="d-flex align-items-center mb-2"><i class="fas fa-check-circle text-success me-2"></i> Statistik & Grafik Real-time</div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="d-flex align-items-center mb-2"><i class="fas fa-check-circle text-success me-2"></i> Upload File ke USB (LugohDrive)</div>
+                                <div class="d-flex align-items-center mb-2"><i class="fas fa-check-circle text-success me-2"></i> Ekspor Data (XLSX, CSV, Print)</div>
+                                <div class="d-flex align-items-center mb-2"><i class="fas fa-check-circle text-success me-2"></i> Papan Ketik Arab & Mode Gelap</div>
+                            </div>
+                        </div>
+
+                        <h5 class="mt-4"><i class="fas fa-envelope me-2" style="color: #5e4bcc;"></i> Kontak</h5>
+                        <p><i class="fas fa-envelope me-2"></i> Email: arabiyah.piat2@gmail.com<br>
+                        <i class="fas fa-phone-alt me-2"></i> Telepon: +62 812 3456 7890<br>
+                        <i class="fas fa-map-marker-alt me-2"></i> Alamat: Jl. Jombol No.094, Dawuan, Majalengka</p>
+
+                        <hr>
+                        <div class="text-center text-muted small">
+                            <i class="fas fa-copyright me-1"></i> 2025 Divisi Bahasa | LEGION 8.0<br>
+                            Website dapat digunakan tanpa koneksi internet (offline-ready)
+                        </div>
+                    </div>
+
+                    <!-- Card Kredit -->
+                    <div class="card p-4 mb-4">
+                        <h4 class="text-center"><i class="fas fa-heart text-danger me-2"></i> Kredit & Lisensi</h4>
+                        <div class="row mt-3">
+                            <div class="col-md-6"><h6>Library yang Digunakan:</h6><ul class="small"><li>Bootstrap 5 - MIT</li><li>Font Awesome - CC BY 4.0</li><li>Chart.js - MIT</li><li>SheetJS - Apache 2.0</li><li>jQuery - MIT</li></ul></div>
+                            <div class="col-md-6"><h6>Referensi:</h6><ul class="small"><li>Data santri internal</li><li>Inspirasi UI dari Dash UI</li><li>Keyboard Arab open source</li></ul></div>
+                        </div>
+                        <hr>
+                        <div class="text-center small text-muted">Aplikasi dikembangkan untuk Divisi Pengembangan Bahasa Arab.<br>Dilarang memperbanyak atau mendistribusikan tanpa izin.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer class="footer text-center small py-3">© LEGION 8.0 | Website ini dapat digunakan tanpa koneksi internet</footer>
+    </div>
+</div>
+
+<script src="./assets/js/jquery.min.js"></script>
+<script src="./assets/js/bootstrap.bundle.min.js"></script>
+<script src="./src/usbFileManager.js"></script>
+<script>
+    (function() {
+        // CEK LOGIN
+        if(!localStorage.getItem('currentUser')) { window.location.href = '../WebDivisiBahasa.html'; return; }
+        let currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        document.getElementById('userFullName').innerText = currentUser.name;
+        document.getElementById('userRole').innerText = currentUser.role === 'admin' ? 'Administrator' : (currentUser.role === 'guru' ? 'Guru' : 'Musyrif');
+        let avatarSrc = currentUser.avatar ? `./assets/images/avatar/${currentUser.avatar}` : './assets/images/avatar/default.jpg';
+        document.getElementById('userAvatar').src = avatarSrc;
+        
+        window.logout = () => { if(confirm('Keluar?')){ localStorage.removeItem('currentUser'); localStorage.removeItem('rememberedUser'); window.location.href='../WebDivisiBahasa.html'; } };
+        
+        // DARK MODE
+        let darkMode = localStorage.getItem('darkMode') === 'true';
+        if(darkMode) document.body.classList.add('dark');
+        document.getElementById('darkModeBtn')?.addEventListener('click',()=>{ document.body.classList.toggle('dark'); localStorage.setItem('darkMode',document.body.classList.contains('dark')); });
+        document.getElementById('nav-toggle')?.addEventListener('click',()=>{ document.getElementById('sidebar').classList.toggle('show'); });
+        
+        // JAM BERJALAN
+        function updateClock() { const now = new Date(); document.getElementById('jamIndo').innerText = now.toLocaleTimeString('id-ID'); document.getElementById('jamArab').innerText = now.toLocaleTimeString('ar-SA'); }
+        updateClock(); setInterval(updateClock, 1000);
+        
+        // USB FOLDER
+        if (typeof usbFileManager !== 'undefined') {
+            document.getElementById('folderStatusBtn').addEventListener('click', async() => { 
+                if(usbFileManager.isSupported && usbFileManager.pilihFolder) {
+                    let handle = await usbFileManager.pilihFolder(); 
+                    if(handle) document.getElementById('folderStatus').innerHTML = `<i class="fas fa-check-circle me-1"></i> LugohDrive: ${handle.name}`;
+                } else alert('Browser tidak mendukung akses USB');
+            });
+            if(usbFileManager.isSupported && usbFileManager.getRootHandle) {
+                (async()=>{ let h = await usbFileManager.getRootHandle(); if(h) document.getElementById('folderStatus').innerHTML = `<i class="fas fa-check-circle me-1"></i> LugohDrive: ${h.name}`; })();
+            }
+        }
+    })();
+</script>
+</body>
+</html>
