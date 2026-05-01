@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Darur Rekap | Divisi Bahasa</title>
-    <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
-    <link rel="stylesheet" href="../assets/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <style>
         @font-face {
@@ -139,13 +139,13 @@
     <div class="sidebar" id="sidebar">
         <div class="p-3"><h4 class="fw-bold">Divisi Bahasa</h4></div>
         <ul class="nav flex-column">
-            <li><a class="active" href="pusat_data.html"><i class="fas fa-database me-2"></i> Darur Rekap</a></li>
-            <li><a href="daftar_santri.html"><i class="fas fa-users me-2"></i> Daftar Santri</a></li>
-            <li><a href="tentang.html"><i class="fas fa-info-circle me-2"></i> Tentang</a></li>
+            <li><a class="active" href="website/pusat_data.html"><i class="fas fa-database me-2"></i> Darur Rekap</a></li>
+            <li><a href="website/daftar_santri.html"><i class="fas fa-users me-2"></i> Daftar Santri</a></li>
+            <li><a href="website/tentang.html"><i class="fas fa-info-circle me-2"></i> Tentang</a></li>
             <li><div class="navbar-heading text-muted small px-3 mt-3">Form Input</div></li>
-            <li><a href="form_pelanggaran.html"><i class="fas fa-exclamation-triangle me-2"></i> Input Pelanggaran</a></li>
-            <li><a href="form_reward.html"><i class="fas fa-gift me-2"></i> Input Reward</a></li>
-            <li><a href="arabic_keyboard.html"><i class="fas fa-keyboard me-2"></i> Keyboard Arab</a></li>
+            <li><a href="website/form_pelanggaran.html"><i class="fas fa-exclamation-triangle me-2"></i> Input Pelanggaran</a></li>
+            <li><a href="website/form_reward.html"><i class="fas fa-gift me-2"></i> Input Reward</a></li>
+            <li><a href="website/arabic_keyboard.html"><i class="fas fa-keyboard me-2"></i> Keyboard Arab</a></li>
         </ul>
     </div>
 
@@ -157,7 +157,7 @@
                     <button id="darkModeBtn" class="btn btn-sm btn-outline-secondary"><i class="fas fa-moon"></i></button>
                     <div class="dropdown">
                         <a href="#" data-bs-toggle="dropdown">
-                            <img src="../assets/images/avatar/default.jpg" class="avatar-md" id="userAvatar">
+                            <img src="assets/images/avatar/default.jpg" class="avatar-md" id="userAvatar">
                         </a>
                         <div class="dropdown-menu dropdown-menu-end">
                             <div class="px-3 py-2"><strong id="userFullName">User</strong><br><span class="small text-muted" id="userRole"></span></div>
@@ -239,9 +239,9 @@
 </div>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-<script src="../assets/js/bootstrap.bundle.min.js"></script>
+<script src="assets/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
-<script src="../src/usbFileManager.js"></script>
+<script src="src/usbFileManager.js"></script>
 <script src="https://apis.google.com/js/api.js"></script>
 
 <script>
@@ -252,7 +252,7 @@
     let currentUser = JSON.parse(localStorage.getItem('currentUser'));
     document.getElementById('userFullName').innerText = currentUser.name;
     document.getElementById('userRole').innerText = currentUser.role === 'admin' ? 'Administrator' : (currentUser.role === 'guru' ? 'Guru' : 'Musyrif');
-    let avatarSrc = currentUser.avatar ? `../assets/images/avatar/${currentUser.avatar}` : '../assets/images/avatar/default.jpg';
+    let avatarSrc = currentUser.avatar ? `assets/images/avatar/${currentUser.avatar}` : 'assets/images/avatar/default.jpg';
     document.getElementById('userAvatar').src = avatarSrc;
     window.logout = () => { if(confirm('Keluar?')){ localStorage.removeItem('currentUser'); localStorage.removeItem('rememberedUser'); window.location.href='../WebDivisiBahasa.html'; } };
     
@@ -301,7 +301,7 @@
         window.pieChart = new Chart(document.getElementById('chartPengajuanPie'), { type: 'pie', data: { labels: ['Diterima','Ditolak','Pending'], datasets: [{ data: [diterima, ditolak, pending], backgroundColor: ['#8bc34a','#ff8a8a','#ffc107'] }] } });
     }
     
-    // ==================== RENDER TABEL DETAIL ====================
+    // ==================== RENDER TABEL DETAIL (sederhana) ====================
     function showDetailPage(type) {
         document.getElementById('beranda').style.display = 'none';
         document.getElementById('halamanDetail').style.display = 'block';
@@ -309,7 +309,7 @@
         let data = type === 'pelanggaran' ? currentPelanggaran : currentReward;
         let html = `<div class="table-responsive"><table class="table table-bordered"><thead><tr><th>#</th><th>Tanggal</th><th>NIS</th><th>Nama</th><th>Kelas</th><th>${type === 'pelanggaran' ? 'Pelanggaran' : 'Reward'}</th><th>Pencatat</th><th>Tempat</th><th>Keterangan</th></tr></thead><tbody>`;
         data.forEach((item,idx)=>{
-            html += `<tr><td class="text-center">${idx+1}</td><td>${item.tanggal||''}</td><td>${item.nis||''}</td><td>${item.nama||''}</td><td>${item.kelas||''}</td><td>${type==='pelanggaran'?item.pelanggaran:item.reward}</td><td>${item.pencatat||''}</td><td>${item.tempat||''}</td><td>${item.keterangan||''}</td></tr>`;
+            html += `<tr><td>${idx+1}</td><td>${item.tanggal||''}</td><td>${item.nis||''}</td><td>${item.nama||''}</td><td>${item.kelas||''}</td><td>${type==='pelanggaran'?item.pelanggaran:item.reward}</td><td>${item.pencatat||''}</td><td>${item.tempat||''}</td><td>${item.keterangan||''}</td></tr>`;
         });
         html += `</tbody></table></div>`;
         document.getElementById('detailContent').innerHTML = html;
@@ -434,7 +434,7 @@
     document.getElementById('btnUpload').addEventListener('click', async()=>{ let files = document.getElementById('fileInput').files; if(!files.length) return; let cat = document.getElementById('fileCategory').value; let ok=0; for(let f of files) { try{ await usbFileManager.uploadFile(f, cat); if(cat==='pengajuan') await setFileStatus(f.name, 'pending'); ok++; } catch(e){} } alert(`Upload selesai: ${ok} file`); document.getElementById('fileInput').value=''; await loadAllData(); });
     document.getElementById('btnReset').addEventListener('click', async()=>{ if(prompt('Password reset (lugoh123):')!=='lugoh123') return; if(confirm('Reset semua data? Data santri tetap aman.')){ let all=await usbFileManager.listFiles(); for(let f of all) if(!SYSTEM_JSON_FILES.includes(f.name)) await usbFileManager.deleteFile(f.handle); await usbFileManager.saveData('data_pelanggaran.json',[]); await usbFileManager.saveData('data_reward.json',[]); await usbFileManager.saveData('pengajuan_status.json',{}); await loadAllData(); alert('Reset selesai'); } });
     
-    // ==================== GOOGLE DRIVE ====================
+    // ==================== GOOGLE DRIVE (PERBAIKAN INISIALISASI) ====================
     let driveInitialized = false, driveAuth = false, driveClientId = '', driveApiKey = '';
     function loadDriveConfig() { driveClientId = localStorage.getItem('google_drive_client_id') || ''; driveApiKey = localStorage.getItem('google_drive_api_key') || ''; updateDriveButtons(); }
     function updateDriveButtons() { let hasConfig = !!(driveClientId && driveApiKey); document.getElementById('loginDriveBtn').disabled = !hasConfig; document.getElementById('syncDriveBtn').disabled = !hasConfig || !driveAuth; document.getElementById('uploadDriveBtn').disabled = !hasConfig || !driveAuth; }
