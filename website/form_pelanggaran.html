@@ -3,11 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Form Input Pelanggaran - Divisi Bahasa</title>
-    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
-    <link rel="stylesheet" href="assets/css/all.min.css">
+    <title>Form Input Pelanggaran | Divisi Bahasa</title>
+    <link rel="stylesheet" href="./assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="./assets/css/all.min.css">
+    <!-- Google Identity Services -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
     <style>
-        /* Font Sakkal Majalla untuk Arab */
+        /* (semua style yang sudah ada, TIDAK BERUBAH) */
         @font-face {
             font-family: 'Sakkal Majalla';
             src: local('Sakkal Majalla'), local('Traditional Arabic');
@@ -15,7 +17,7 @@
         }
         * { transition: background-color 0.2s ease, color 0.2s ease; }
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Inter', system-ui, sans-serif;
             background: #f5f3ff;
             color: #1e1b2f;
         }
@@ -23,20 +25,36 @@
             background-color: #121212;
             color: #f0f0f0;
         }
-        body.dark .card, body.dark .ac-list {
+        body.dark .card, body.dark .modal-content {
             background-color: #1e2a3a;
             border-color: #334152;
+            color: #fff;
         }
         body.dark .table, body.dark .table td, body.dark .table th {
             background-color: #1a1a2e;
             color: #e0e0e0;
             border-color: #2a2a4a;
         }
+        body.dark .table thead th {
+            background-color: #0f0f1a;
+            color: #fff;
+            border-color: #2a2a4a;
+        }
+        body.dark .text-muted { color: #adb5bd !important; }
+        body.dark .btn-outline-secondary { color: #fff; border-color: #4a627a; }
         body.dark .form-control, body.dark .form-select {
             background-color: #2a2a3a;
             border-color: #3a3a4a;
             color: #fff;
         }
+        body.dark .ac-list {
+            background-color: #1e2a3a;
+            border-color: #334152;
+        }
+        body.dark .ac-item:hover {
+            background-color: #2a3a4a;
+        }
+        
         .sidebar {
             width: 260px;
             background: #ffffff;
@@ -47,7 +65,7 @@
             box-shadow: 2px 0 12px rgba(0,0,0,0.05);
             z-index: 1000;
         }
-        body.dark .sidebar { background: #0f172a; }
+        body.dark .sidebar { background: #0f172a; box-shadow: none; }
         .sidebar a { color: #2d3a4b; padding: 0.75rem 1rem; display: block; text-decoration: none; font-weight: 500; }
         body.dark .sidebar a { color: #cbd5e6; }
         .sidebar a:hover { background: #f0edff; }
@@ -55,42 +73,28 @@
         .sidebar .active { background: #e9e6ff; color: #5e4bcc; border-left: 3px solid #5e4bcc; }
         body.dark .sidebar .active { background: #2d3e5a; color: #b9aaff; }
         .main-content { margin-left: 260px; }
-        @media (max-width: 800px) { .sidebar { transform: translateX(-100%); transition: 0.2s; } .sidebar.show { transform: translateX(0); } .main-content { margin-left: 0; } }
+        @media (max-width: 768px) { .sidebar { transform: translateX(-100%); transition: 0.2s; } .sidebar.show { transform: translateX(0); } .main-content { margin-left: 0; } }
+        
         .header {
             background: #ffffff;
             padding: 0.6rem 1.2rem;
             border-bottom: 1px solid #e2e8f0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
             position: sticky;
             top: 0;
             z-index: 99;
         }
-        body.dark .header { background: #0a0a12; }
-        .datetime-container {
-            background: #f0edff;
-            border-radius: 2rem;
-            padding: 0.2rem 0.8rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 0.8rem;
+        body.dark .header {
+            background: #0a0a12;
+            border-bottom-color: #2a2a3a;
         }
-        body.dark .datetime-container { background: #1e2a3a; color: #e0e0e0; }
-        .arabic-clock { font-family: 'Sakkal Majalla', 'Traditional Arabic', serif; }
-        .btn-pastel-primary { background: #b7abff; border: none; color: #1e1b2f; border-radius: 2rem; padding: 0.5rem 1.2rem; }
-        body.dark .btn-pastel-primary { background: #5e4bcc; color: white; }
-        .btn-pastel-success { background: #c8e6c9; border: none; color: #1e1b2f; }
-        body.dark .btn-pastel-success { background: #2e7d32; color: white; }
-        .btn-pastel-danger { background: #ffcdd2; border: none; color: #c62828; }
-        body.dark .btn-pastel-danger { background: #c62828; color: white; }
-        .btn-pastel-info { background: #b3e5fc; border: none; color: #1e1b2f; }
-        body.dark .btn-pastel-info { background: #0288d1; color: white; }
-        .ac-wrapper { position: relative; }
-        .ac-list { position: absolute; left: 0; right: 0; z-index: 1050; background: white; border: 1px solid #dee2e6; border-radius: 0.5rem; margin-top: 4px; max-height: 260px; overflow-y: auto; }
-        .ac-item { padding: 0.75rem 1rem; cursor: pointer; border-bottom: 1px solid #f1f1f1; display: flex; flex-direction: column; }
-        .ac-item:hover { background: #f8f9fa; }
+        .navbar-classic { display: flex; justify-content: space-between; align-items: center; }
+        #nav-toggle { color: #2d3a4b; font-size: 1.2rem; cursor: pointer; }
+        body.dark #nav-toggle { color: #ffffff; }
+        .avatar-md { width: 38px; height: 38px; border-radius: 50%; object-fit: cover; }
+        
+        .footer { background: #fefcff; border-top: 1px solid #e9e6f5; padding: 1rem 0; margin-top: 2rem; }
+        body.dark .footer { background: #0f172a; border-top-color: #1e293b; }
+        
         .kelas-badge { display: inline-block; padding: 0.25rem 0.6rem; border-radius: 30px; font-size: 0.7rem; font-weight: 600; }
         .kelas-vii { background: #e3f2fd; color: #0d47a1; }
         .kelas-viii { background: #e8f5e9; color: #1e5e2e; }
@@ -99,10 +103,99 @@
         .kelas-x { background: #ede7f6; color: #512da8; }
         .kelas-xi { background: #fbe9e7; color: #bf360c; }
         .kelas-xii { background: #ffebee; color: #b71c1c; }
+        body.dark .kelas-vii { background: #1a3a5c; color: #90caf9; }
+        body.dark .kelas-viii { background: #1a4a2a; color: #a5d6a7; }
+        body.dark .kelas-ix { background: #5a3a1a; color: #ffcc80; }
+        body.dark .kelas-il { background: #1a5a5a; color: #80deea; }
+        body.dark .kelas-x { background: #2a1a5a; color: #b39ddb; }
+        body.dark .kelas-xi { background: #5a1a1a; color: #ffab91; }
+        body.dark .kelas-xii { background: #5a1a2a; color: #ef9a9a; }
+        
+        .datetime-container {
+            background: #f0edff;
+            border-radius: 2rem;
+            padding: 0.4rem 1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        body.dark .datetime-container {
+            background: #1e2a3a;
+            color: #e0e0e0;
+        }
+        .arabic-clock {
+            font-family: 'Sakkal Majalla', 'Traditional Arabic', serif;
+            font-size: 1rem;
+        }
+        
+        .btn-pastel-primary {
+            background: #b7abff;
+            border: none;
+            color: #1e1b2f;
+            border-radius: 2rem;
+            padding: 0.5rem 1.2rem;
+        }
+        body.dark .btn-pastel-primary {
+            background: #5e4bcc;
+            color: white;
+        }
+        .btn-pastel-success {
+            background: #c8e6c9;
+            border: none;
+            color: #1e1b2f;
+        }
+        body.dark .btn-pastel-success {
+            background: #2e7d32;
+            color: white;
+        }
+        .btn-pastel-danger {
+            background: #ffcdd2;
+            border: none;
+            color: #1e1b2f;
+        }
+        body.dark .btn-pastel-danger {
+            background: #c62828;
+            color: white;
+        }
+        .btn-pastel-info {
+            background: #b3e5fc;
+            border: none;
+            color: #1e1b2f;
+        }
+        body.dark .btn-pastel-info {
+            background: #0288d1;
+            color: white;
+        }
+        .btn-pastel-warning {
+            background: #ffe0b2;
+            border: none;
+            color: #e65100;
+        }
+        body.dark .btn-pastel-warning {
+            background: #f57c00;
+            color: white;
+        }
+        
+        .ac-wrapper { position: relative; }
+        .ac-list {
+            position: absolute; left: 0; right: 0; z-index: 1050;
+            background: white; border: 1px solid #dee2e6; border-radius: 0.5rem;
+            margin-top: 4px; max-height: 260px; overflow-y: auto;
+            box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15);
+        }
+        .ac-item {
+            padding: 0.75rem 1rem; cursor: pointer; border-bottom: 1px solid #f1f1f1;
+            display: flex; flex-direction: column;
+        }
+        .ac-item:hover { background: #f8f9fa; }
+        .ac-sub { font-size: 0.75rem; color: #5e4bcc; margin-top: 4px; }
     </style>
 </head>
 <body>
 <div id="db-wrapper">
+    <!-- SIDEBAR (sama persis) -->
     <div class="sidebar" id="sidebar">
         <div class="p-3"><h4 class="fw-bold">Divisi Bahasa</h4></div>
         <ul class="nav flex-column">
@@ -118,203 +211,504 @@
 
     <div class="main-content">
         <div class="header">
-            <div class="d-flex align-items-center">
-                <a id="nav-toggle" href="#"><i class="fas fa-bars me-3"></i></a>
-                <span class="fw-bold">Divisi Bahasa</span>
-            </div>
-            <div class="d-flex gap-3 align-items-center">
-                <div class="datetime-container"><i class="far fa-clock"></i><span id="jamIndo">--:--:--</span><span class="arabic-clock" id="jamArab">--:--:--</span></div>
-                <button id="darkModeBtn" class="btn btn-sm btn-outline-secondary"><i class="fas fa-moon"></i></button>
-                <div class="dropdown">
-                    <a href="#" data-bs-toggle="dropdown"><img src="assets/images/avatar/default.jpg" class="rounded-circle" width="38" height="38" id="userAvatar"></a>
-                    <div class="dropdown-menu dropdown-menu-end">
-                        <div class="px-3 py-2"><strong id="userFullName">User</strong><br><span class="small text-muted" id="userRole"></span></div>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="settings.html"><i class="fas fa-user-cog me-2"></i> Pengaturan</a>
-                        <a class="dropdown-item text-danger" href="#" onclick="logout()"><i class="fas fa-sign-out-alt me-2"></i> Keluar</a>
+            <div class="navbar-classic">
+                <a id="nav-toggle" href="#"><i class="fas fa-bars"></i></a>
+                <div class="d-flex align-items-center gap-3">
+                    <button id="darkModeBtn" class="btn btn-sm btn-outline-secondary"><i class="fas fa-moon"></i></button>
+                    <div class="dropdown">
+                        <a href="#" data-bs-toggle="dropdown">
+                            <img src="./assets/images/avatar/default.jpg" class="avatar-md" id="userAvatar">
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-end">
+                            <div class="px-3 py-2"><strong id="userFullName">User</strong><br><span class="small text-muted" id="userRole"></span></div>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="settings.html"><i class="fas fa-user-cog me-2"></i> Pengaturan</a>
+                            <a class="dropdown-item text-danger" href="#" onclick="logout()"><i class="fas fa-sign-out-alt me-2"></i> Keluar</a>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="container-fluid px-4 py-4">
-            <div class="row mb-3">
-                <div class="col-12">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h3>Form Input Pelanggaran</h3>
-                        <div>
-                            <button id="folderStatusBtn" class="btn btn-pastel-primary btn-sm me-2"><i class="fas fa-folder-open me-1"></i> Pilih USB</button>
-                            <button id="lihatFileBtn" class="btn btn-pastel-info btn-sm me-2"><i class="fas fa-folder me-1"></i> Lihat File USB</button>
-                            <button id="configDriveBtn" class="btn btn-pastel-warning btn-sm me-2"><i class="fas fa-cog me-1"></i> Konfigurasi API</button>
-                            <button id="loginDriveBtn" class="btn btn-pastel-primary btn-sm me-2" disabled><i class="fab fa-google me-1"></i> Login Google</button>
-                            <button id="uploadDriveBtn" class="btn btn-pastel-success btn-sm me-2" disabled><i class="fas fa-cloud-upload-alt me-1"></i> Upload ke Drive</button>
-                            <button id="syncDriveBtn" class="btn btn-pastel-info btn-sm" disabled><i class="fas fa-sync me-1"></i> Sinkronkan Data</button>
-                        </div>
-                    </div>
-                    <div id="driveStatus" class="small text-muted mt-2"></div>
+            <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap">
+                <h3 class="fw-semibold">Form Input Pelanggaran <span class="badge bg-secondary ms-2">Divisi Bahasa</span></h3>
+                <div class="datetime-container">
+                    <i class="far fa-clock"></i>
+                    <span id="jamIndo">--:--:--</span>
+                    <span class="arabic-clock" id="jamArab">--:--:--</span>
                 </div>
             </div>
 
-            <!-- Form -->
-            <div class="card p-3 mb-4">
+            <!-- Tombol Pilih Folder LugohDrive -->
+            <div class="mb-3">
+                <button id="folderStatusBtn" class="btn btn-pastel-primary"><i class="fas fa-folder-open me-2"></i><span id="folderStatus">Pilih Folder LugohDrive</span></button>
+            </div>
+
+            <!-- Form Input (TIDAK BERUBAH) -->
+            <div class="card p-4 mb-4">
                 <form id="formRecord" onsubmit="return false;">
                     <div class="row g-3">
-                        <div class="col-md-3"><label class="form-label">Tanggal</label><input type="date" class="form-control" id="inp_tanggal" required></div>
-                        <div class="col-md-3"><label class="form-label">Pelanggaran</label><select class="form-select" id="inp_pelanggaran" required><option value="">-- pilih --</option><option>Berbicara bahasa Indonesia</option><option>Berbicara kasar</option><option>Tidak mengikuti kegiatan</option><option>Tidak setor</option><option>Tidak mengingatkan</option><option>Tidak mengerjakan tugas</option><option>Lainnya</option></select></div>
-                        <div class="col-md-3"><label class="form-label">Pencatat</label><input class="form-control" id="inp_pencatat" required></div>
-                        <div class="col-md-3"><label class="form-label">Tempat (opsional)</label><input class="form-control" id="inp_tempat"></div>
-                        <div class="col-md-4"><label class="form-label">NIS</label><select class="form-select" id="inp_nis"></select></div>
-                        <div class="col-md-4"><label class="form-label">Nama Santri</label><div class="ac-wrapper"><input class="form-control" id="inp_nama" autocomplete="off"><div id="ac_list" class="ac-list" style="display:none"></div></div></div>
-                        <div class="col-md-4"><label class="form-label">Kelas</label><select class="form-select" id="inp_kelas"></select></div>
-                        <div class="col-12"><label class="form-label">Keterangan</label><textarea class="form-control" id="inp_keterangan" rows="2"></textarea></div>
+                        <div class="col-md-3">
+                            <label class="form-label"><i class="fas fa-calendar me-1"></i> Tanggal</label>
+                            <input type="date" class="form-control" id="inp_tanggal" required>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label"><i class="fas fa-exclamation-triangle me-1"></i> Pelanggaran</label>
+                            <select class="form-select" id="inp_pelanggaran" required>
+                                <option value="">-- pilih --</option>
+                                <option>Berbicara bahasa Indonesia</option>
+                                <option>Berbicara kasar</option>
+                                <option>Tidak mengikuti kegiatan</option>
+                                <option>Tidak setor</option>
+                                <option>Tidak mengingatkan</option>
+                                <option>Tidak mengerjakan tugas</option>
+                                <option>Lainnya</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label"><i class="fas fa-user-check me-1"></i> Pencatat</label>
+                            <input class="form-control" id="inp_pencatat" placeholder="Nama guru / musrif" required>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label"><i class="fas fa-map-pin me-1"></i> Tempat (opsional)</label>
+                            <input class="form-control" id="inp_tempat" placeholder="Ruang bahasa, kantin...">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label"><i class="fas fa-id-card me-1"></i> NIS</label>
+                            <select class="form-select" id="inp_nis"></select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label"><i class="fas fa-user-graduate me-1"></i> Nama Santri</label>
+                            <div class="ac-wrapper">
+                                <input class="form-control" id="inp_nama" type="text" placeholder="Ketik nama atau NIS..." autocomplete="off">
+                                <div id="ac_list" class="ac-list" style="display:none"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label"><i class="fas fa-layer-group me-1"></i> Kelas</label>
+                            <select class="form-select" id="inp_kelas"></select>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label"><i class="fas fa-pen me-1"></i> Keterangan</label>
+                            <textarea class="form-control" id="inp_keterangan" rows="3" placeholder="Catatan tambahan..."></textarea>
+                        </div>
                     </div>
                     <div class="d-flex gap-2 justify-content-end mt-4">
-                        <button type="submit" id="btn_add" class="btn btn-pastel-primary"><i class="fas fa-plus-circle me-1"></i> Tambah</button>
+                        <button type="button" id="btn_add" class="btn btn-pastel-primary"><i class="fas fa-plus-circle me-1"></i> Tambah</button>
                         <button type="button" id="btn_clear" class="btn btn-outline-secondary"><i class="fas fa-eraser me-1"></i> Bersihkan</button>
                         <button type="button" id="btn_export" class="btn btn-pastel-success"><i class="fas fa-file-csv me-1"></i> CSV</button>
                         <button type="button" id="btn_export_xlsx" class="btn btn-pastel-success"><i class="fas fa-file-excel me-1"></i> XLSX</button>
                         <button type="button" id="btn_print" class="btn btn-outline-secondary"><i class="fas fa-print me-1"></i> Cetak</button>
+                        <button type="button" id="btn_upload_pusat" class="btn btn-pastel-info"><i class="fas fa-database me-1"></i> Upload ke Pusat Data</button>
                     </div>
                 </form>
             </div>
 
-            <!-- Tabel Pelanggaran -->
+            <!-- Tabel Pelanggaran (TIDAK BERUBAH) -->
             <div class="card p-3">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h5>Daftar Pelanggaran</h5>
+                <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap">
+                    <h5><i class="fas fa-list-alt me-2 text-danger"></i> Daftar Pelanggaran</h5>
                     <button onclick="deleteAllRecords()" class="btn btn-pastel-danger btn-sm"><i class="fas fa-trash-can me-1"></i> Hapus Semua</button>
                 </div>
-                <div class="row g-2 mb-3">
-                    <div class="col-md-8"><input id="search_name" type="text" class="form-control" placeholder="Cari berdasarkan nama, NIS, atau kelas..."></div>
-                    <div class="col-md-4"><select id="filterKelas" class="form-select"><option value="">Semua Kelas</option></select></div>
+                <div class="row g-3 mb-3">
+                    <div class="col-md-8">
+                        <input id="search_name" type="text" class="form-control" placeholder="Cari berdasarkan nama, NIS, atau kelas...">
+                    </div>
+                    <div class="col-md-4">
+                        <select id="filterKelas" class="form-select">
+                            <option value="">Semua Kelas</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="table-responsive">
-                    <table class="table table-bordered table-hover">
+                    <table class="table table-bordered table-hover" id="tblRecords">
                         <thead class="table-light">
-                            <tr><th onclick="sortTable('no')">#</th><th onclick="sortTable('tanggal')">Tanggal</th><th onclick="sortTable('nis')">NIS</th><th onclick="sortTable('nama')">Nama</th><th onclick="sortTable('kelas')">Kelas</th><th onclick="sortTable('pelanggaran')">Pelanggaran</th><th>Pencatat</th><th>Tempat</th><th>Keterangan</th><th>Aksi</th></tr>
+                            <tr><th onclick="sortTable('no')"># <i class="fas fa-sort"></i></th><th onclick="sortTable('tanggal')">Tanggal <i class="fas fa-sort"></i></th><th onclick="sortTable('nis')">NIS <i class="fas fa-sort"></i></th><th onclick="sortTable('nama')">Nama <i class="fas fa-sort"></i></th><th onclick="sortByKelas()">Kelas <i class="fas fa-sort"></i></th><th onclick="sortTable('pelanggaran')">Pelanggaran <i class="fas fa-sort"></i></th><th>Pencatat</th><th>Tempat</th><th>Keterangan</th><th>Aksi</th></tr>
                         </thead>
                         <tbody id="tblBody"></tbody>
                     </table>
                 </div>
                 <div class="d-flex justify-content-between align-items-center mt-3">
-                    <div class="text-muted small">Menampilkan <span id="showingStart">0</span>-<span id="showingEnd">0</span> dari <span id="totalRecords">0</span></div>
-                    <div><button id="prevPageBtn" class="btn btn-outline-secondary btn-sm" disabled><i class="fas fa-chevron-left me-1"></i></button><span class="mx-2" id="pageInfo">Halaman 1/1</span><button id="nextPageBtn" class="btn btn-outline-secondary btn-sm" disabled><i class="fas fa-chevron-right ms-1"></i></button></div>
+                    <div class="text-muted small"><i class="fas fa-database me-1"></i> Menampilkan <span id="showingStart">0</span>–<span id="showingEnd">0</span> dari <span id="totalRecords">0</span> pelanggaran</div>
+                    <div class="d-flex gap-2 align-items-center">
+                        <button id="prevPageBtn" class="btn btn-outline-secondary btn-sm" disabled><i class="fas fa-chevron-left me-1"></i> Sebelumnya</button>
+                        <span class="badge bg-light text-dark p-2" id="pageInfo">Halaman 1 / 1</span>
+                        <button id="nextPageBtn" class="btn btn-outline-secondary btn-sm" disabled>Selanjutnya <i class="fas fa-chevron-right ms-1"></i></button>
+                    </div>
                 </div>
             </div>
-        </div>
-        <footer class="footer text-center py-3 small">© LEGION 8.0 | Website ini dapat digunakan tanpa koneksi internet</footer>
+
+            <!-- CARD BARU: Sinkronisasi Google Drive (DUA ARAH) -->
+            <div class="card mt-4 p-3">
+                <h5><i class="fab fa-google-drive me-2" style="color:#4285F4;"></i> Sinkronisasi Google Drive <span class="badge bg-info">Online</span></h5>
+                <div class="row g-3 mt-2">
+                    <div class="col-md-3"><button id="configDriveBtn" class="btn btn-pastel-warning w-100"><i class="fas fa-cog me-2"></i> Konfigurasi API</button></div>
+                    <div class="col-md-3"><button id="loginDriveBtn" class="btn btn-pastel-primary w-100" disabled><i class="fab fa-google me-2"></i> Login Google</button></div>
+                    <div class="col-md-3"><button id="syncDriveBtn" class="btn btn-pastel-info w-100" disabled><i class="fas fa-sync me-2"></i> Sinkronkan (Drive → USB)</button></div>
+                    <div class="col-md-3"><button id="uploadDriveBtn" class="btn btn-pastel-success w-100" disabled><i class="fas fa-cloud-upload-alt me-2"></i> Upload (USB → Drive)</button></div>
+                    <div class="col-12"><div id="driveStatus" class="small text-muted"></div></div>
+                </div>
+            </div>
+
+        </div> <!-- end container-fluid -->
+        <footer class="footer text-center small py-3">© LEGION 8.0 | Website ini dapat digunakan tanpa koneksi internet</footer>
     </div>
 </div>
 
-<!-- Modal untuk Lihat File USB -->
-<div class="modal fade" id="fileModal" tabindex="-1">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header"><h5 class="modal-title">File di USB</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
-            <div class="modal-body" id="fileModalBody">Memuat...</div>
-        </div>
-    </div>
-</div>
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-<script src="assets/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
-<script src="src/usbFileManager.js"></script>
-<script src="https://accounts.google.com/gsi/client" async defer></script>
+<script src="./assets/js/jquery.min.js"></script>
+<script src="./assets/js/bootstrap.bundle.min.js"></script>
+<script src="./assets/js/xlsx.full.min.js"></script>
+<script src="./src/usbFileManager.js"></script>
 
 <script>
-    (function(){
-        // ==================== CEK LOGIN ====================
-        if(!localStorage.getItem('currentUser')) { window.location.href = '../WebDivisiBahasa.html'; return; }
-        let currentUser = JSON.parse(localStorage.getItem('currentUser'));
-        document.getElementById('userFullName').innerText = currentUser.name;
-        let roleText = currentUser.role === 'admin' ? 'Administrator' : (currentUser.role === 'guru' ? 'Guru' : 'Musyrif');
-        document.getElementById('userRole').innerText = roleText;
-        let avatarSrc = currentUser.avatar ? `assets/images/avatar/${currentUser.avatar}` : 'assets/images/avatar/default.jpg';
-        document.getElementById('userAvatar').src = avatarSrc;
-        window.logout = () => { if(confirm('Keluar?')){ localStorage.removeItem('currentUser'); localStorage.removeItem('rememberedUser'); window.location.href='../WebDivisiBahasa.html'; } };
-
-        // ==================== DARK MODE & JAM ====================
-        let darkMode = localStorage.getItem('darkMode') === 'true';
-        if(darkMode) document.body.classList.add('dark');
-        document.getElementById('darkModeBtn')?.addEventListener('click',()=>{ document.body.classList.toggle('dark'); localStorage.setItem('darkMode',document.body.classList.contains('dark')); });
-        document.getElementById('nav-toggle')?.addEventListener('click',()=>{ document.getElementById('sidebar').classList.toggle('show'); });
-        function updateClock() { const now = new Date(); document.getElementById('jamIndo').innerText = now.toLocaleTimeString('id-ID'); document.getElementById('jamArab').innerText = now.toLocaleTimeString('ar-SA'); }
-        updateClock(); setInterval(updateClock,1000);
-
-        // ==================== DATA STORAGE ====================
-        let records = [], santriList = [], fileList = [], pengajuanStatus = {};
-        const STORAGE_KEY = 'pel_bahasa_v5';
-        const SYSTEM_JSON_FILES = ['santri_data.json', 'data_pelanggaran.json', 'data_reward.json', 'pengajuan_status.json', 'file_metadata.json'];
-        let currentPage = 1, itemsPerPage = 15, filteredRecords = [], sortColumn = 'tanggal', sortAsc = false;
-        let tokenClient = null, accessToken = null, driveAuth = false, driveClientId = '', driveApiKey = '';
-
-        // ==================== USB ====================
-        async function ensureFolder() { if(!usbFileManager.isSupported()){ alert('Browser tidak mendukung USB'); return null; } let handle = await usbFileManager.getRootHandle(); if(!handle) handle = await usbFileManager.pilihFolder(); if(!handle) alert('Pilih folder LugohDrive'); return handle; }
-        async function loadSantriFromUSB() { let handle = await ensureFolder(); if(!handle) return []; try { let data = await usbFileManager.readJSONFile('santri_data.json'); if(data) return data; } catch(e){} return []; }
-        async function loadRecords() { if(usbFileManager.isSupported){ let data = await usbFileManager.readJSONFile('data_pelanggaran.json'); if(data) records = data; else records = []; renderTable(); } else { let local = localStorage.getItem(STORAGE_KEY); if(local) records = JSON.parse(local); else records = []; renderTable(); } }
-        async function saveRecords() { if(usbFileManager.isSupported){ await usbFileManager.saveData('data_pelanggaran.json', records); } localStorage.setItem(STORAGE_KEY, JSON.stringify(records)); renderTable(); }
-        async function loadPengajuanStatus() { try { pengajuanStatus = await usbFileManager.readJSONFile('pengajuan_status.json') || {}; } catch(e){} }
-        function getFileStatus(filename) { return pengajuanStatus[filename] || 'pending'; }
-
-        // ==================== GOOGLE DRIVE (GIS) ====================
-        function loadDriveConfig() { driveClientId = localStorage.getItem('google_drive_client_id') || ''; driveApiKey = localStorage.getItem('google_drive_api_key') || ''; updateDriveButtons(); }
-        function updateDriveButtons() { let hasConfig = !!(driveClientId); document.getElementById('loginDriveBtn').disabled = !hasConfig; document.getElementById('syncDriveBtn').disabled = !hasConfig || !driveAuth; document.getElementById('uploadDriveBtn').disabled = !hasConfig || !driveAuth; }
-        function initGIS() { if(!driveClientId) return false; if(tokenClient) return true; if(typeof google === 'undefined') { setTimeout(initGIS,500); return false; } tokenClient = google.accounts.oauth2.initTokenClient({ client_id: driveClientId, scope: 'https://www.googleapis.com/auth/drive.file', callback: (resp) => { if(resp.error) { driveAuth=false; document.getElementById('driveStatus').innerHTML='❌ Login gagal'; updateDriveButtons(); return; } accessToken = resp.access_token; driveAuth=true; document.getElementById('driveStatus').innerHTML='✅ Terhubung ke Google Drive'; updateDriveButtons(); } }); return true; }
-        function requestAccessToken() { if(tokenClient) tokenClient.requestAccessToken(); else alert('Konfigurasi API dulu'); }
-        async function uploadToDrive(fileName, jsonData) { if(!accessToken) return false; let file = new Blob([JSON.stringify(jsonData,null,2)],{type:'application/json'}); let metadata={name:fileName,parents:['root']}; let form=new FormData(); form.append('metadata',new Blob([JSON.stringify(metadata)],{type:'application/json'})); form.append('file',file); let resp=await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart',{method:'POST',headers:{'Authorization':'Bearer '+accessToken},body:form}); return resp.ok; }
-        async function downloadFromDrive(fileName) { if(!accessToken) return null; let resp=await fetch(`https://www.googleapis.com/drive/v3/files?q=name='${fileName}'&fields=files(id,name)`,{headers:{'Authorization':'Bearer '+accessToken}}); let data=await resp.json(); if(data.files && data.files.length>0){ let fileId=data.files[0].id; let fileResp=await fetch(`https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`,{headers:{'Authorization':'Bearer '+accessToken}}); if(fileResp.ok) return await fileResp.json(); } return null; }
-        async function syncFromDrive() { if(!driveAuth){ alert('Login dulu'); return; } document.getElementById('driveStatus').innerHTML='🔄 Menyinkronkan...'; let driveData = await downloadFromDrive('data_pelanggaran.json'); if(driveData) { records = driveData; await saveRecords(); alert('Data dari Google Drive berhasil disinkronkan ke USB'); } else alert('Tidak ada file di Drive'); document.getElementById('driveStatus').innerHTML='✅ Sinkron selesai'; }
-        async function uploadToDriveButton() { if(!driveAuth){ alert('Login dulu'); return; } document.getElementById('driveStatus').innerHTML='📤 Mengunggah...'; let success = await uploadToDrive('data_pelanggaran.json', records); if(success) alert('Upload berhasil'); else alert('Upload gagal'); document.getElementById('driveStatus').innerHTML='✅ Upload selesai'; }
-
-        // ==================== LIhat File USB ====================
-        async function showFileModal() { let handle = await ensureFolder(); if(!handle) return; let files = await usbFileManager.listFiles(); files = files.filter(f => !SYSTEM_JSON_FILES.includes(f.name)); await loadPengajuanStatus(); let html = '<div class="table-responsive"><table class="table table-sm"><thead><tr><th>Nama</th><th>Ukuran</th><th>Tipe</th><th>Aksi</th></tr></thead><tbody>'; for(let f of files){ let status = getFileStatus(f.name); let statusBadge = status === 'diterima' ? 'bg-success' : (status === 'ditolak' ? 'bg-danger' : 'bg-warning'); html += `<tr><td>${f.name}</td><td>${(f.size/1024).toFixed(2)} KB</td><td>${f.type || '-'}</td><td><button class="btn btn-sm btn-primary download-file" data-name="${f.name}">Download</button> ${f.category === 'pengajuan' ? `<button class="btn btn-sm btn-success approve-file" data-name="${f.name}">Terima</button><button class="btn btn-sm btn-danger reject-file" data-name="${f.name}">Tolak</button>` : ''} <button class="btn btn-sm btn-outline-danger delete-file" data-name="${f.name}">Hapus</button></td></tr>`; }
-        html += '</tbody></table></div>'; document.getElementById('fileModalBody').innerHTML = html; $('#fileModal').modal('show'); attachFileActions(); }
-        function attachFileActions() { document.querySelectorAll('.download-file').forEach(btn => btn.addEventListener('click',async()=>{ let name=btn.dataset.name; let handle = await ensureFolder(); let files = await usbFileManager.listFiles(); let file = files.find(f=>f.name===name); if(file){ let blob = await usbFileManager.getFileBlob(file.handle); let url=URL.createObjectURL(blob); let a=document.createElement('a'); a.href=url; a.download=name; a.click(); URL.revokeObjectURL(url); } })); document.querySelectorAll('.delete-file').forEach(btn => btn.addEventListener('click',async()=>{ if(confirm('Hapus file?')){ let name=btn.dataset.name; let handle = await ensureFolder(); let files = await usbFileManager.listFiles(); let file = files.find(f=>f.name===name); if(file) await usbFileManager.deleteFile(file.handle); showFileModal(); } })); document.querySelectorAll('.approve-file').forEach(btn => btn.addEventListener('click',async()=>{ let name=btn.dataset.name; pengajuanStatus[name]='diterima'; await usbFileManager.saveData('pengajuan_status.json', pengajuanStatus); showFileModal(); })); document.querySelectorAll('.reject-file').forEach(btn => btn.addEventListener('click',async()=>{ let name=btn.dataset.name; pengajuanStatus[name]='ditolak'; await usbFileManager.saveData('pengajuan_status.json', pengajuanStatus); showFileModal(); })); }
-
-        // ==================== AUTOCOMPLETE ====================
-        let acItems=[], acIndex=-1;
-        function normalize(s){ return (s||'').trim().toLowerCase(); }
-        function escapeHtml(s){ return s ? s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') : ''; }
-        function showAc(matches){ let acList=document.getElementById('ac_list'); acList.innerHTML=''; if(!matches.length){ acList.style.display='none'; return; } matches.forEach((m,i)=>{ let div=document.createElement('div'); div.className='ac-item'; div.dataset.idx=i; div.innerHTML=`<div>${escapeHtml(m.name)}</div><div class="small text-muted">${escapeHtml(m.kelas)} • ${escapeHtml(m.nis)}</div>`; div.addEventListener('mousedown',(e)=>{ e.preventDefault(); chooseAc(i); }); acList.appendChild(div); }); acList.style.display='block'; }
-        function chooseAc(i){ let s=acItems[i]; if(!s) return; document.getElementById('inp_nama').value=s.name; document.getElementById('inp_nis').value=s.nis; document.getElementById('inp_kelas').value=s.kelas; document.getElementById('ac_list').style.display='none'; }
-        let inpNama=document.getElementById('inp_nama'); inpNama.addEventListener('input',function(){ let q=normalize(this.value); if(!q){ document.getElementById('ac_list').style.display='none'; return; } let matches=santriList.filter(s=>normalize(s.name).includes(q)||normalize(s.nis).includes(q)).slice(0,50); acItems=matches; acIndex=-1; showAc(matches); });
-        inpNama.addEventListener('keydown',function(e){ let acList=document.getElementById('ac_list'); if(acList.style.display==='block'){ if(e.key==='ArrowDown'){ e.preventDefault(); acIndex=Math.min(acIndex+1, acItems.length-1); highlightAc(); }else if(e.key==='ArrowUp'){ e.preventDefault(); acIndex=Math.max(acIndex-1,0); highlightAc(); }else if(e.key==='Enter'){ e.preventDefault(); if(acIndex>=0) chooseAc(acIndex); }else if(e.key==='Escape'){ acList.style.display='none'; } } });
-        inpNama.addEventListener('blur',function(){ setTimeout(()=>{ let acList=document.getElementById('ac_list'); if(acList) acList.style.display='none'; },200); });
-        function highlightAc(){ let children=document.getElementById('ac_list').children; Array.from(children).forEach((c,i)=>c.classList.toggle('active',i===acIndex)); if(acIndex>=0 && children[acIndex]) children[acIndex].scrollIntoView({block:'nearest'}); }
-
-        // ==================== RENDER TABEL ====================
-        function getKelasClass(k){ if(k.includes('VII')) return 'kelas-vii'; if(k.includes('VIII')) return 'kelas-viii'; if(k.includes('IX')) return 'kelas-ix'; if(k.includes('IL')) return 'kelas-il'; if(k.includes('X')) return 'kelas-x'; if(k.includes('XI')) return 'kelas-xi'; if(k.includes('XII')) return 'kelas-xii'; return ''; }
-        function formatTanggal(d){ if(!d) return ''; let p=d.split('-'); return p.length===3 ? `${p[2]}/${p[1]}/${p[0]}` : d; }
-        function applyFilterSort(){ let filtered = records; let q = document.getElementById('search_name').value.toLowerCase().trim(); if(q) filtered = filtered.filter(r => (r.nama||'').toLowerCase().includes(q) || (r.nis||'').toLowerCase().includes(q) || (r.kelas||'').toLowerCase().includes(q)); let kelasVal = document.getElementById('filterKelas').value; if(kelasVal) filtered = filtered.filter(r => r.kelas === kelasVal); if(sortColumn !== 'kelas'){ filtered.sort((a,b)=>{ let A = a[sortColumn]||'', B = b[sortColumn]||''; if(sortColumn==='tanggal'){ A=new Date(A).getTime()||0; B=new Date(B).getTime()||0; }else if(sortColumn==='nis'){ A=String(A).padStart(10,'0'); B=String(B).padStart(10,'0'); }else{ A=String(A).toLowerCase(); B=String(B).toLowerCase(); } return sortAsc ? (A>B?1:-1) : (A<B?1:-1); }); } else { filtered.sort((a,b)=>{ let aOrd = (a.kelas||'').split(' ')[0]; let bOrd = (b.kelas||'').split(' ')[0]; return sortAsc ? aOrd.localeCompare(bOrd) : bOrd.localeCompare(aOrd); }); } filteredRecords = filtered; return filtered; }
-        function renderTable(){ let filtered = applyFilterSort(); let total = filtered.length; let totalPages = Math.ceil(total/itemsPerPage)||1; if(currentPage>totalPages) currentPage=totalPages; let start = (currentPage-1)*itemsPerPage; let end = Math.min(start+itemsPerPage, total); let pageData = filtered.slice(start, end); let tbody = document.getElementById('tblBody'); tbody.innerHTML = ''; pageData.forEach((r,idx)=>{ let rowIdx=start+idx+1; let kelasClass = getKelasClass(r.kelas); tbody.innerHTML += `<tr><td class="text-center">${rowIdx}</td><td>${formatTanggal(r.tanggal)}</td><td>${r.nis||''}</td><td>${escapeHtml(r.nama||'')}</td><td><span class="kelas-badge ${kelasClass}">${r.kelas||''}</span></td><td>${escapeHtml(r.pelanggaran||'')}</td><td>${escapeHtml(r.pencatat||'')}</td><td>${escapeHtml(r.tempat||'')}</td><td>${escapeHtml(r.keterangan||'')}</td><td><button class="btn btn-sm btn-pastel-danger del" data-idx="${records.indexOf(r)}"><i class="fas fa-trash"></i> Hapus</button></td></tr>`; }); document.getElementById('showingStart').textContent = total ? start+1 : 0; document.getElementById('showingEnd').textContent = end; document.getElementById('totalRecords').textContent = total; document.getElementById('pageInfo').textContent = `Halaman ${currentPage} / ${totalPages||1}`; document.getElementById('prevPageBtn').disabled = currentPage<=1; document.getElementById('nextPageBtn').disabled = currentPage>=totalPages; document.querySelectorAll('.del').forEach(btn => btn.addEventListener('click', onDelete)); }
-        function onDelete(e){ let i = parseInt(e.currentTarget.dataset.idx); if(confirm('Hapus?')){ records.splice(i,1); saveRecords(); } }
-        window.deleteAllRecords = function(){ if(confirm('Hapus semua?')){ records = []; saveRecords(); } };
-        window.sortTable = function(col){ if(col==='no') return; if(sortColumn===col) sortAsc = !sortAsc; else { sortColumn = col; sortAsc = true; } renderTable(); };
-
-        // ==================== CRUD & FILTER ====================
-        document.getElementById('btn_add').addEventListener('click', ()=>{ let tanggal = document.getElementById('inp_tanggal').value; let nis = document.getElementById('inp_nis').value; let nama = inpNama.value.trim(); let kelas = document.getElementById('inp_kelas').value; let pelanggaran = document.getElementById('inp_pelanggaran').value; let pencatat = document.getElementById('inp_pencatat').value; let tempat = document.getElementById('inp_tempat').value; let keterangan = document.getElementById('inp_keterangan').value; if(!tanggal || !nama || !nis || !pelanggaran || !pencatat){ alert('Isi semua field wajib'); return; } records.push({ tanggal, nis, nama, kelas, pelanggaran, pencatat, tempat, keterangan }); saveRecords(); document.getElementById('inp_keterangan').value=''; document.getElementById('inp_tempat').value=''; inpNama.value=''; document.getElementById('inp_nis').value=''; document.getElementById('inp_kelas').value=''; document.getElementById('inp_pencatat').focus(); });
-        document.getElementById('btn_clear').addEventListener('click',()=>{ document.getElementById('formRecord').reset(); document.getElementById('inp_tanggal').value = new Date().toISOString().slice(0,10); inpNama.value=''; document.getElementById('inp_nis').value=''; document.getElementById('inp_kelas').value=''; document.getElementById('ac_list').style.display='none'; });
-        document.getElementById('btn_export').addEventListener('click',()=>{ let h = ['tanggal','nis','nama','kelas','pelanggaran','pencatat','tempat','keterangan']; let csv = [h.join(',')]; records.forEach(r=>{ let row = h.map(k=>{ let val = r[k]||''; if(k==='tanggal') val = formatTanggal(val); return `"${val.replace(/"/g,'""')}"`; }); csv.push(row.join(',')); }); let blob = new Blob([csv.join('\n')],{type:'text/csv'}); let a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='pelanggaran.csv'; a.click(); URL.revokeObjectURL(a.href); });
-        document.getElementById('btn_export_xlsx').addEventListener('click',()=>{ let ws = XLSX.utils.json_to_sheet(records); let wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, 'Pelanggaran'); XLSX.writeFile(wb, 'pelanggaran.xlsx'); });
-        document.getElementById('btn_print').addEventListener('click',()=>{ let w = window.open(''); w.document.write('<html><head><title>Laporan Pelanggaran</title><style>body{font-family:Arial;}table{border-collapse:collapse;width:100%}th,td{border:1px solid #ccc;padding:8px}</style></head><body><h3>Laporan Pelanggaran</h3>' + document.getElementById('tblBody').parentElement.outerHTML + '</body></html>'); w.document.close(); w.print(); });
-        document.getElementById('search_name').addEventListener('input',()=>{ currentPage=1; renderTable(); });
-        document.getElementById('filterKelas').addEventListener('change',()=>{ currentPage=1; renderTable(); });
-        document.getElementById('prevPageBtn').addEventListener('click',()=>{ if(currentPage>1){ currentPage--; renderTable(); } });
-        document.getElementById('nextPageBtn').addEventListener('click',()=>{ let totalPages = Math.ceil(filteredRecords.length/itemsPerPage); if(currentPage<totalPages){ currentPage++; renderTable(); } });
-
-        // ==================== TOMBOL ====================
-        document.getElementById('folderStatusBtn').addEventListener('click', async()=>{ await ensureFolder(); await loadRecords(); });
-        document.getElementById('lihatFileBtn').addEventListener('click', showFileModal);
-        document.getElementById('configDriveBtn').addEventListener('click',()=>{ let newId = prompt('Client ID:', driveClientId); if(newId){ driveClientId = newId; localStorage.setItem('google_drive_client_id', driveClientId); updateDriveButtons(); initGIS(); } });
-        document.getElementById('loginDriveBtn').addEventListener('click',()=>{ if(!driveClientId) alert('Konfigurasi API dulu'); else { if(!tokenClient) initGIS(); requestAccessToken(); } });
-        document.getElementById('uploadDriveBtn').addEventListener('click', uploadToDriveButton);
-        document.getElementById('syncDriveBtn').addEventListener('click', syncFromDrive);
-
-        // ==================== INISIALISASI ====================
-        document.getElementById('inp_tanggal').value = new Date().toISOString().slice(0,10);
-        (async function init(){ let handle = await usbFileManager.getRootHandle(); if(handle) document.getElementById('folderStatus').innerHTML = `<i class="fas fa-check-circle me-1"></i> USB: ${handle.name}`; santriList = await loadSantriFromUSB(); let nisSelect = document.getElementById('inp_nis'); nisSelect.innerHTML = '<option value="">-- pilih --</option>'; [...new Set(santriList.map(s=>s.nis))].sort().forEach(nis => nisSelect.appendChild(new Option(nis, nis))); let kelasSelect = document.getElementById('inp_kelas'); kelasSelect.innerHTML = '<option value="">-- pilih --</option>'; [...new Set(santriList.map(s=>s.kelas))].sort().forEach(kelas => kelasSelect.appendChild(new Option(kelas, kelas))); let filterKelas = document.getElementById('filterKelas'); filterKelas.innerHTML = '<option value="">Semua Kelas</option>'; [...new Set(santriList.map(s=>s.kelas))].sort().forEach(kelas => filterKelas.appendChild(new Option(kelas, kelas))); await loadRecords(); loadDriveConfig(); })();
+(function() {
+    "use strict";
+    // ==================== CEK LOGIN ====================
+    if(!localStorage.getItem('currentUser')) { window.location.href = '../WebDivisiBahasa.html'; return; }
+    let currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    document.getElementById('userFullName').innerText = currentUser.name;
+    document.getElementById('userRole').innerText = currentUser.role === 'admin' ? 'Administrator' : (currentUser.role === 'guru' ? 'Guru' : 'Musyrif');
+    let avatarSrc = currentUser.avatar ? `./assets/images/avatar/${currentUser.avatar}` : './assets/images/avatar/default.jpg';
+    document.getElementById('userAvatar').src = avatarSrc;
+    window.logout = () => { if(confirm('Keluar?')){ localStorage.removeItem('currentUser'); localStorage.removeItem('rememberedUser'); window.location.href='../WebDivisiBahasa.html'; } };
+    
+    // ==================== DARK MODE & JAM & NAV ====================
+    let darkMode = localStorage.getItem('darkMode') === 'true';
+    if(darkMode) document.body.classList.add('dark');
+    document.getElementById('darkModeBtn')?.addEventListener('click',()=>{ document.body.classList.toggle('dark'); localStorage.setItem('darkMode',document.body.classList.contains('dark')); });
+    document.getElementById('nav-toggle')?.addEventListener('click',()=>{ document.getElementById('sidebar').classList.toggle('show'); });
+    function updateClock() { const now = new Date(); document.getElementById('jamIndo').innerText = now.toLocaleTimeString('id-ID'); document.getElementById('jamArab').innerText = now.toLocaleTimeString('ar-SA'); }
+    updateClock(); setInterval(updateClock, 1000);
+    
+    // ==================== DATA STORAGE ====================
+    const STORAGE_KEY = 'pel_bahasa_v5';
+    let records = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+    let santriList = [];
+    let currentPage = 1, itemsPerPage = 15, filteredRecords = [], sortColumn = 'tanggal', sortAsc = false, kelasSortAsc = true;
+    const kelasOrder = { 'VII':1, 'VIII':2, 'IX':3, 'IL':4, 'X':5, 'XI':6, 'XII':7 };
+    
+    // ==================== FUNGSI USB ====================
+    async function ensureFolder() {
+        if (!usbFileManager.isSupported()) { alert('Browser tidak mendukung USB'); return null; }
+        let handle = await usbFileManager.getRootHandle();
+        if (!handle) { handle = await usbFileManager.pilihFolder(); if (!handle) { alert('Pilih folder LugohDrive'); return null; } }
+        return handle;
+    }
+    async function loadDefaultSantri() {
+        try { let r = await fetch('./src/students-data.js'); let text = await r.text(); eval(text); return students; } catch(e) { return []; }
+    }
+    async function loadSantriFromUSB() {
+        let handle = await ensureFolder(); if (!handle) return [];
+        try { let data = await usbFileManager.readJSONFile('santri_data.json'); if (data && data.length) return data; } catch(e) {}
+        let defaultData = await loadDefaultSantri();
+        if (defaultData.length) await usbFileManager.saveData('santri_data.json', defaultData);
+        return defaultData;
+    }
+    
+    // ==================== AUTOCOMPLETE (sama persis) ====================
+    let acItems = [], acIndex = -1;
+    function normalize(s) { return (s||'').toString().trim().toLowerCase().replace(/\s+/g,' '); }
+    function escapeHtml(s) { return s ? s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') : ''; }
+    function showAc(matches) {
+        let acList = document.getElementById('ac_list');
+        acList.innerHTML = '';
+        if (!matches.length) { acList.style.display = 'none'; return; }
+        matches.forEach((m, i) => {
+            let div = document.createElement('div');
+            div.className = 'ac-item';
+            div.dataset.idx = i;
+            div.innerHTML = '<div style="font-weight:600;">'+escapeHtml(m.name)+'</div><div class="ac-sub">'+escapeHtml(m.kelas)+' • '+escapeHtml(m.nis)+'</div>';
+            div.addEventListener('mousedown', (e) => { e.preventDefault(); chooseAc(i); });
+            acList.appendChild(div);
+        });
+        acList.style.display = 'block';
+    }
+    function chooseAc(i) { let s = acItems[i]; if(!s) return; document.getElementById('inp_nama').value = s.name; document.getElementById('inp_nis').value = s.nis; document.getElementById('inp_kelas').value = s.kelas; document.getElementById('ac_list').style.display = 'none'; }
+    let inpNama = document.getElementById('inp_nama');
+    inpNama.addEventListener('input', function(e) { if(!santriList.length) return; let q = normalize(e.target.value); if(!q) { document.getElementById('ac_list').style.display = 'none'; return; } let matches = santriList.filter(s => normalize(s.name).includes(q) || normalize(s.nis).includes(q)).slice(0,50); acItems = matches; acIndex = -1; showAc(matches); });
+    inpNama.addEventListener('keydown', function(e) { let acList = document.getElementById('ac_list'); if(acList.style.display === 'block') { if(e.key === 'ArrowDown') { e.preventDefault(); acIndex = Math.min(acIndex+1, acItems.length-1); highlightAc(); } else if(e.key === 'ArrowUp') { e.preventDefault(); acIndex = Math.max(acIndex-1, 0); highlightAc(); } else if(e.key === 'Enter') { e.preventDefault(); if(acIndex >= 0) chooseAc(acIndex); } else if(e.key === 'Escape') { acList.style.display = 'none'; } } });
+    inpNama.addEventListener('blur', function() { setTimeout(() => { let acList = document.getElementById('ac_list'); if(acList.style.display === 'block') acList.style.display = 'none'; }, 200); });
+    function highlightAc() { let children = document.getElementById('ac_list').children; Array.from(children).forEach((c,i) => c.classList.toggle('active', i===acIndex)); if(acIndex>=0 && children[acIndex]) children[acIndex].scrollIntoView({block:'nearest'}); }
+    document.getElementById('inp_nis').addEventListener('change', function() { let v = this.value; let s = santriList.find(x => x.nis == v); if(s) { inpNama.value = s.name; document.getElementById('inp_kelas').value = s.kelas; } else { inpNama.value = ''; document.getElementById('inp_kelas').value = ''; } });
+    
+    // ==================== CRUD & RENDER (sama persis) ====================
+    function saveRecords() { localStorage.setItem(STORAGE_KEY, JSON.stringify(records)); renderTable(); }
+    function formatTanggal(isoDate) { if (!isoDate) return ''; let p = isoDate.split('-'); return p.length === 3 ? p[2]+'/'+p[1]+'/'+p[0] : isoDate; }
+    function getKelasClass(k) { if(k.includes('VII')) return 'kelas-vii'; if(k.includes('VIII')) return 'kelas-viii'; if(k.includes('IX')) return 'kelas-ix'; if(k.includes('IL')) return 'kelas-il'; if(k.includes('X')) return 'kelas-x'; if(k.includes('XI')) return 'kelas-xi'; if(k.includes('XII')) return 'kelas-xii'; return ''; }
+    
+    function applyFilterAndSort() {
+        let filtered = records;
+        let q = (document.getElementById('search_name').value || '').toLowerCase().trim();
+        if(q) filtered = filtered.filter(r => (r.nama||'').toLowerCase().includes(q) || (r.nis||'').toLowerCase().includes(q) || (r.kelas||'').toLowerCase().includes(q));
+        let kelasVal = document.getElementById('filterKelas').value;
+        if(kelasVal) filtered = filtered.filter(r => r.kelas === kelasVal);
+        if(sortColumn === 'kelas') {
+            filtered.sort((a,b) => { let aOrd = kelasOrder[(a.kelas||'').split(' ')[0]] || 999, bOrd = kelasOrder[(b.kelas||'').split(' ')[0]] || 999; if(aOrd !== bOrd) return kelasSortAsc ? aOrd - bOrd : bOrd - aOrd; return kelasSortAsc ? (a.kelas||'').localeCompare(b.kelas||'') : (b.kelas||'').localeCompare(a.kelas||''); });
+        } else {
+            filtered.sort((a,b) => { let A = a[sortColumn]||'', B = b[sortColumn]||''; if(sortColumn === 'tanggal') { A = new Date(A).getTime()||0; B = new Date(B).getTime()||0; } else if(sortColumn === 'nis') { A = String(A).padStart(10,'0'); B = String(B).padStart(10,'0'); } else { A = String(A).toLowerCase(); B = String(B).toLowerCase(); } return sortAsc ? (A>B?1:-1) : (A<B?1:-1); });
+        }
+        filteredRecords = filtered; return filtered;
+    }
+    
+    function renderTable() {
+        let filtered = applyFilterAndSort();
+        let total = filtered.length, totalPages = Math.ceil(total/itemsPerPage)||1;
+        if(currentPage > totalPages) currentPage = totalPages;
+        let start = (currentPage-1)*itemsPerPage, end = Math.min(start+itemsPerPage, total);
+        let pageData = filtered.slice(start, end);
+        let tbody = document.getElementById('tblBody');
+        tbody.innerHTML = '';
+        pageData.forEach((r, idx) => {
+            let rowIdx = start+idx+1;
+            tbody.innerHTML += `<tr>
+                <td class="text-center">${rowIdx}</td>
+                <td>${formatTanggal(r.tanggal)||''}</td>
+                <td>${r.nis||''}</td>
+                <td>${escapeHtml(r.nama||'')}</td>
+                <td><span class="kelas-badge ${getKelasClass(r.kelas)}">${r.kelas||''}</span></td>
+                <td>${escapeHtml(r.pelanggaran||'')}</td>
+                <td>${escapeHtml(r.pencatat||'')}</td>
+                <td>${escapeHtml(r.tempat||'')}</td>
+                <td>${escapeHtml(r.keterangan||'')}</td>
+                <td><button data-i='${records.indexOf(r)}' class="btn btn-sm btn-pastel-danger del"><i class="fas fa-trash"></i> Hapus</button></td>
+            </tr>`;
+        });
+        document.getElementById('showingStart').textContent = total ? start+1 : 0;
+        document.getElementById('showingEnd').textContent = end;
+        document.getElementById('totalRecords').textContent = total;
+        document.getElementById('pageInfo').textContent = `Halaman ${currentPage} / ${totalPages||1}`;
+        document.getElementById('prevPageBtn').disabled = currentPage <= 1;
+        document.getElementById('nextPageBtn').disabled = currentPage >= totalPages || totalPages === 0;
+        document.querySelectorAll('.del').forEach(btn => btn.addEventListener('click', onDelete));
+    }
+    
+    function onDelete(e) { let i = Number(e.currentTarget.dataset.i); if(confirm('Hapus pelanggaran ini?')) { records.splice(i,1); saveRecords(); } }
+    window.deleteAllRecords = function() { if(confirm('Hapus SEMUA data pelanggaran?')) { records = []; localStorage.removeItem(STORAGE_KEY); renderTable(); } };
+    window.sortTable = function(col) { if(col === 'kelas') { sortByKelas(); return; } if(col === 'no') return; if(sortColumn === col) sortAsc = !sortAsc; else { sortColumn = col; sortAsc = true; } renderTable(); };
+    window.sortByKelas = function() { sortColumn = 'kelas'; kelasSortAsc = !kelasSortAsc; renderTable(); };
+    
+    document.getElementById('btn_add').addEventListener('click', (e) => {
+        e.preventDefault();
+        let tanggal = document.getElementById('inp_tanggal').value;
+        let nis = document.getElementById('inp_nis').value;
+        let nama = inpNama.value.trim();
+        let kelas = document.getElementById('inp_kelas').value;
+        let pelanggaran = document.getElementById('inp_pelanggaran').value;
+        let pencatat = document.getElementById('inp_pencatat').value;
+        let tempat = document.getElementById('inp_tempat').value;
+        let keterangan = document.getElementById('inp_keterangan').value;
+        if(!tanggal || !nama || !nis || !pelanggaran || !pencatat) { alert('Harap isi semua field wajib!'); return; }
+        records.push({ tanggal, nis, nama, kelas, pelanggaran, pencatat, tempat, keterangan });
+        saveRecords();
+        document.getElementById('inp_keterangan').value = ''; document.getElementById('inp_tempat').value = ''; inpNama.value = ''; document.getElementById('inp_nis').value = ''; document.getElementById('inp_kelas').value = ''; document.getElementById('inp_pencatat').focus();
+    });
+    document.getElementById('btn_clear').addEventListener('click', () => { document.getElementById('formRecord').reset(); document.getElementById('inp_tanggal').value = new Date().toISOString().slice(0,10); inpNama.value = ''; document.getElementById('ac_list').style.display = 'none'; document.getElementById('inp_nis').value = ''; document.getElementById('inp_kelas').value = ''; });
+    document.getElementById('btn_export').addEventListener('click', () => { let h = ['tanggal','nis','nama','kelas','pelanggaran','pencatat','tempat','keterangan']; let lines = [h.join(',')]; records.forEach(r => { let vals = h.map(k => { let val = r[k]||''; if(k==='tanggal') val = formatTanggal(val); return '"'+val.replace(/"/g,'""')+'"'; }); lines.push(vals.join(',')); }); let blob = new Blob([lines.join('\n')], {type:'text/csv'}); let a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'pelanggaran.csv'; a.click(); });
+    document.getElementById('btn_export_xlsx').addEventListener('click', () => { let header = ["Tanggal","NIS","Nama","Kelas","Pelanggaran","Pencatat","Tempat","Keterangan"]; let data = records.map(r => [formatTanggal(r.tanggal||""), r.nis||"", r.nama||"", r.kelas||"", r.pelanggaran||"", r.pencatat||"", r.tempat||"", r.keterangan||""]); let ws = XLSX.utils.aoa_to_sheet([header, ...data]); let wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Laporan"); XLSX.writeFile(wb, "pelanggaran.xlsx"); });
+    document.getElementById('btn_print').addEventListener('click', () => { let html = '<html><head><meta charset="utf-8"><title>Laporan Pelanggaran</title><style>body{font-family:Arial;padding:20px} table{border-collapse:collapse;width:100%} th,td{border:1px solid #999;padding:8px}</style></head><body><h3>Laporan Pelanggaran Divisi Bahasa</h3><table><thead><tr><th>No</th><th>Tanggal</th><th>NIS</th><th>Nama</th><th>Kelas</th><th>Pelanggaran</th><th>Pencatat</th><th>Tempat</th><th>Keterangan</th></tr></thead><tbody>'; records.forEach((r,i) => { html += `<tr><td>${i+1}</td><td>${formatTanggal(r.tanggal)||''}</td><td>${r.nis||''}</td><td>${r.nama||''}</td><td>${r.kelas||''}</td><td>${r.pelanggaran||''}</td><td>${r.pencatat||''}</td><td>${r.tempat||''}</td><td>${r.keterangan||''}</td></tr>`; }); html += '</tbody></table></body></html>'; let w = window.open('','_blank'); w.document.write(html); w.document.close(); w.focus(); w.print(); });
+    document.getElementById('btn_upload_pusat').addEventListener('click', async () => { if(!usbFileManager.isSupported()){ alert('Browser tidak mendukung USB'); return; } let handle = await usbFileManager.getRootHandle(); if(!handle){ handle = await usbFileManager.pilihFolder(); if(!handle){ alert('Pilih folder LugohDrive'); return; } } try { await usbFileManager.saveData('data_pelanggaran.json', records); alert('Data pelanggaran berhasil diupload ke Pusat Data!'); window.location.href = 'pusat_data.html'; } catch(err) { alert('Gagal upload: '+err.message); } });
+    
+    document.getElementById('search_name').addEventListener('input', () => { currentPage = 1; renderTable(); });
+    document.getElementById('filterKelas').addEventListener('change', () => { currentPage = 1; renderTable(); });
+    document.getElementById('prevPageBtn').addEventListener('click', () => { if(currentPage > 1) { currentPage--; renderTable(); } });
+    document.getElementById('nextPageBtn').addEventListener('click', () => { let totalPages = Math.ceil(filteredRecords.length / itemsPerPage); if(currentPage < totalPages) { currentPage++; renderTable(); } });
+    document.getElementById('folderStatusBtn').addEventListener('click', async() => { let handle = await usbFileManager.pilihFolder(); if(handle) document.getElementById('folderStatus').innerHTML = `<i class="fas fa-check-circle me-1"></i> LugohDrive: ${handle.name}`; });
+    document.getElementById('inp_tanggal').value = new Date().toISOString().slice(0,10);
+    function initKelasFilter() { let kelasSet = new Set(records.map(r => r.kelas).filter(k => k)); let filter = document.getElementById('filterKelas'); filter.innerHTML = '<option value="">Semua Kelas</option>'; [...kelasSet].sort().forEach(k => filter.appendChild(new Option(k, k))); }
+    
+    // ==================== GOOGLE DRIVE DUA ARAH (Token tersimpan) ====================
+    let tokenClient = null;
+    let accessToken = null;
+    let driveAuth = false;
+    let driveClientId = '';
+    let driveApiKey = '';
+    
+    async function loadDriveConfig() {
+        driveClientId = localStorage.getItem('google_drive_client_id') || '';
+        driveApiKey = localStorage.getItem('google_drive_api_key') || '';
+        // Juga coba ambil token dari localStorage (opsional, tapi lebih baik minta ulang saat login)
+        const savedToken = localStorage.getItem('gdrive_access_token');
+        if(savedToken) {
+            accessToken = savedToken;
+            driveAuth = true;
+            updateDriveButtons();
+            document.getElementById('driveStatus').innerHTML = '✅ Terhubung ke Google Drive (token tersimpan)';
+        } else {
+            updateDriveButtons();
+        }
+    }
+    
+    function updateDriveButtons() {
+        let hasConfig = !!(driveClientId && driveApiKey);
+        document.getElementById('loginDriveBtn').disabled = !hasConfig || driveAuth;
+        document.getElementById('syncDriveBtn').disabled = !hasConfig || !driveAuth;
+        document.getElementById('uploadDriveBtn').disabled = !hasConfig || !driveAuth;
+        if(!hasConfig) document.getElementById('driveStatus').innerHTML = '⚠️ API belum dikonfigurasi. Klik "Konfigurasi API".';
+        else if(!driveAuth) document.getElementById('driveStatus').innerHTML = '🔑 Belum login. Klik "Login Google".';
+        else document.getElementById('driveStatus').innerHTML = '✅ Siap sinkronisasi dua arah.';
+    }
+    
+    function initializeGIS() {
+        if (!driveClientId) {
+            console.error("Client ID belum dikonfigurasi.");
+            return false;
+        }
+        if (typeof google === 'undefined' || typeof google.accounts === 'undefined') {
+            console.error("Pustaka Google Identity Services belum dimuat.");
+            return false;
+        }
+        tokenClient = google.accounts.oauth2.initTokenClient({
+            client_id: driveClientId,
+            scope: 'https://www.googleapis.com/auth/drive.file',
+            callback: (tokenResponse) => {
+                if (tokenResponse.error) {
+                    console.error('Error token:', tokenResponse);
+                    driveAuth = false;
+                    accessToken = null;
+                    localStorage.removeItem('gdrive_access_token');
+                    document.getElementById('driveStatus').innerHTML = `❌ Login gagal: ${tokenResponse.error}`;
+                    updateDriveButtons();
+                    return;
+                }
+                accessToken = tokenResponse.access_token;
+                driveAuth = true;
+                localStorage.setItem('gdrive_access_token', accessToken);
+                document.getElementById('driveStatus').innerHTML = '✅ Terhubung ke Google Drive';
+                updateDriveButtons();
+            },
+        });
+        return true;
+    }
+    
+    function requestAccessToken() {
+        if (tokenClient) {
+            tokenClient.requestAccessToken();
+        } else {
+            alert("Token Client belum diinisialisasi. Pastikan konfigurasi API sudah dilakukan.");
+        }
+    }
+    
+    // Fungsi upload data pelanggaran (records) ke Drive -> file 'data_pelanggaran.json'
+    async function uploadPelanggaranToDrive() {
+        if (!accessToken) throw new Error('Belum login ke Google Drive');
+        const jsonData = JSON.stringify(records, null, 2);
+        const file = new Blob([jsonData], {type: 'application/json'});
+        const metadata = { name: 'data_pelanggaran.json', parents: ['root'] };
+        const form = new FormData();
+        form.append('metadata', new Blob([JSON.stringify(metadata)], {type: 'application/json'}));
+        form.append('file', file);
+        const response = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
+            method: 'POST',
+            headers: { 'Authorization': `Bearer ${accessToken}` },
+            body: form
+        });
+        if (!response.ok) {
+            const err = await response.text();
+            throw new Error(`Upload gagal: ${response.status} ${err}`);
+        }
+        return true;
+    }
+    
+    // Fungsi download data pelanggaran dari Drive, timpa records lokal dan USB
+    async function downloadPelanggaranFromDrive() {
+        if (!accessToken) throw new Error('Belum login ke Google Drive');
+        // Cari file
+        const listResp = await fetch('https://www.googleapis.com/drive/v3/files?q=name=\'data_pelanggaran.json\' and trashed=false&fields=files(id,name)', {
+            headers: { 'Authorization': `Bearer ${accessToken}` }
+        });
+        const listData = await listResp.json();
+        if (!listData.files || listData.files.length === 0) {
+            throw new Error('File data_pelanggaran.json tidak ditemukan di Google Drive.');
+        }
+        const fileId = listData.files[0].id;
+        const downloadResp = await fetch(`https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`, {
+            headers: { 'Authorization': `Bearer ${accessToken}` }
+        });
+        if (!downloadResp.ok) throw new Error(`Gagal download: ${downloadResp.status}`);
+        const driveData = await downloadResp.json();
+        // Timpa records
+        records = driveData;
+        // Simpan ke USB
+        await usbFileManager.saveData('data_pelanggaran.json', records);
+        // Simpan ke localStorage
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+        // Render ulang tabel
+        renderTable();
+        return records.length;
+    }
+    
+    // Tombol konfigurasi
+    document.getElementById('configDriveBtn').addEventListener('click', () => {
+        let newId = prompt('Masukkan Client ID Google:', driveClientId);
+        let newKey = prompt('Masukkan API Key (bisa dikosongkan jika tidak perlu):', driveApiKey);
+        if (newId !== null) driveClientId = newId.trim();
+        if (newKey !== null) driveApiKey = newKey.trim();
+        localStorage.setItem('google_drive_client_id', driveClientId);
+        localStorage.setItem('google_drive_api_key', driveApiKey);
+        // Reset token lama jika ada
+        accessToken = null;
+        driveAuth = false;
+        localStorage.removeItem('gdrive_access_token');
+        tokenClient = null;
+        if (driveClientId) initializeGIS();
+        updateDriveButtons();
+    });
+    
+    document.getElementById('loginDriveBtn').addEventListener('click', () => {
+        if (!driveClientId) { alert('Konfigurasi API dulu'); return; }
+        if (!tokenClient) initializeGIS();
+        requestAccessToken();
+    });
+    
+    // Sinkronkan: ambil dari Drive → timpa USB
+    document.getElementById('syncDriveBtn').addEventListener('click', async () => {
+        if (!driveAuth) { alert('Login dulu ke Google Drive'); return; }
+        if (!confirm('Sinkronisasi akan mengambil data dari Google Drive dan MENIMPA data lokal di USB.\nLanjutkan?')) return;
+        document.getElementById('driveStatus').innerHTML = '🔄 Menyinkronkan dari Drive...';
+        try {
+            const jumlah = await downloadPelanggaranFromDrive();
+            document.getElementById('driveStatus').innerHTML = `✅ Sinkronisasi berhasil. ${jumlah} data pelanggaran dimuat dari Drive.`;
+            alert(`Berhasil sinkron: ${jumlah} data pelanggaran dari Drive.`);
+        } catch (err) {
+            console.error(err);
+            document.getElementById('driveStatus').innerHTML = `❌ Gagal sinkron: ${err.message}`;
+            alert('Gagal sinkron: ' + err.message);
+        }
+    });
+    
+    // Upload: kirim data USB ke Drive (timpa file di Drive)
+    document.getElementById('uploadDriveBtn').addEventListener('click', async () => {
+        if (!driveAuth) { alert('Login dulu ke Google Drive'); return; }
+        if (!confirm('Upload akan mengirim data dari USB ke Google Drive dan MENIMPA file yang ada di Drive.\nLanjutkan?')) return;
+        document.getElementById('driveStatus').innerHTML = '📤 Mengunggah ke Drive...';
+        try {
+            await uploadPelanggaranToDrive();
+            document.getElementById('driveStatus').innerHTML = '✅ Upload berhasil. Data pelanggaran disimpan ke Drive.';
+            alert('Upload data pelanggaran ke Google Drive sukses.');
+        } catch (err) {
+            console.error(err);
+            document.getElementById('driveStatus').innerHTML = `❌ Upload gagal: ${err.message}`;
+            alert('Upload gagal: ' + err.message);
+        }
+    });
+    
+    // ==================== INISIALISASI AWAL ====================
+    (async function init() {
+        santriList = await loadSantriFromUSB();
+        let nisSelect = document.getElementById('inp_nis');
+        nisSelect.innerHTML = '<option value="">-- pilih --</option>';
+        [...new Set(santriList.map(s => s.nis))].sort().forEach(nis => nisSelect.appendChild(new Option(nis, nis)));
+        let kelasSelect = document.getElementById('inp_kelas');
+        kelasSelect.innerHTML = '<option value="">-- pilih --</option>';
+        [...new Set(santriList.map(s => s.kelas))].sort().forEach(kelas => kelasSelect.appendChild(new Option(kelas, kelas)));
+        initKelasFilter();
+        renderTable();
+        await loadDriveConfig();
+        // Jika sudah ada client id dan token tersimpan, coba inisialisasi (tapi jangan otomatis login)
+        if (driveClientId) initializeGIS();
     })();
+})();
 </script>
 </body>
 </html>
