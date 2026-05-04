@@ -3,50 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daftar Santri - Divisi Bahasa</title>
-    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
-    <link rel="stylesheet" href="assets/css/all.min.css">
+    <title>Daftar Santri | Divisi Bahasa</title>
+    <!-- CDN Bootstrap & Font Awesome -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script src="./src/usbFileManager.js"></script>
     <style>
-        @font-face {
-            font-family: 'Sakkal Majalla';
-            src: local('Sakkal Majalla'), local('Traditional Arabic');
-            font-weight: normal;
-        }
+        /* ========== STYLE (sama seperti sebelumnya, tidak berubah) ========== */
+        @font-face { font-family: 'Sakkal Majalla'; src: local('Sakkal Majalla'), local('Traditional Arabic'); font-weight: normal; }
         * { transition: background-color 0.2s ease, color 0.2s ease; }
-        body {
-            font-family: 'Inter', sans-serif;
-            background: #f5f3ff;
-            color: #1e1b2f;
-        }
-        body.dark {
-            background-color: #121212;
-            color: #f0f0f0;
-        }
-        body.dark .card, body.dark .modal-content {
-            background-color: #1e2a3a;
-            border-color: #334152;
-            color: #fff;
-        }
-        body.dark .table, body.dark .table td, body.dark .table th {
-            background-color: #1a1a2e;
-            color: #e0e0e0;
-            border-color: #2a2a4a;
-        }
-        body.dark .form-control, body.dark .form-select {
-            background-color: #2a2a3a;
-            border-color: #3a3a4a;
-            color: #fff;
-        }
-        .sidebar {
-            width: 260px;
-            background: #ffffff;
-            position: fixed;
-            top: 0;
-            left: 0;
-            height: 100vh;
-            box-shadow: 2px 0 12px rgba(0,0,0,0.05);
-            z-index: 1000;
-        }
+        body { font-family: 'Inter', system-ui, sans-serif; background: #f5f3ff; color: #1e1b2f; }
+        body.dark { background-color: #121212; color: #f0f0f0; }
+        body.dark .card, body.dark .modal-content { background-color: #1e2a3a; border-color: #334152; color: #fff; }
+        body.dark .table, body.dark .table td, body.dark .table th { background-color: #1a1a2e; color: #e0e0e0; border-color: #2a2a4a; }
+        body.dark .table thead th { background-color: #0f0f1a; color: #fff; }
+        body.dark .text-muted { color: #adb5bd !important; }
+        body.dark .btn-outline-secondary { color: #fff; border-color: #4a627a; }
+        .sidebar { width: 260px; background: #fff; position: fixed; top: 0; left: 0; height: 100vh; box-shadow: 2px 0 12px rgba(0,0,0,0.05); z-index: 1000; }
         body.dark .sidebar { background: #0f172a; }
         .sidebar a { color: #2d3a4b; padding: 0.75rem 1rem; display: block; text-decoration: none; font-weight: 500; }
         body.dark .sidebar a { color: #cbd5e6; }
@@ -55,40 +32,18 @@
         .sidebar .active { background: #e9e6ff; color: #5e4bcc; border-left: 3px solid #5e4bcc; }
         body.dark .sidebar .active { background: #2d3e5a; color: #b9aaff; }
         .main-content { margin-left: 260px; }
-        @media (max-width: 800px) { .sidebar { transform: translateX(-100%); transition: 0.2s; } .sidebar.show { transform: translateX(0); } .main-content { margin-left: 0; } }
-        .header {
-            background: #ffffff;
-            padding: 0.6rem 1.2rem;
-            border-bottom: 1px solid #e2e8f0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 99;
-        }
-        body.dark .header { background: #0a0a12; }
-        .datetime-container {
-            background: #f0edff;
-            border-radius: 2rem;
-            padding: 0.2rem 0.8rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 0.8rem;
-        }
+        @media (max-width: 768px) { .sidebar { transform: translateX(-100%); transition: 0.2s; } .sidebar.show { transform: translateX(0); } .main-content { margin-left: 0; } }
+        .header { background: #fff; padding: 0.6rem 1.2rem; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 99; }
+        body.dark .header { background: #0a0a12; border-bottom-color: #2a2a3a; }
+        .navbar-classic { display: flex; justify-content: space-between; width: 100%; }
+        #nav-toggle { color: #2d3a4b; font-size: 1.2rem; cursor: pointer; }
+        body.dark #nav-toggle { color: #fff; }
+        .avatar-md { width: 38px; height: 38px; border-radius: 50%; object-fit: cover; }
+        .footer { background: #fefcff; border-top: 1px solid #e9e6f5; text-align: center; padding: 1rem 0; margin-top: 2rem; font-size: 0.8rem; }
+        body.dark .footer { background: #0f172a; border-top-color: #1e293b; }
+        .datetime-container { background: #f0edff; border-radius: 2rem; padding: 0.4rem 1rem; display: inline-flex; align-items: center; gap: 0.8rem; font-size: 0.85rem; }
         body.dark .datetime-container { background: #1e2a3a; color: #e0e0e0; }
-        .arabic-clock { font-family: 'Sakkal Majalla', 'Traditional Arabic', serif; }
-        .btn-pastel-primary { background: #b7abff; border: none; color: #1e1b2f; border-radius: 2rem; padding: 0.5rem 1.2rem; }
-        body.dark .btn-pastel-primary { background: #5e4bcc; color: white; }
-        .btn-pastel-success { background: #c8e6c9; border: none; color: #1e1b2f; }
-        body.dark .btn-pastel-success { background: #2e7d32; color: white; }
-        .btn-pastel-danger { background: #ffcdd2; border: none; color: #c62828; }
-        body.dark .btn-pastel-danger { background: #c62828; color: white; }
-        .btn-pastel-info { background: #b3e5fc; border: none; color: #1e1b2f; }
-        body.dark .btn-pastel-info { background: #0288d1; color: white; }
-        .btn-pastel-warning { background: #ffe0b2; border: none; color: #e65100; }
-        body.dark .btn-pastel-warning { background: #f57c00; color: white; }
+        .arabic-clock { font-family: 'Sakkal Majalla', 'Traditional Arabic', serif; font-size: 1rem; }
         .kelas-badge { display: inline-block; padding: 0.25rem 0.6rem; border-radius: 30px; font-size: 0.7rem; font-weight: 600; }
         .kelas-vii { background: #e3f2fd; color: #0d47a1; }
         .kelas-viii { background: #e8f5e9; color: #1e5e2e; }
@@ -97,10 +52,31 @@
         .kelas-x { background: #ede7f6; color: #512da8; }
         .kelas-xi { background: #fbe9e7; color: #bf360c; }
         .kelas-xii { background: #ffebee; color: #b71c1c; }
+        body.dark .kelas-vii { background: #1a3a5c; color: #90caf9; }
+        body.dark .kelas-viii { background: #1a4a2a; color: #a5d6a7; }
+        body.dark .kelas-ix { background: #5a3a1a; color: #ffcc80; }
+        body.dark .kelas-il { background: #1a5a5a; color: #80deea; }
+        body.dark .kelas-x { background: #2a1a5a; color: #b39ddb; }
+        body.dark .kelas-xi { background: #5a1a1a; color: #ffab91; }
+        body.dark .kelas-xii { background: #5a1a2a; color: #ef9a9a; }
+        .btn-pastel-primary { background: #b7abff; border: none; border-radius: 2rem; padding: 0.5rem 1.2rem; color: #1e1b2f; }
+        body.dark .btn-pastel-primary { background: #5e4bcc; color: white; }
+        .btn-pastel-success { background: #c8e6c9; border: none; border-radius: 2rem; color: #1e1b2f; }
+        body.dark .btn-pastel-success { background: #2e7d32; color: white; }
+        .btn-pastel-danger { background: #ffcdd2; border: none; border-radius: 2rem; color: #c62828; }
+        body.dark .btn-pastel-danger { background: #c62828; color: white; }
+        .btn-pastel-info { background: #b3e5fc; border: none; border-radius: 2rem; color: #1e1b2f; }
+        body.dark .btn-pastel-info { background: #0288d1; color: white; }
+        .btn-pastel-warning { background: #ffe0b2; border: none; border-radius: 2rem; color: #e65100; }
+        body.dark .btn-pastel-warning { background: #f57c00; color: white; }
+        .table th { cursor: pointer; user-select: none; }
+        .table th:hover { background-color: rgba(0,0,0,0.05); }
+        body.dark .table th:hover { background-color: rgba(255,255,255,0.1); }
     </style>
 </head>
 <body>
 <div id="db-wrapper">
+    <!-- SIDEBAR (sama) -->
     <div class="sidebar" id="sidebar">
         <div class="p-3"><h4 class="fw-bold">Divisi Bahasa</h4></div>
         <ul class="nav flex-column">
@@ -114,206 +90,425 @@
         </ul>
     </div>
 
+    <!-- MAIN CONTENT -->
     <div class="main-content">
         <div class="header">
-            <div class="d-flex align-items-center">
-                <a id="nav-toggle" href="#"><i class="fas fa-bars me-3"></i></a>
-                <span class="fw-bold">Divisi Bahasa</span>
-            </div>
-            <div class="d-flex gap-3 align-items-center">
-                <div class="datetime-container"><i class="far fa-clock"></i><span id="jamIndo">--:--:--</span><span class="arabic-clock" id="jamArab">--:--:--</span></div>
-                <button id="darkModeBtn" class="btn btn-sm btn-outline-secondary"><i class="fas fa-moon"></i></button>
-                <div class="dropdown">
-                    <a href="#" data-bs-toggle="dropdown"><img src="assets/images/avatar/default.jpg" class="rounded-circle" width="38" height="38" id="userAvatar"></a>
-                    <div class="dropdown-menu dropdown-menu-end">
-                        <div class="px-3 py-2"><strong id="userFullName">User</strong><br><span class="small text-muted" id="userRole"></span></div>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="settings.html"><i class="fas fa-user-cog me-2"></i> Pengaturan</a>
-                        <a class="dropdown-item text-danger" href="#" onclick="logout()"><i class="fas fa-sign-out-alt me-2"></i> Keluar</a>
+            <div class="navbar-classic">
+                <a id="nav-toggle" href="#"><i class="fas fa-bars"></i></a>
+                <div class="d-flex align-items-center gap-3">
+                    <button id="darkModeBtn" class="btn btn-sm btn-outline-secondary"><i class="fas fa-moon"></i></button>
+                    <div class="dropdown">
+                        <a href="#" data-bs-toggle="dropdown"><img src="./assets/images/avatar/default.jpg" class="avatar-md" id="userAvatar"></a>
+                        <div class="dropdown-menu dropdown-menu-end">
+                            <div class="px-3 py-2"><strong id="userFullName">User</strong><br><span class="small text-muted" id="userRole"></span></div>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="settings.html">Pengaturan</a>
+                            <a class="dropdown-item text-danger" href="#" onclick="logout()">Keluar</a>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="container-fluid px-4 py-4">
-            <div class="row mb-3">
-                <div class="col-12">
-                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
-                        <h3>Daftar Santri</h3>
-                        <div>
-                            <button id="folderStatusBtn" class="btn btn-pastel-primary btn-sm me-2"><i class="fas fa-folder-open me-1"></i> Pilih USB</button>
-                            <button id="lihatFileBtn" class="btn btn-pastel-info btn-sm me-2"><i class="fas fa-folder me-1"></i> Lihat File USB</button>
-                            <button id="configDriveBtn" class="btn btn-pastel-warning btn-sm me-2"><i class="fas fa-cog me-1"></i> Konfigurasi API</button>
-                            <button id="loginDriveBtn" class="btn btn-pastel-primary btn-sm me-2" disabled><i class="fab fa-google me-1"></i> Login Google</button>
-                            <button id="uploadDriveBtn" class="btn btn-pastel-success btn-sm me-2" disabled><i class="fas fa-cloud-upload-alt me-1"></i> Upload ke Drive</button>
-                            <button id="syncDriveBtn" class="btn btn-pastel-info btn-sm" disabled><i class="fas fa-sync me-1"></i> Sinkronkan Data</button>
-                        </div>
-                    </div>
-                    <div id="driveStatus" class="small text-muted mt-2"></div>
-                </div>
+            <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap">
+                <h3 class="fw-semibold">Daftar Santri <span class="badge bg-secondary ms-2">Divisi Bahasa</span></h3>
+                <div class="datetime-container"><i class="far fa-clock"></i><span id="jamIndo">--:--:--</span><span class="arabic-clock" id="jamArab">--:--:--</span></div>
             </div>
 
-            <!-- Form Tambah/Edit Santri -->
-            <div class="card p-3 mb-4">
-                <h5><i class="fas fa-user-plus me-2"></i> Tambah/Edit Santri</h5>
-                <div class="row g-3 mt-2">
-                    <div class="col-md-4"><label class="form-label">NIS</label><input type="text" class="form-control" id="nis" placeholder="Nomor Induk Santri"></div>
-                    <div class="col-md-4"><label class="form-label">Nama Lengkap</label><input type="text" class="form-control" id="nama" placeholder="Nama santri"></div>
-                    <div class="col-md-4"><label class="form-label">Kelas</label><select class="form-select" id="kelas"><option value="">Pilih Kelas</option><option>VII A</option><option>VII B</option><option>VII C</option><option>VII D</option><option>VIII A</option><option>VIII B</option><option>VIII C</option><option>IX A</option><option>IX B</option><option>IX C</option><option>IL A</option><option>IL B</option><option>X A</option><option>X B</option><option>X C</option><option>XI IPA</option><option>XI AGAMA</option><option>XII A</option><option>XII B</option><option>XII C</option></select></div>
-                    <div class="col-12"><button id="btnSaveSantri" class="btn btn-pastel-primary"><i class="fas fa-save me-1"></i> Simpan</button><button id="btnCancelEdit" class="btn btn-outline-secondary ms-2" style="display:none;"><i class="fas fa-times me-1"></i> Batal</button></div>
-                </div>
+            <!-- USB Opsional -->
+            <div class="mb-3">
+                <button id="folderStatusBtn" class="btn btn-pastel-primary"><i class="fas fa-folder-open me-2"></i><span id="folderStatus">Pilih USB (Cadangan)</span></button>
             </div>
 
-            <!-- Filter & Export -->
+            <!-- Filter & Pencarian -->
             <div class="card p-3 mb-4">
                 <div class="row g-3 align-items-end">
-                    <div class="col-md-4"><label class="form-label">Cari Nama / NIS</label><input type="text" id="searchInput" class="form-control" placeholder="Ketik nama atau NIS..."></div>
-                    <div class="col-md-3"><label class="form-label">Filter Kelas</label><select id="kelasFilter" class="form-select"><option value="">Semua Kelas</option></select></div>
-                    <div class="col-md-2"><label class="form-label">Urutkan</label><select id="sortFilter" class="form-select"><option value="nama">Nama</option><option value="nis">NIS</option><option value="kelas" selected>Kelas</option></select></div>
-                    <div class="col-md-3"><button id="resetFilterBtn" class="btn btn-pastel-primary w-100"><i class="fas fa-redo me-1"></i> Reset</button></div>
-                </div>
-                <div class="row g-3 mt-3">
-                    <div class="col-md-3"><button id="exportCsvBtn" class="btn btn-pastel-success w-100"><i class="fas fa-file-csv me-1"></i> Ekspor CSV</button></div>
-                    <div class="col-md-3"><button id="exportXlsxBtn" class="btn btn-pastel-success w-100"><i class="fas fa-file-excel me-1"></i> Ekspor XLSX</button></div>
-                    <div class="col-md-3"><button id="importXlsxBtn" class="btn btn-pastel-info w-100"><i class="fas fa-upload me-1"></i> Impor XLSX</button></div>
-                    <div class="col-md-3"><button id="deleteAllBtn" class="btn btn-pastel-danger w-100"><i class="fas fa-trash me-1"></i> Hapus Semua</button></div>
+                    <div class="col-md-4"><label><i class="fas fa-search"></i> Cari Nama / NIS</label><input type="text" id="searchInput" class="form-control" placeholder="Ketik nama atau NIS..."></div>
+                    <div class="col-md-3"><label><i class="fas fa-filter"></i> Filter Kelas</label><select id="kelasFilter" class="form-select"><option value="">Semua Kelas</option></select></div>
+                    <div class="col-md-3"><label><i class="fas fa-sort"></i> Urutkan</label><select id="sortFilter" class="form-select"><option value="nama">Urut Nama</option><option value="nis">Urut NIS</option><option value="kelas" selected>Urut Kelas</option></select></div>
+                    <div class="col-md-2"><button id="resetFilterBtn" class="btn btn-pastel-primary w-100"><i class="fas fa-redo"></i> Reset</button></div>
                 </div>
             </div>
 
             <!-- Tabel Santri -->
-            <div class="card p-3">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h5>Data Santri <span id="totalCount" class="badge bg-secondary">0</span></h5>
+            <div class="card p-3 mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap">
+                    <h5><i class="fas fa-users"></i> Data Santri <span id="totalCount" class="badge bg-secondary">0</span></h5>
+                    <div class="d-flex gap-2">
+                        <button id="exportCsvBtn" class="btn btn-pastel-success btn-sm"><i class="fas fa-file-csv"></i> CSV</button>
+                        <button id="exportXlsxBtn" class="btn btn-pastel-success btn-sm"><i class="fas fa-file-excel"></i> XLSX</button>
+                        <button id="exportAbsenBtn" class="btn btn-pastel-info btn-sm"><i class="fas fa-calendar-check"></i> Download Absen</button>
+                        <button id="showAbsenBtn" class="btn btn-pastel-primary btn-sm"><i class="fas fa-upload"></i> Rombak Absen</button>
+                    </div>
                 </div>
                 <div class="table-responsive">
                     <table class="table table-bordered table-hover">
-                        <thead class="table-light">
-                            <tr><th onclick="sortTable('no')">#</th><th onclick="sortTable('nis')">NIS</th><th onclick="sortTable('nama')">Nama Lengkap</th><th onclick="sortTable('kelas')">Kelas</th><th>Aksi</th></tr>
-                        </thead>
+                        <thead class="table-light"><tr><th onclick="sortTable('no')">#</th><th onclick="sortTable('nis')">NIS</th><th onclick="sortTable('nama')">Nama</th><th onclick="sortTable('kelas')">Kelas</th></tr></thead>
                         <tbody id="tableBody"></tbody>
                     </table>
+                    <div id="emptyState" class="text-center py-5" style="display:none;"><i class="fas fa-user-slash fa-3x text-muted"></i><h5>Tidak ada data</h5></div>
                 </div>
                 <div class="d-flex justify-content-between align-items-center mt-3">
-                    <div class="text-muted small">Menampilkan <span id="showingStart">0</span>-<span id="showingEnd">0</span> dari <span id="totalFiltered">0</span> santri</div>
-                    <div><button id="prevPageBtn" class="btn btn-outline-secondary btn-sm" disabled><i class="fas fa-chevron-left me-1"></i></button><span class="mx-2" id="pageInfo">Halaman 1/1</span><button id="nextPageBtn" class="btn btn-outline-secondary btn-sm" disabled><i class="fas fa-chevron-right ms-1"></i></button></div>
+                    <div class="text-muted small">Menampilkan <span id="showingStart">0</span>–<span id="showingEnd">0</span> dari <span id="totalFiltered">0</span> santri</div>
+                    <div><button id="prevPageBtn" class="btn btn-outline-secondary btn-sm" disabled><i class="fas fa-chevron-left"></i> Sebelumnya</button><span class="badge bg-light text-dark mx-2" id="pageInfo">Halaman 1 / 1</span><button id="nextPageBtn" class="btn btn-outline-secondary btn-sm" disabled>Selanjutnya <i class="fas fa-chevron-right"></i></button></div>
+                </div>
+            </div>
+
+            <!-- Rombak Absen -->
+            <div id="absenCard" class="card mt-4" style="display:none;">
+                <div class="card-header d-flex justify-content-between"><h5><i class="fas fa-calendar-check"></i> Rombak Absen</h5><button id="closeAbsenBtn" class="btn-close"></button></div>
+                <div class="card-body">
+                    <p>Impor data absensi dari file Excel. Format: NIS, Nama, Kelas</p>
+                    <div class="row g-2"><div class="col-md-5"><button id="downloadTemplateBtn" class="btn btn-pastel-primary w-100"><i class="fas fa-download"></i> Download Template</button></div><div class="col-md-5"><input type="file" id="importFile" class="form-control" accept=".xlsx,.xls,.csv" disabled></div><div class="col-md-2"><button id="importBtn" class="btn btn-pastel-success w-100" disabled><i class="fas fa-upload"></i> Impor</button></div></div>
+                    <div id="importPreview" class="mt-3" style="display:none;"><h6>Pratinjau:</h6><div class="table-responsive"><table class="table table-sm table-bordered"><thead id="previewHeader"></thead><tbody id="previewBody"></tbody></table></div><button id="confirmImportBtn" class="btn btn-pastel-danger mt-2"><i class="fas fa-check"></i> Konfirmasi Impor</button></div>
+                </div>
+            </div>
+
+            <!-- Google Drive Sync -->
+            <div class="card p-3 mt-4">
+                <h5><i class="fab fa-google-drive me-2" style="color:#4285F4;"></i> Sinkronisasi Google Drive <span class="badge bg-info">Utama (Online)</span></h5>
+                <div class="row g-3 mt-2">
+                    <div class="col-md-3"><button id="configDriveBtn" class="btn btn-pastel-warning w-100"><i class="fas fa-cog"></i> Konfigurasi API</button></div>
+                    <div class="col-md-3"><button id="loginDriveBtn" class="btn btn-pastel-primary w-100" disabled><i class="fab fa-google"></i> Login Google</button></div>
+                    <div class="col-md-3"><button id="syncDriveBtn" class="btn btn-pastel-info w-100" disabled><i class="fas fa-sync"></i> Ambil dari Drive</button></div>
+                    <div class="col-md-3"><button id="uploadDriveBtn" class="btn btn-pastel-success w-100" disabled><i class="fas fa-cloud-upload-alt"></i> Simpan ke Drive</button></div>
+                    <div class="col-12 mt-2"><div id="driveStatus" class="small text-muted"></div></div>
                 </div>
             </div>
         </div>
-        <footer class="footer text-center py-3 small">© LEGION 8.0 | Website ini dapat digunakan tanpa koneksi internet</footer>
+        <footer class="footer text-center py-3">© LEGION 8.0 | Website ini dapat digunakan tanpa koneksi internet</footer>
     </div>
 </div>
 
-<!-- Modal Lihat File USB -->
-<div class="modal fade" id="fileModal" tabindex="-1">
-    <div class="modal-dialog modal-lg"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">File di USB</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body" id="fileModalBody">Memuat...</div></div></div>
-</div>
-
-<!-- Modal Impor XLSX -->
-<div class="modal fade" id="importModal" tabindex="-1">
-    <div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Impor Santri dari Excel</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><input type="file" id="importFile" class="form-control" accept=".xlsx,.xls,.csv"><div class="mt-3" id="importPreview"></div></div><div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button><button id="confirmImportBtn" class="btn btn-pastel-primary">Konfirmasi Impor</button></div></div></div>
-</div>
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-<script src="assets/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
-<script src="src/usbFileManager.js"></script>
-<script src="https://accounts.google.com/gsi/client" async defer></script>
-
 <script>
-    (function(){
-        // CEK LOGIN
+    (function() {
+        "use strict";
+        // ========== CEK LOGIN ==========
         if(!localStorage.getItem('currentUser')) { window.location.href = '../WebDivisiBahasa.html'; return; }
         let currentUser = JSON.parse(localStorage.getItem('currentUser'));
         document.getElementById('userFullName').innerText = currentUser.name;
-        let roleText = currentUser.role === 'admin' ? 'Administrator' : (currentUser.role === 'guru' ? 'Guru' : 'Musyrif');
-        document.getElementById('userRole').innerText = roleText;
-        let avatarSrc = currentUser.avatar ? `assets/images/avatar/${currentUser.avatar}` : 'assets/images/avatar/default.jpg';
+        document.getElementById('userRole').innerText = currentUser.role === 'admin' ? 'Administrator' : (currentUser.role === 'guru' ? 'Guru' : 'Musyrif');
+        let avatarSrc = currentUser.avatar ? `./assets/images/avatar/${currentUser.avatar}` : './assets/images/avatar/default.jpg';
         document.getElementById('userAvatar').src = avatarSrc;
         window.logout = () => { if(confirm('Keluar?')){ localStorage.removeItem('currentUser'); localStorage.removeItem('rememberedUser'); window.location.href='../WebDivisiBahasa.html'; } };
 
-        // DARK MODE & JAM
+        // ========== DARK MODE & JAM ==========
         let darkMode = localStorage.getItem('darkMode') === 'true';
         if(darkMode) document.body.classList.add('dark');
         document.getElementById('darkModeBtn')?.addEventListener('click',()=>{ document.body.classList.toggle('dark'); localStorage.setItem('darkMode',document.body.classList.contains('dark')); });
         document.getElementById('nav-toggle')?.addEventListener('click',()=>{ document.getElementById('sidebar').classList.toggle('show'); });
         function updateClock() { const now = new Date(); document.getElementById('jamIndo').innerText = now.toLocaleTimeString('id-ID'); document.getElementById('jamArab').innerText = now.toLocaleTimeString('ar-SA'); }
-        updateClock(); setInterval(updateClock,1000);
+        updateClock(); setInterval(updateClock, 1000);
 
-        // DATA
-        let studentsData = [], pengajuanStatus = {};
-        let currentPage = 1, itemsPerPage = 20, filteredData = [], sortColumn = 'kelas', sortAsc = true;
-        let editIndex = -1;
-        let tokenClient = null, accessToken = null, driveAuth = false, driveClientId = '';
-        const SYSTEM_JSON_FILES = ['santri_data.json', 'data_pelanggaran.json', 'data_reward.json', 'pengajuan_status.json', 'file_metadata.json'];
+        // ========== DATA SANTRI (prioritas: Drive -> localStorage) ==========
+        let studentsData = JSON.parse(localStorage.getItem('santri_data') || "[]");
+        let currentPage = 1, itemsPerPage = 50, filteredData = [], sortColumn = 'kelas', sortAsc = true;
         let kelasOrder = { 'VII':1, 'VIII':2, 'IX':3, 'IL':4, 'X':5, 'XI':6, 'XII':7 };
+        let driveInitialized = false; // untuk GIS
 
-        // USB FUNCTIONS
-        async function ensureFolder() { if(!usbFileManager.isSupported()){ alert('Browser tidak mendukung USB'); return null; } let handle = await usbFileManager.getRootHandle(); if(!handle) handle = await usbFileManager.pilihFolder(); if(!handle) alert('Pilih folder LugohDrive'); return handle; }
-        async function loadSantriFromUSB() { let handle = await ensureFolder(); if(!handle) return []; try { let data = await usbFileManager.readJSONFile('santri_data.json'); if(data && data.length) return data; } catch(e){} let defaultData = []; return defaultData; }
-        async function saveSantriToUSB() { if(usbFileManager.isSupported){ await usbFileManager.saveData('santri_data.json', studentsData); } }
-        async function loadSantri() { studentsData = await loadSantriFromUSB(); renderTable(); }
-        async function loadPengajuanStatus() { try { pengajuanStatus = await usbFileManager.readJSONFile('pengajuan_status.json') || {}; } catch(e){} }
-        function getFileStatus(filename) { return pengajuanStatus[filename] || 'pending'; }
+        // Fungsi render & filter
+        function getKelasClass(k) {
+            if(k.includes('VII')) return 'kelas-vii';
+            if(k.includes('VIII')) return 'kelas-viii';
+            if(k.includes('IX')) return 'kelas-ix';
+            if(k.includes('IL')) return 'kelas-il';
+            if(k.includes('X')) return 'kelas-x';
+            if(k.includes('XI')) return 'kelas-xi';
+            if(k.includes('XII')) return 'kelas-xii';
+            return '';
+        }
+        function escapeHtml(s) { return s ? s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') : ''; }
+        function filterAndSort() {
+            let result = [...studentsData];
+            let searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+            if(searchTerm) result = result.filter(s => s.name.toLowerCase().includes(searchTerm) || s.nis.includes(searchTerm));
+            let kelasVal = document.getElementById('kelasFilter').value;
+            if(kelasVal) result = result.filter(s => s.kelas === kelasVal);
+            if(sortColumn === 'nama') result.sort((a,b) => sortAsc ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name));
+            else if(sortColumn === 'nis') result.sort((a,b) => sortAsc ? a.nis.localeCompare(b.nis) : b.nis.localeCompare(a.nis));
+            else if(sortColumn === 'kelas') result.sort((a,b) => {
+                let aOrd = kelasOrder[a.kelas.split(' ')[0]] || 999, bOrd = kelasOrder[b.kelas.split(' ')[0]] || 999;
+                if(aOrd !== bOrd) return sortAsc ? aOrd - bOrd : bOrd - aOrd;
+                return sortAsc ? a.kelas.localeCompare(b.kelas) : b.kelas.localeCompare(a.kelas);
+            });
+            return result;
+        }
+        function renderTable() {
+            filteredData = filterAndSort();
+            let total = filteredData.length, totalPages = Math.ceil(total/itemsPerPage)||1;
+            if(currentPage > totalPages) currentPage = totalPages;
+            let start = (currentPage-1)*itemsPerPage, end = Math.min(start+itemsPerPage, total);
+            let pageData = filteredData.slice(start, end);
+            let tbody = document.getElementById('tableBody');
+            tbody.innerHTML = '';
+            if(pageData.length === 0) document.getElementById('emptyState').style.display = 'block';
+            else {
+                document.getElementById('emptyState').style.display = 'none';
+                pageData.forEach((s,idx) => {
+                    tbody.innerHTML += `<tr><td class="text-center">${start+idx+1}</td><td>${s.nis}</td><td>${escapeHtml(s.name)}</td><td><span class="kelas-badge ${getKelasClass(s.kelas)}">${s.kelas}</span></td></tr>`;
+                });
+            }
+            document.getElementById('showingStart').textContent = total ? start+1 : 0;
+            document.getElementById('showingEnd').textContent = end;
+            document.getElementById('totalFiltered').textContent = total;
+            document.getElementById('totalCount').textContent = studentsData.length;
+            document.getElementById('pageInfo').textContent = `Halaman ${currentPage} / ${totalPages}`;
+            document.getElementById('prevPageBtn').disabled = currentPage <= 1;
+            document.getElementById('nextPageBtn').disabled = currentPage >= totalPages;
+        }
+        function initKelasFilter() {
+            let kelasSet = new Set(studentsData.map(s => s.kelas));
+            let kelasOptions = [...kelasSet].sort((a,b) => {
+                let aOrd = kelasOrder[a.split(' ')[0]] || 999, bOrd = kelasOrder[b.split(' ')[0]] || 999;
+                if(aOrd !== bOrd) return aOrd - bOrd;
+                return a.localeCompare(b);
+            });
+            let filter = document.getElementById('kelasFilter');
+            filter.innerHTML = '<option value="">Semua Kelas</option>';
+            kelasOptions.forEach(k => filter.appendChild(new Option(k, k)));
+        }
 
-        // GOOGLE DRIVE (GIS)
-        function loadDriveConfig() { driveClientId = localStorage.getItem('google_drive_client_id') || ''; updateDriveButtons(); }
-        function updateDriveButtons() { let hasConfig = !!(driveClientId); document.getElementById('loginDriveBtn').disabled = !hasConfig; document.getElementById('syncDriveBtn').disabled = !hasConfig || !driveAuth; document.getElementById('uploadDriveBtn').disabled = !hasConfig || !driveAuth; }
-        function initGIS() { if(!driveClientId) return false; if(tokenClient) return true; if(typeof google === 'undefined') { setTimeout(initGIS,500); return false; } tokenClient = google.accounts.oauth2.initTokenClient({ client_id: driveClientId, scope: 'https://www.googleapis.com/auth/drive.file', callback: (resp) => { if(resp.error) { driveAuth=false; document.getElementById('driveStatus').innerHTML='❌ Login gagal'; updateDriveButtons(); return; } accessToken = resp.access_token; driveAuth=true; document.getElementById('driveStatus').innerHTML='✅ Terhubung ke Google Drive'; updateDriveButtons(); } }); return true; }
+        // ========== FUNGSI DEFAULT SANTRI (jika kosong) ==========
+        async function loadDefaultSantri() {
+            try {
+                let resp = await fetch('./src/students-data.js');
+                let text = await resp.text();
+                eval(text);
+                if(students && students.length) {
+                    studentsData = students;
+                    localStorage.setItem('santri_data', JSON.stringify(studentsData));
+                    renderTable();
+                    initKelasFilter();
+                }
+            } catch(e) { console.warn(e); }
+        }
+        if(!studentsData.length) loadDefaultSantri();
+
+        // ========== USB OPSIONAL ==========
+        async function ensureFolder(showAlert=true) {
+            if(!usbFileManager.isSupported()) { if(showAlert) alert('Browser tidak mendukung USB'); return null; }
+            let handle = await usbFileManager.getRootHandle();
+            if(!handle) handle = await usbFileManager.pilihFolder();
+            if(!handle && showAlert) alert('Pilih folder USB (opsional)');
+            return handle;
+        }
+        async function loadFromUSB() {
+            let handle = await ensureFolder(false);
+            if(!handle) return;
+            try { let data = await usbFileManager.readJSONFile('santri_data.json'); if(data && data.length) { studentsData = data; localStorage.setItem('santri_data', JSON.stringify(studentsData)); renderTable(); initKelasFilter(); } } catch(e) {}
+        }
+        async function saveToUSB() {
+            let handle = await ensureFolder(true);
+            if(!handle) return;
+            await usbFileManager.saveData('santri_data.json', studentsData);
+            alert('Data santri disimpan ke USB');
+        }
+        document.getElementById('folderStatusBtn').addEventListener('click', async() => {
+            let handle = await ensureFolder(true);
+            if(handle) { document.getElementById('folderStatus').innerHTML = `<i class="fas fa-check-circle"></i> USB: ${handle.name}`; await loadFromUSB(); }
+        });
+
+        // ========== GOOGLE DRIVE (PRIORITAS UTAMA) ==========
+        let tokenClient = null, accessToken = null, driveAuth = false, driveClientId = '', driveApiKey = '';
+        function loadDriveConfig() {
+            driveClientId = localStorage.getItem('google_drive_client_id') || '';
+            driveApiKey = localStorage.getItem('google_drive_api_key') || '';
+            let savedToken = localStorage.getItem('gdrive_access_token');
+            if(savedToken) { accessToken = savedToken; driveAuth = true; }
+            updateDriveButtons();
+            // Jika sudah login dan ada token, coba ambil data dari Drive secara otomatis
+            if(driveAuth && navigator.onLine) autoSyncFromDrive();
+        }
+        function updateDriveButtons() {
+            let hasConfig = !!(driveClientId && driveApiKey);
+            document.getElementById('loginDriveBtn').disabled = !hasConfig || driveAuth;
+            document.getElementById('syncDriveBtn').disabled = !hasConfig || !driveAuth;
+            document.getElementById('uploadDriveBtn').disabled = !hasConfig || !driveAuth;
+            let statusDiv = document.getElementById('driveStatus');
+            if(!hasConfig) statusDiv.innerHTML = '⚠️ API belum dikonfigurasi (Klik tombol Konfigurasi)';
+            else if(!driveAuth) statusDiv.innerHTML = '🔑 Belum login ke Google Drive';
+            else statusDiv.innerHTML = '✅ Terhubung ke Google Drive (data utama)';
+        }
+        function initializeGIS() {
+            if(!driveClientId) return;
+            if(typeof google === 'undefined' || !google.accounts) return;
+            tokenClient = google.accounts.oauth2.initTokenClient({
+                client_id: driveClientId,
+                scope: 'https://www.googleapis.com/auth/drive.file',
+                callback: (resp) => {
+                    if(resp.error) { console.error(resp); driveAuth=false; accessToken=null; localStorage.removeItem('gdrive_access_token'); updateDriveButtons(); return; }
+                    accessToken = resp.access_token;
+                    driveAuth = true;
+                    localStorage.setItem('gdrive_access_token', accessToken);
+                    updateDriveButtons();
+                    // Setelah login sukses, langsung ambil data dari Drive
+                    autoSyncFromDrive();
+                }
+            });
+        }
         function requestAccessToken() { if(tokenClient) tokenClient.requestAccessToken(); else alert('Konfigurasi API dulu'); }
-        async function uploadToDrive(fileName, jsonData) { if(!accessToken) return false; let file = new Blob([JSON.stringify(jsonData,null,2)],{type:'application/json'}); let metadata={name:fileName,parents:['root']}; let form=new FormData(); form.append('metadata',new Blob([JSON.stringify(metadata)],{type:'application/json'})); form.append('file',file); let resp=await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart',{method:'POST',headers:{'Authorization':'Bearer '+accessToken},body:form}); return resp.ok; }
-        async function downloadFromDrive(fileName) { if(!accessToken) return null; let resp=await fetch(`https://www.googleapis.com/drive/v3/files?q=name='${fileName}'&fields=files(id,name)`,{headers:{'Authorization':'Bearer '+accessToken}}); let data=await resp.json(); if(data.files && data.files.length>0){ let fileId=data.files[0].id; let fileResp=await fetch(`https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`,{headers:{'Authorization':'Bearer '+accessToken}}); if(fileResp.ok) return await fileResp.json(); } return null; }
-        async function syncFromDrive() { if(!driveAuth){ alert('Login dulu'); return; } document.getElementById('driveStatus').innerHTML='🔄 Menyinkronkan...'; let driveData = await downloadFromDrive('santri_data.json'); if(driveData) { studentsData = driveData; await saveSantriToUSB(); renderTable(); alert('Data santri dari Google Drive berhasil disinkronkan ke USB'); } else alert('Tidak ada file santri_data.json di Drive'); document.getElementById('driveStatus').innerHTML='✅ Sinkron selesai'; }
-        async function uploadToDriveButton() { if(!driveAuth){ alert('Login dulu'); return; } document.getElementById('driveStatus').innerHTML='📤 Mengunggah...'; let success = await uploadToDrive('santri_data.json', studentsData); if(success) alert('Upload berhasil'); else alert('Upload gagal'); document.getElementById('driveStatus').innerHTML='✅ Upload selesai'; }
+        async function downloadFromDrive(fileName) {
+            if(!accessToken) throw new Error('Belum login');
+            let listResp = await fetch(`https://www.googleapis.com/drive/v3/files?q=name='${fileName}' and trashed=false&fields=files(id,name)`, {
+                headers: { 'Authorization': `Bearer ${accessToken}` }
+            });
+            let list = await listResp.json();
+            if(!list.files || list.files.length===0) return null;
+            let fileId = list.files[0].id;
+            let download = await fetch(`https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`, {
+                headers: { 'Authorization': `Bearer ${accessToken}` }
+            });
+            if(!download.ok) return null;
+            return await download.json();
+        }
+        async function uploadToDrive(fileName, data) {
+            if(!accessToken) throw new Error('Belum login');
+            let file = new Blob([JSON.stringify(data,null,2)], {type:'application/json'});
+            let metadata = { name: fileName, parents: ['root'] };
+            let form = new FormData();
+            form.append('metadata', new Blob([JSON.stringify(metadata)], {type:'application/json'}));
+            form.append('file', file);
+            let resp = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
+                method: 'POST', headers: { 'Authorization': `Bearer ${accessToken}` }, body: form
+            });
+            if(!resp.ok) throw new Error(await resp.text());
+            return true;
+        }
+        async function autoSyncFromDrive() {
+            if(!driveAuth) return;
+            document.getElementById('driveStatus').innerHTML = '🔄 Mengambil data dari Drive...';
+            try {
+                let driveData = await downloadFromDrive('santri_data.json');
+                if(driveData && driveData.length) {
+                    studentsData = driveData;
+                    localStorage.setItem('santri_data', JSON.stringify(studentsData));
+                    renderTable(); initKelasFilter();
+                    document.getElementById('driveStatus').innerHTML = '✅ Data dari Drive dimuat.';
+                } else {
+                    // Jika tidak ada file di Drive, upload data lokal ke Drive
+                    document.getElementById('driveStatus').innerHTML = '⚠️ File tidak ada di Drive, mengunggah data lokal...';
+                    await uploadToDrive('santri_data.json', studentsData);
+                    document.getElementById('driveStatus').innerHTML = '✅ Data lokal diunggah ke Drive.';
+                }
+            } catch(e) {
+                console.error(e);
+                document.getElementById('driveStatus').innerHTML = '❌ Gagal sinkron otomatis: '+e.message;
+            }
+        }
+        // Tombol konfigurasi & login
+        document.getElementById('configDriveBtn').addEventListener('click', () => {
+            let id = prompt('Client ID', driveClientId);
+            let key = prompt('API Key', driveApiKey);
+            if(id) driveClientId = id.trim();
+            if(key) driveApiKey = key.trim();
+            localStorage.setItem('google_drive_client_id', driveClientId);
+            localStorage.setItem('google_drive_api_key', driveApiKey);
+            accessToken = null; driveAuth = false; tokenClient = null; localStorage.removeItem('gdrive_access_token');
+            if(driveClientId) initializeGIS();
+            updateDriveButtons();
+        });
+        document.getElementById('loginDriveBtn').addEventListener('click', () => { if(driveClientId) { if(!tokenClient) initializeGIS(); requestAccessToken(); } else alert('Konfigurasi API dulu'); });
+        // Tombol sinkron manual (Ambil dari Drive)
+        document.getElementById('syncDriveBtn').addEventListener('click', async () => {
+            if(!driveAuth) return alert('Login dulu');
+            document.getElementById('driveStatus').innerHTML = '🔄 Menyinkronkan...';
+            try {
+                let driveData = await downloadFromDrive('santri_data.json');
+                if(driveData && driveData.length) {
+                    studentsData = driveData;
+                    localStorage.setItem('santri_data', JSON.stringify(studentsData));
+                    renderTable(); initKelasFilter();
+                    document.getElementById('driveStatus').innerHTML = '✅ Sinkron selesai';
+                    alert(`Berhasil mengambil ${studentsData.length} data santri dari Drive`);
+                } else { document.getElementById('driveStatus').innerHTML = '⚠️ File tidak ditemukan di Drive'; alert('Tidak ada file santri di Drive'); }
+            } catch(e) { document.getElementById('driveStatus').innerHTML = '❌ Gagal: '+e.message; alert('Gagal sinkron: '+e.message); }
+        });
+        // Tombol upload manual (Simpan ke Drive)
+        document.getElementById('uploadDriveBtn').addEventListener('click', async () => {
+            if(!driveAuth) return alert('Login dulu');
+            document.getElementById('driveStatus').innerHTML = '📤 Mengunggah...';
+            try {
+                await uploadToDrive('santri_data.json', studentsData);
+                document.getElementById('driveStatus').innerHTML = '✅ Upload berhasil';
+                alert('Data santri lokal berhasil diunggah ke Drive');
+            } catch(e) { document.getElementById('driveStatus').innerHTML = '❌ Gagal: '+e.message; alert('Gagal upload: '+e.message); }
+        });
 
-        // Lihat File USB
-        async function showFileModal() { let handle = await ensureFolder(); if(!handle) return; let files = await usbFileManager.listFiles(); files = files.filter(f => !SYSTEM_JSON_FILES.includes(f.name)); await loadPengajuanStatus(); let html = '<div class="table-responsive"><table class="table table-sm"><thead><tr><th>Nama</th><th>Ukuran</th><th>Tipe</th><th>Aksi</th></tr></thead><tbody>'; for(let f of files){ let status = getFileStatus(f.name); html += `<tr>
-                    <td>${f.name}</td>
-                    <td>${(f.size/1024).toFixed(2)} KB</td>
-                    <td>${f.type || '-'}</td>
-                    <td><button class="btn btn-sm btn-primary download-file" data-name="${f.name}">Download</button> ${f.category === 'pengajuan' ? `<button class="btn btn-sm btn-success approve-file" data-name="${f.name}">Terima</button><button class="btn btn-sm btn-danger reject-file" data-name="${f.name}">Tolak</button>` : ''} <button class="btn btn-sm btn-outline-danger delete-file" data-name="${f.name}">Hapus</button></td>
-                </tr>`; }
-        html += '</tbody></table></div>'; document.getElementById('fileModalBody').innerHTML = html; $('#fileModal').modal('show'); attachFileActions(); }
-        function attachFileActions() { document.querySelectorAll('.download-file').forEach(btn=>btn.addEventListener('click',async()=>{ let name=btn.dataset.name; let handle = await ensureFolder(); let files = await usbFileManager.listFiles(); let file = files.find(f=>f.name===name); if(file){ let blob = await usbFileManager.getFileBlob(file.handle); let url=URL.createObjectURL(blob); let a=document.createElement('a'); a.href=url; a.download=name; a.click(); URL.revokeObjectURL(url); } })); document.querySelectorAll('.delete-file').forEach(btn=>btn.addEventListener('click',async()=>{ if(confirm('Hapus file?')){ let name=btn.dataset.name; let handle = await ensureFolder(); let files = await usbFileManager.listFiles(); let file = files.find(f=>f.name===name); if(file) await usbFileManager.deleteFile(file.handle); showFileModal(); } })); document.querySelectorAll('.approve-file').forEach(btn=>btn.addEventListener('click',async()=>{ let name=btn.dataset.name; pengajuanStatus[name]='diterima'; await usbFileManager.saveData('pengajuan_status.json', pengajuanStatus); showFileModal(); })); document.querySelectorAll('.reject-file').forEach(btn=>btn.addEventListener('click',async()=>{ let name=btn.dataset.name; pengajuanStatus[name]='ditolak'; await usbFileManager.saveData('pengajuan_status.json', pengajuanStatus); showFileModal(); })); }
+        // ========== ROMBAK ABSEN (sama) ==========
+        let absenCard = document.getElementById('absenCard'), showAbsenBtn = document.getElementById('showAbsenBtn'), closeAbsenBtn = document.getElementById('closeAbsenBtn'), importFile = document.getElementById('importFile'), importBtn = document.getElementById('importBtn'), downloadTemplateBtn = document.getElementById('downloadTemplateBtn'), confirmImportBtn = document.getElementById('confirmImportBtn'), importedData = null;
+        showAbsenBtn.addEventListener('click', () => { let pwd = prompt('Password:'); if(pwd !== 'lugoh123'){ alert('Salah'); return; } absenCard.style.display = 'block'; showAbsenBtn.disabled = true; });
+        closeAbsenBtn.addEventListener('click', () => { absenCard.style.display = 'none'; showAbsenBtn.disabled = false; document.getElementById('importPreview').style.display = 'none'; importFile.value = ''; importBtn.disabled = true; importFile.disabled = true; });
+        downloadTemplateBtn.addEventListener('click', () => {
+            let data = studentsData.slice(0,5).map(s => ({ NIS: s.nis, Nama: s.name, Kelas: s.kelas }));
+            if(!data.length) return alert('Tidak ada data santri');
+            const ws = XLSX.utils.json_to_sheet(data);
+            const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, 'Template'); XLSX.writeFile(wb, 'template_absen.xlsx');
+            importFile.disabled = false; importBtn.disabled = false;
+        });
+        importBtn.addEventListener('click', () => {
+            let file = importFile.files[0]; if(!file) return alert('Pilih file');
+            let reader = new FileReader();
+            reader.onload = (e) => {
+                let wb = XLSX.read(new Uint8Array(e.target.result), {type:'array'});
+                let sheet = wb.Sheets[wb.SheetNames[0]];
+                let json = XLSX.utils.sheet_to_json(sheet, {header:1});
+                if(json.length<2) { alert('File kosong'); return; }
+                let headers = json[0];
+                if(headers[0] !== 'NIS' || headers[1] !== 'Nama' || headers[2] !== 'Kelas') { alert('Format header harus: NIS, Nama, Kelas'); return; }
+                let rows = json.slice(1);
+                let newStudents = rows.map(row => ({ nis: String(row[0]||'').trim(), name: String(row[1]||'').trim(), kelas: String(row[2]||'').trim() })).filter(s => s.nis && s.name && s.kelas);
+                if(!newStudents.length) { alert('Tidak ada data valid'); return; }
+                document.getElementById('previewHeader').innerHTML = headers.map(h => `<th>${h}</th>`).join('');
+                document.getElementById('previewBody').innerHTML = newStudents.slice(0,5).map(s => `<tr><td>${s.nis}</td><td>${s.name}</td><td>${s.kelas}</td></tr>`).join('');
+                document.getElementById('importPreview').style.display = 'block';
+                importedData = newStudents;
+            };
+            reader.readAsArrayBuffer(file);
+        });
+        confirmImportBtn.addEventListener('click', async () => {
+            if(!importedData) return;
+            if(!confirm('Yakin mengganti seluruh data santri?')) return;
+            studentsData = importedData;
+            localStorage.setItem('santri_data', JSON.stringify(studentsData));
+            renderTable(); initKelasFilter();
+            // Optional: simpan ke USB jika ada
+            let handle = await ensureFolder(false);
+            if(handle) await usbFileManager.saveData('santri_data.json', studentsData);
+            // Upload ke Drive jika login
+            if(driveAuth && navigator.onLine) {
+                try { await uploadToDrive('santri_data.json', studentsData); } catch(e) {}
+            }
+            document.getElementById('importPreview').style.display = 'none';
+            importFile.value = ''; importBtn.disabled = true; importFile.disabled = true;
+            absenCard.style.display = 'none'; showAbsenBtn.disabled = false;
+            alert(`Data diganti dengan ${studentsData.length} santri`);
+        });
 
-        // RENDER TABEL
-        function getKelasClass(k) { if(k.includes('VII')) return 'kelas-vii'; if(k.includes('VIII')) return 'kelas-viii'; if(k.includes('IX')) return 'kelas-ix'; if(k.includes('IL')) return 'kelas-il'; if(k.includes('X')) return 'kelas-x'; if(k.includes('XI')) return 'kelas-xi'; if(k.includes('XII')) return 'kelas-xii'; return ''; }
-        function filterAndSort() { let result = [...studentsData]; let search = document.getElementById('searchInput').value.toLowerCase().trim(); if(search) result = result.filter(s => s.name.toLowerCase().includes(search) || s.nis.includes(search)); let kelasVal = document.getElementById('kelasFilter').value; if(kelasVal) result = result.filter(s => s.kelas === kelasVal); if(sortColumn === 'nama') result.sort((a,b)=> sortAsc ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name)); else if(sortColumn === 'nis') result.sort((a,b)=> sortAsc ? a.nis.localeCompare(b.nis) : b.nis.localeCompare(a.nis)); else result.sort((a,b)=>{ let aOrd = kelasOrder[a.kelas.split(' ')[0]] || 999, bOrd = kelasOrder[b.kelas.split(' ')[0]] || 999; if(aOrd !== bOrd) return sortAsc ? aOrd - bOrd : bOrd - aOrd; return sortAsc ? a.kelas.localeCompare(b.kelas) : b.kelas.localeCompare(a.kelas); }); return result; }
-        function renderTable() { filteredData = filterAndSort(); let total = filteredData.length, totalPages = Math.ceil(total/itemsPerPage)||1; if(currentPage > totalPages) currentPage = totalPages; let start = (currentPage-1)*itemsPerPage, end = Math.min(start+itemsPerPage, total); let pageData = filteredData.slice(start, end); let tbody = document.getElementById('tableBody'); tbody.innerHTML = ''; pageData.forEach((s,idx)=>{ let kelasClass = getKelasClass(s.kelas); tbody.innerHTML += `<tr><td class="text-center">${start+idx+1}</td><td>${s.nis}</td><td>${escapeHtml(s.name)}</td><td><span class="kelas-badge ${kelasClass}">${s.kelas}</span></td><td><button class="btn btn-sm btn-pastel-primary edit-btn" data-idx="${studentsData.indexOf(s)}"><i class="fas fa-pencil-alt"></i></button> <button class="btn btn-sm btn-pastel-danger delete-btn" data-idx="${studentsData.indexOf(s)}"><i class="fas fa-trash"></i></button></td></tr>`; }); document.getElementById('totalCount').innerText = studentsData.length; document.getElementById('showingStart').textContent = total ? start+1 : 0; document.getElementById('showingEnd').textContent = end; document.getElementById('totalFiltered').textContent = total; document.getElementById('pageInfo').textContent = `Halaman ${currentPage} / ${totalPages}`; document.getElementById('prevPageBtn').disabled = currentPage <= 1; document.getElementById('nextPageBtn').disabled = currentPage >= totalPages; attachTableButtons(); }
-        function attachTableButtons() { document.querySelectorAll('.edit-btn').forEach(btn=>btn.addEventListener('click',()=>{ let idx = parseInt(btn.dataset.idx); editIndex = idx; let s = studentsData[idx]; document.getElementById('nis').value = s.nis; document.getElementById('nama').value = s.name; document.getElementById('kelas').value = s.kelas; document.getElementById('btnCancelEdit').style.display = 'inline-block'; document.getElementById('btnSaveSantri').innerHTML = '<i class="fas fa-edit me-1"></i> Update'; })); document.querySelectorAll('.delete-btn').forEach(btn=>btn.addEventListener('click',async()=>{ if(confirm('Hapus santri ini?')){ let idx = parseInt(btn.dataset.idx); studentsData.splice(idx,1); await saveSantriToUSB(); renderTable(); } })); }
-        function escapeHtml(s){ return s ? s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') : ''; }
+        // ========== EVENT LISTENERS ==========
+        document.getElementById('searchInput').addEventListener('input', () => { currentPage = 1; renderTable(); });
+        document.getElementById('kelasFilter').addEventListener('change', () => { currentPage = 1; renderTable(); });
+        document.getElementById('sortFilter').addEventListener('change', (e) => { sortColumn = e.target.value; sortAsc = true; currentPage = 1; renderTable(); });
+        document.getElementById('resetFilterBtn').addEventListener('click', () => { document.getElementById('searchInput').value = ''; document.getElementById('kelasFilter').value = ''; document.getElementById('sortFilter').value = 'kelas'; sortColumn = 'kelas'; sortAsc = true; currentPage = 1; renderTable(); });
+        document.getElementById('prevPageBtn').addEventListener('click', () => { if(currentPage > 1) { currentPage--; renderTable(); } });
+        document.getElementById('nextPageBtn').addEventListener('click', () => { if(currentPage < Math.ceil(filteredData.length / itemsPerPage)) { currentPage++; renderTable(); } });
+        window.sortTable = function(col) { if(col === 'no') return; if(sortColumn === col) sortAsc = !sortAsc; else { sortColumn = col; sortAsc = true; document.getElementById('sortFilter').value = col; } currentPage = 1; renderTable(); };
+        document.getElementById('exportCsvBtn').addEventListener('click', () => {
+            if(!filteredData.length){ alert('Tidak ada data'); return; }
+            let header = ['No','NIS','Nama','Kelas']; let rows = filteredData.map((s,i) => [i+1, s.nis, s.name, s.kelas]); let csv = [header.join(','), ...rows.map(r => r.map(c => `"${c}"`).join(','))].join('\n'); let blob = new Blob([csv], {type:'text/csv'}); let a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `daftar_santri_${new Date().toISOString().slice(0,10)}.csv`; a.click();
+        });
+        document.getElementById('exportXlsxBtn').addEventListener('click', () => { if(!filteredData.length){ alert('Tidak ada data'); return; } const ws = XLSX.utils.json_to_sheet(filteredData); const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, 'Santri'); XLSX.writeFile(wb, `daftar_santri_${new Date().toISOString().slice(0,10)}.xlsx`); });
+        document.getElementById('exportAbsenBtn').addEventListener('click', () => { let data = studentsData.map(s => ({ NIS: s.nis, Nama: s.name, Kelas: s.kelas })); if(!data.length){ alert('Data santri kosong'); return; } const ws = XLSX.utils.json_to_sheet(data); const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, 'Absen'); XLSX.writeFile(wb, `absen_santri_${new Date().toISOString().slice(0,10)}.xlsx`); });
 
-        // CRUD SANTRI
-        document.getElementById('btnSaveSantri').addEventListener('click', async()=>{ let nis = document.getElementById('nis').value.trim(); let nama = document.getElementById('nama').value.trim(); let kelas = document.getElementById('kelas').value; if(!nis || !nama || !kelas){ alert('Isi semua field'); return; } if(editIndex >= 0){ studentsData[editIndex] = { nis, name: nama, kelas }; editIndex = -1; document.getElementById('btnCancelEdit').style.display = 'none'; document.getElementById('btnSaveSantri').innerHTML = '<i class="fas fa-save me-1"></i> Simpan'; } else { studentsData.push({ nis, name: nama, kelas }); } await saveSantriToUSB(); renderTable(); document.getElementById('nis').value = ''; document.getElementById('nama').value = ''; document.getElementById('kelas').value = ''; });
-        document.getElementById('btnCancelEdit').addEventListener('click',()=>{ editIndex = -1; document.getElementById('nis').value = ''; document.getElementById('nama').value = ''; document.getElementById('kelas').value = ''; document.getElementById('btnCancelEdit').style.display = 'none'; document.getElementById('btnSaveSantri').innerHTML = '<i class="fas fa-save me-1"></i> Simpan'; });
-        document.getElementById('searchInput').addEventListener('input',()=>{ currentPage=1; renderTable(); });
-        document.getElementById('kelasFilter').addEventListener('change',()=>{ currentPage=1; renderTable(); });
-        document.getElementById('sortFilter').addEventListener('change',(e)=>{ sortColumn = e.target.value; sortAsc = true; currentPage=1; renderTable(); });
-        document.getElementById('resetFilterBtn').addEventListener('click',()=>{ document.getElementById('searchInput').value=''; document.getElementById('kelasFilter').value=''; document.getElementById('sortFilter').value='kelas'; sortColumn='kelas'; sortAsc=true; currentPage=1; renderTable(); });
-        document.getElementById('prevPageBtn').addEventListener('click',()=>{ if(currentPage>1){ currentPage--; renderTable(); } });
-        document.getElementById('nextPageBtn').addEventListener('click',()=>{ let totalPages = Math.ceil(filteredData.length/itemsPerPage); if(currentPage<totalPages){ currentPage++; renderTable(); } });
-        window.sortTable = function(col){ if(col==='no') return; if(sortColumn===col) sortAsc = !sortAsc; else { sortColumn = col; sortAsc = true; } renderTable(); };
-
-        // EKSPOR
-        function exportToXLSX(data, filename){ if(!data.length){ alert('Data kosong'); return; } let ws = XLSX.utils.json_to_sheet(data); let wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, 'Santri'); XLSX.writeFile(wb, filename); }
-        document.getElementById('exportCsvBtn').addEventListener('click',()=>{ let data = filteredData; if(!data.length){ alert('Data kosong'); return; } let header = ['No','NIS','Nama','Kelas']; let rows = data.map((s,i)=>[i+1, s.nis, s.name, s.kelas]); let csv = [header.join(','), ...rows.map(r=>r.map(c=>`"${c}"`).join(','))].join('\n'); let blob = new Blob([csv],{type:'text/csv'}); let a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=`santri_${new Date().toISOString().slice(0,10)}.csv`; a.click(); URL.revokeObjectURL(a.href); });
-        document.getElementById('exportXlsxBtn').addEventListener('click',()=>{ let data = filteredData; if(!data.length){ alert('Data kosong'); return; } exportToXLSX(data, `santri_${new Date().toISOString().slice(0,10)}.xlsx`); });
-        document.getElementById('importXlsxBtn').addEventListener('click',()=>{ document.getElementById('importPreview').innerHTML = ''; document.getElementById('importFile').value = ''; $('#importModal').modal('show'); });
-        document.getElementById('confirmImportBtn').addEventListener('click',async()=>{ let file = document.getElementById('importFile').files[0]; if(!file) { alert('Pilih file'); return; } let reader = new FileReader(); reader.onload = async(e)=>{ let data = new Uint8Array(e.target.result); let workbook = XLSX.read(data, {type:'array'}); let sheet = workbook.Sheets[workbook.SheetNames[0]]; let json = XLSX.utils.sheet_to_json(sheet); let newStudents = json.map(row=>{ let nis = String(row.NIS || row.nis || '').trim(); let name = row.Nama || row.nama || ''; let kelas = row.Kelas || row.kelas || ''; return { nis, name, kelas }; }).filter(s=> s.nis && s.name && s.kelas); if(newStudents.length){ studentsData = studentsData.concat(newStudents); await saveSantriToUSB(); renderTable(); alert(`Berhasil mengimpor ${newStudents.length} santri`); } else { alert('Tidak ada data valid'); } $('#importModal').modal('hide'); }; reader.readAsArrayBuffer(file); });
-        document.getElementById('deleteAllBtn').addEventListener('click',async()=>{ if(confirm('Hapus SEMUA data santri?')){ studentsData = []; await saveSantriToUSB(); renderTable(); } });
-
-        // INIT KELAS FILTER
-        function initKelasFilter(){ let kelasSet = new Set(studentsData.map(s=>s.kelas)); let kelasOptions = [...kelasSet].sort((a,b)=>{ let aOrd = kelasOrder[a.split(' ')[0]] || 999, bOrd = kelasOrder[b.split(' ')[0]] || 999; if(aOrd !== bOrd) return aOrd - bOrd; return a.localeCompare(b); }); let filter = document.getElementById('kelasFilter'); filter.innerHTML = '<option value="">Semua Kelas</option>'; kelasOptions.forEach(k => filter.appendChild(new Option(k, k))); }
-
-        // TOMBOL UTAMA
-        document.getElementById('folderStatusBtn').addEventListener('click', async()=>{ await ensureFolder(); await loadSantri(); initKelasFilter(); });
-        document.getElementById('lihatFileBtn').addEventListener('click', showFileModal);
-        document.getElementById('configDriveBtn').addEventListener('click',()=>{ let newId = prompt('Client ID:', driveClientId); if(newId){ driveClientId = newId; localStorage.setItem('google_drive_client_id', driveClientId); updateDriveButtons(); initGIS(); } });
-        document.getElementById('loginDriveBtn').addEventListener('click',()=>{ if(!driveClientId) alert('Konfigurasi API dulu'); else { if(!tokenClient) initGIS(); requestAccessToken(); } });
-        document.getElementById('uploadDriveBtn').addEventListener('click', uploadToDriveButton);
-        document.getElementById('syncDriveBtn').addEventListener('click', syncFromDrive);
-
-        // INISIALISASI
-        (async function init(){ let handle = await usbFileManager.getRootHandle(); if(handle) document.getElementById('folderStatus').innerHTML = `<i class="fas fa-check-circle me-1"></i> USB: ${handle.name}`; await loadSantri(); initKelasFilter(); loadDriveConfig(); })();
+        // ========== INISIALISASI ==========
+        renderTable();
+        initKelasFilter();
+        loadDriveConfig();
+        if(driveClientId) initializeGIS();
+        // Cek apakah ada folder USB terpasang (tidak wajib)
+        if(usbFileManager.isSupported() && usbFileManager.getRootHandle) {
+            usbFileManager.getRootHandle().then(h => { if(h) { document.getElementById('folderStatus').innerHTML = `<i class="fas fa-check-circle"></i> USB: ${h.name}`; loadFromUSB(); } });
+        }
     })();
 </script>
 </body>
