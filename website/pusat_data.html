@@ -4,13 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Darur Rekap | Divisi Bahasa</title>
+    <!-- CDN Bootstrap, Font Awesome, Chart.js, XLSX, jQuery -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script src="./src/usbFileManager.js"></script>
     <style>
-        /* ---- style lengkap (sama seperti sebelumnya, tidak diubah) ---- */
+        /* ========== STYLE (pastel, dark mode, sidebar) ========== */
         @font-face { font-family: 'Sakkal Majalla'; src: local('Sakkal Majalla'), local('Traditional Arabic'); font-weight: normal; }
         * { transition: background-color 0.2s ease, color 0.2s ease; }
         body { font-family: 'Inter', system-ui, sans-serif; background: #f5f3ff; color: #1e1b2f; }
@@ -30,34 +34,19 @@
         .sidebar .active { background: #e9e6ff; color: #5e4bcc; border-left: 3px solid #5e4bcc; }
         body.dark .sidebar .active { background: #2d3e5a; color: #b9aaff; }
         .main-content { margin-left: 260px; }
-        @media (max-width: 800px) { .sidebar { transform: translateX(-100%); transition: 0.2s; } .sidebar.show { transform: translateX(0); } .main-content { margin-left: 0; } }
-        .header { background: #fff; padding: 0.6rem 1.5rem; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; position: sticky; top: 0; z-index: 99; }
+        @media (max-width: 768px) { .sidebar { transform: translateX(-100%); transition: 0.2s; } .sidebar.show { transform: translateX(0); } .main-content { margin-left: 0; } }
+        .header { background: #fff; padding: 0.6rem 1.2rem; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 99; }
         body.dark .header { background: #0a0a12; border-bottom-color: #2a2a3a; }
-        .blog-title a { background: linear-gradient(135deg, #7c6ee7, #b48eff); -webkit-background-clip: text; background-clip: text; color: transparent; text-decoration: none; font-weight: 700; font-size: 1.5rem; }
-        .header-actions { display: flex; gap: 1rem; align-items: center; }
-        .dark-mode-toggle { background: #f0edff; border: none; border-radius: 2rem; padding: 0.4rem 1rem; cursor: pointer; font-weight: 500; }
-        .datetime-container { background: #f0edff; border-radius: 2rem; padding: 0.2rem 0.8rem; display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; }
-        .arabic-clock { font-family: 'Traditional Arabic', serif; }
-        .container { max-width: 1200px; margin: 0 auto; padding: 2rem 1.5rem; }
-        .stat-card { border-radius: 1.5rem; background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.05); transition: 0.2s; cursor: pointer; }
-        body.dark .stat-card { background: #1e2a3a; }
-        .stat-card:hover { transform: translateY(-5px); }
-        .btn-pastel-primary { background: #b7abff; border: none; border-radius: 2rem; padding: 0.5rem 1.2rem; color: #1e1b2f; }
-        body.dark .btn-pastel-primary { background: #5e4bcc; color: white; }
-        .btn-pastel-success { background: #c8e6c9; border: none; border-radius: 2rem; color: #1e1b2f; }
-        body.dark .btn-pastel-success { background: #2e7d32; color: white; }
-        .btn-pastel-danger { background: #ffcdd2; border: none; border-radius: 2rem; color: #c62828; }
-        body.dark .btn-pastel-danger { background: #c62828; color: white; }
-        .btn-pastel-info { background: #b3e5fc; border: none; border-radius: 2rem; color: #1e1b2f; }
-        body.dark .btn-pastel-info { background: #0288d1; color: white; }
-        .btn-pastel-warning { background: #ffe0b2; border: none; border-radius: 2rem; color: #e65100; }
-        body.dark .btn-pastel-warning { background: #f57c00; color: white; }
-        .table-card { background: #fff; border-radius: 0.5rem; margin-bottom: 1.5rem; }
-        body.dark .table-card { background: #1e2a3a; }
-        .table-header { display: flex; justify-content: space-between; padding: 1rem 1.5rem; border-bottom: 1px solid #dee2e6; }
-        body.dark .table-header { border-bottom-color: #334152; }
-        .table-container { padding: 1.5rem; overflow-x: auto; }
-        .kelas-badge { padding: 0.25rem 0.6rem; border-radius: 30px; font-size: 0.7rem; font-weight: 600; }
+        .navbar-classic { display: flex; justify-content: space-between; width: 100%; }
+        #nav-toggle { color: #2d3a4b; font-size: 1.2rem; cursor: pointer; }
+        body.dark #nav-toggle { color: #fff; }
+        .avatar-md { width: 38px; height: 38px; border-radius: 50%; object-fit: cover; }
+        .footer { background: #fefcff; border-top: 1px solid #e9e6f5; text-align: center; padding: 1rem 0; margin-top: 2rem; font-size: 0.8rem; }
+        body.dark .footer { background: #0f172a; border-top-color: #1e293b; }
+        .datetime-container { background: #f0edff; border-radius: 2rem; padding: 0.4rem 1rem; display: inline-flex; align-items: center; gap: 0.8rem; font-size: 0.85rem; }
+        body.dark .datetime-container { background: #1e2a3a; color: #e0e0e0; }
+        .arabic-clock { font-family: 'Sakkal Majalla', 'Traditional Arabic', serif; font-size: 1rem; }
+        .kelas-badge { display: inline-block; padding: 0.25rem 0.6rem; border-radius: 30px; font-size: 0.7rem; font-weight: 600; }
         .kelas-vii { background: #e3f2fd; color: #0d47a1; }
         .kelas-viii { background: #e8f5e9; color: #1e5e2e; }
         .kelas-ix { background: #fff3e0; color: #b75d0a; }
@@ -78,13 +67,24 @@
         body.dark .status-diterima { background: #1a3a1a; color: #a5d6a7; }
         body.dark .status-ditolak { background: #3a1a1a; color: #ef9a9a; }
         body.dark .status-pending { background: #3a3a1a; color: #ffe082; }
-        .footer { background: #fefcff; border-top: 1px solid #e9e6f5; text-align: center; padding: 1.5rem; margin-top: 2rem; font-size: 0.8rem; }
-        body.dark .footer { background: #0f172a; }
-        @media (max-width: 800px) { .main-content { margin-left: 0; } .container { padding: 1rem; } .blog-title a { font-size: 1.2rem; } }
+        .btn-pastel-primary { background: #b7abff; border: none; border-radius: 2rem; padding: 0.5rem 1.2rem; color: #1e1b2f; }
+        body.dark .btn-pastel-primary { background: #5e4bcc; color: white; }
+        .btn-pastel-success { background: #c8e6c9; border: none; border-radius: 2rem; color: #1e1b2f; }
+        body.dark .btn-pastel-success { background: #2e7d32; color: white; }
+        .btn-pastel-danger { background: #ffcdd2; border: none; border-radius: 2rem; color: #c62828; }
+        body.dark .btn-pastel-danger { background: #c62828; color: white; }
+        .btn-pastel-info { background: #b3e5fc; border: none; border-radius: 2rem; color: #1e1b2f; }
+        body.dark .btn-pastel-info { background: #0288d1; color: white; }
+        .btn-pastel-warning { background: #ffe0b2; border: none; border-radius: 2rem; color: #e65100; }
+        body.dark .btn-pastel-warning { background: #f57c00; color: white; }
+        .stat-card { border-radius: 1.5rem; background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.05); transition: 0.2s; cursor: pointer; }
+        body.dark .stat-card { background: #1e2a3a; }
+        .stat-card:hover { transform: translateY(-5px); }
     </style>
 </head>
 <body>
-    <!-- SIDEBAR (sama) -->
+<div id="db-wrapper">
+    <!-- SIDEBAR -->
     <div class="sidebar" id="sidebar">
         <div class="p-3"><h4 class="fw-bold">Divisi Bahasa</h4></div>
         <ul class="nav flex-column">
@@ -101,407 +101,463 @@
     <!-- MAIN CONTENT -->
     <div class="main-content">
         <div class="header">
-            <div class="blog-title"><a href="#"><data:blog.title/></a></div>
-            <div class="header-actions">
-                <div class="datetime-container"><i class="far fa-clock"></i><span id="jamIndo">--:--:--</span><span class="arabic-clock" id="jamArab">--:--:--</span></div>
-                <button class="dark-mode-toggle" id="darkModeToggle"><i class="fas fa-moon"></i> Mode</button>
+            <div class="navbar-classic">
+                <a id="nav-toggle" href="#"><i class="fas fa-bars"></i></a>
+                <div class="d-flex align-items-center gap-3">
+                    <button id="darkModeBtn" class="btn btn-sm btn-outline-secondary"><i class="fas fa-moon"></i></button>
+                    <div class="dropdown">
+                        <a href="#" data-bs-toggle="dropdown"><img src="./assets/images/avatar/default.jpg" class="avatar-md" id="userAvatar"></a>
+                        <div class="dropdown-menu dropdown-menu-end">
+                            <div class="px-3 py-2"><strong id="userFullName">User</strong><br><span class="small text-muted" id="userRole"></span></div>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="settings.html">Pengaturan</a>
+                            <a class="dropdown-item text-danger" href="#" onclick="logout()">Keluar</a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
         <div class="container-fluid px-4 py-4">
             <div id="beranda">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h3>Darur Rekap <span class="badge bg-secondary">Divisi Bahasa</span></h3>
-                    <div><button id="folderStatusBtn" class="btn btn-pastel-primary"><i class="fas fa-folder-open me-2"></i><span id="folderStatus">Pilih USB (Opsional)</span></button></div>
-                </div>
-                <div class="row g-3">
-                    <div class="col-md-3"><div class="stat-card p-3" id="cardPelanggaran"><h5><i class="fas fa-exclamation-triangle"></i> Pelanggaran</h5><h2 id="countPelanggaran">0</h2></div></div>
-                    <div class="col-md-3"><div class="stat-card p-3" id="cardReward"><h5><i class="fas fa-gift"></i> Reward</h5><h2><span id="countRewardMin">0</span> <small>/ <span id="countRewardTotal">0</span></small></h2></div></div>
-                    <div class="col-md-3"><div class="stat-card p-3" id="cardPengajuan"><h5><i class="fas fa-file-upload"></i> Pengajuan</h5><h2 id="countPengajuan">0</h2></div></div>
-                    <div class="col-md-3"><div class="stat-card p-3" id="cardLainnya"><h5><i class="fas fa-folder"></i> Lainnya</h5><h2 id="countLainnya">0</h2></div></div>
+                <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap">
+                    <h3 class="fw-semibold">Darur Rekap <span class="badge bg-secondary ms-2">Divisi Bahasa</span></h3>
+                    <div class="datetime-container"><i class="far fa-clock"></i><span id="jamIndo">--:--:--</span><span class="arabic-clock" id="jamArab">--:--:--</span></div>
                 </div>
 
-                <!-- Card Manajemen Data (Upload & Impor) -->
-                <div class="card mt-4 p-3">
-                    <h5><i class="fas fa-database"></i> Manajemen Data</h5>
+                <!-- Statistik Cards -->
+                <div class="row g-3 mb-4">
+                    <div class="col-md-3"><div class="stat-card p-3" id="cardPelanggaran"><h5><i class="fas fa-exclamation-triangle me-2"></i> Pelanggaran</h5><h2 id="countPelanggaran">0</h2></div></div>
+                    <div class="col-md-3"><div class="stat-card p-3" id="cardReward"><h5><i class="fas fa-gift me-2"></i> Reward</h5><h2><span id="countRewardMin">0</span> <small>/ <span id="countRewardTotal">0</span></small></h2></div></div>
+                    <div class="col-md-3"><div class="stat-card p-3" id="cardPengajuan"><h5><i class="fas fa-file-upload me-2"></i> Pengajuan</h5><h2 id="countPengajuan">0</h2></div></div>
+                    <div class="col-md-3"><div class="stat-card p-3" id="cardLainnya"><h5><i class="fas fa-folder me-2"></i> Lainnya</h5><h2 id="countLainnya">0</h2></div></div>
+                </div>
+
+                <!-- USB Opsional -->
+                <div class="mb-3">
+                    <button id="folderStatusBtn" class="btn btn-pastel-primary"><i class="fas fa-folder-open me-2"></i><span id="folderStatus">Pilih USB (Cadangan)</span></button>
+                </div>
+
+                <!-- Manajemen Data (Upload & Impor) -->
+                <div class="card p-3 mb-4">
+                    <h5><i class="fas fa-database me-2"></i> Manajemen Data</h5>
                     <div class="border-bottom pb-3 mb-3">
-                        <h6><i class="fas fa-cloud-upload-alt"></i> Upload ke USB (Opsional)</h6>
+                        <h6><i class="fas fa-cloud-upload-alt me-2 text-primary"></i> Upload ke USB (Opsional)</h6>
                         <div class="row g-2">
                             <div class="col-md-3"><select class="form-select" id="fileCategory"><option value="pengajuan">Pengajuan</option><option value="lainnya">Lainnya</option></select></div>
                             <div class="col-md-6"><input type="file" class="form-control" id="fileInput" multiple></div>
-                            <div class="col-md-3"><button class="btn btn-pastel-primary w-100" id="btnUpload"><i class="fas fa-upload"></i> Unggah</button></div>
+                            <div class="col-md-3"><button class="btn btn-pastel-primary w-100" id="btnUpload"><i class="fas fa-upload me-1"></i> Unggah</button></div>
                         </div>
                     </div>
                     <div>
-                        <h6><i class="fas fa-file-excel"></i> Impor Data dari Excel (XLSX)</h6>
+                        <h6><i class="fas fa-file-excel me-2 text-success"></i> Impor Data dari Excel (XLSX)</h6>
                         <div class="row g-3">
-                            <div class="col-md-6"><label>Impor Pelanggaran</label><div class="d-flex gap-2"><input type="file" id="importPelanggaranFile" accept=".xlsx,.xls,.csv" class="form-control"><button id="btnImportPelanggaran" class="btn btn-pastel-success">Impor</button></div><small>Tgl, Nama, Kelas, Pelanggaran, Pencatat, Tempat, Keterangan</small></div>
-                            <div class="col-md-6"><label>Impor Reward</label><div class="d-flex gap-2"><input type="file" id="importRewardFile" accept=".xlsx,.xls,.csv" class="form-control"><button id="btnImportReward" class="btn btn-pastel-success">Impor</button></div><small>Tgl, Nama, Kelas, Reward, Pencatat, Tempat, Keterangan</small></div>
+                            <div class="col-md-6"><label class="form-label">Impor Pelanggaran</label><div class="d-flex gap-2"><input type="file" class="form-control" id="importPelanggaranFile" accept=".xlsx,.xls,.csv"><button class="btn btn-pastel-success" id="btnImportPelanggaran"><i class="fas fa-upload"></i> Impor</button></div><small class="text-muted">Format: Tanggal, Nama, Kelas, Pelanggaran, Pencatat, Tempat, Keterangan</small></div>
+                            <div class="col-md-6"><label class="form-label">Impor Reward</label><div class="d-flex gap-2"><input type="file" class="form-control" id="importRewardFile" accept=".xlsx,.xls,.csv"><button class="btn btn-pastel-success" id="btnImportReward"><i class="fas fa-upload"></i> Impor</button></div><small class="text-muted">Format: Tanggal, Nama, Kelas, Reward, Pencatat, Tempat, Keterangan</small></div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Google Drive Sync -->
-                <div class="card mt-4 p-3">
-                    <h5><i class="fab fa-google-drive" style="color:#4285F4;"></i> Sinkronisasi Google Drive</h5>
+                <!-- Google Drive Sync (Data Utama) -->
+                <div class="card p-3 mb-4">
+                    <h5><i class="fab fa-google-drive me-2" style="color:#4285F4;"></i> Sinkronisasi Google Drive <span class="badge bg-info">Utama (Online)</span></h5>
                     <div class="row g-3 mt-2">
                         <div class="col-md-3"><button id="configDriveBtn" class="btn btn-pastel-warning w-100"><i class="fas fa-cog"></i> Konfigurasi API</button></div>
                         <div class="col-md-3"><button id="loginDriveBtn" class="btn btn-pastel-primary w-100" disabled><i class="fab fa-google"></i> Login Google</button></div>
-                        <div class="col-md-3"><button id="syncDriveBtn" class="btn btn-pastel-info w-100" disabled><i class="fas fa-sync"></i> Sinkron (Drive → Lokal)</button></div>
-                        <div class="col-md-3"><button id="uploadDriveBtn" class="btn btn-pastel-success w-100" disabled><i class="fas fa-cloud-upload-alt"></i> Upload (Lokal → Drive)</button></div>
-                        <div class="col-md-12 mt-2"><div id="driveStatus" class="small text-muted"></div></div>
+                        <div class="col-md-3"><button id="syncDriveBtn" class="btn btn-pastel-info w-100" disabled><i class="fas fa-sync"></i> Ambil dari Drive</button></div>
+                        <div class="col-md-3"><button id="uploadDriveBtn" class="btn btn-pastel-success w-100" disabled><i class="fas fa-cloud-upload-alt"></i> Simpan ke Drive</button></div>
+                        <div class="col-12 mt-2"><div id="driveStatus" class="small text-muted"></div></div>
                     </div>
                 </div>
 
                 <!-- Grafik & Reset -->
-                <div class="row mt-4"><div class="col-12"><div class="card p-3"><h5><i class="fas fa-chart-line"></i> Statistik Pelanggaran & Reward</h5><canvas id="chartPelRew" height="200"></canvas></div></div></div>
-                <div class="row mt-4">
-                    <div class="col-md-6"><div class="card p-3"><h5><i class="fas fa-chart-pie"></i> Statistik Pengajuan</h5><canvas id="chartPengajuanPie" height="180"></canvas><div class="mt-3"><div><i class="fas fa-check-circle text-success"></i> Diterima: <span id="statDiterima">0</span></div><div><i class="fas fa-times-circle text-danger"></i> Ditolak: <span id="statDitolak">0</span></div><div><i class="fas fa-clock text-warning"></i> Pending: <span id="statPending">0</span></div></div></div></div>
-                    <div class="col-md-6"><div class="card p-3 text-center"><button id="btnReset" class="btn btn-pastel-danger btn-lg"><i class="fas fa-trash-alt"></i> Reset Semua Data</button><p class="small text-muted mt-3">Data santri tetap aman, hapus pelanggaran, reward, dan file.</p></div></div>
+                <div class="row mb-4">
+                    <div class="col-12"><div class="card p-3"><h5><i class="fas fa-chart-line me-2"></i> Statistik Pelanggaran & Reward</h5><canvas id="chartPelRew" height="200"></canvas></div></div>
                 </div>
-                <div class="row mt-3"><div class="col-12"><div class="card p-3"><h5><i class="fas fa-file-excel"></i> Ekspor Data</h5><div class="d-flex gap-2"><button id="exportPelanggaranBtn" class="btn btn-pastel-success btn-sm"><i class="fas fa-download"></i> Pelanggaran</button><button id="exportRewardBtn" class="btn btn-pastel-success btn-sm"><i class="fas fa-download"></i> Reward</button><button id="exportSantriBtn" class="btn btn-pastel-info btn-sm"><i class="fas fa-users"></i> Santri</button></div></div></div></div>
+                <div class="row mb-4">
+                    <div class="col-md-6"><div class="card p-3"><h5><i class="fas fa-chart-pie me-2"></i> Statistik Pengajuan</h5><canvas id="chartPengajuanPie" height="180"></canvas><div class="mt-3 d-flex justify-content-between"><div><i class="fas fa-check-circle text-success"></i> Diterima: <span id="statDiterima">0</span></div><div><i class="fas fa-times-circle text-danger"></i> Ditolak: <span id="statDitolak">0</span></div><div><i class="fas fa-clock text-warning"></i> Pending: <span id="statPending">0</span></div></div></div></div>
+                    <div class="col-md-6"><div class="card p-3 text-center"><button id="btnReset" class="btn btn-pastel-danger btn-lg w-100"><i class="fas fa-trash-alt"></i> Reset Semua Data</button><p class="small text-muted mt-3">Hanya data pelanggaran & reward, data santri tetap aman</p></div></div>
+                </div>
+                <div class="row">
+                    <div class="col-12"><div class="card p-3"><h5><i class="fas fa-file-excel me-2"></i> Ekspor Data</h5><div class="d-flex gap-2 flex-wrap"><button id="exportPelanggaranBtn" class="btn btn-pastel-success btn-sm"><i class="fas fa-download"></i> Pelanggaran</button><button id="exportRewardBtn" class="btn btn-pastel-success btn-sm"><i class="fas fa-download"></i> Reward</button><button id="exportSantriBtn" class="btn btn-pastel-info btn-sm"><i class="fas fa-users"></i> Santri</button></div></div></div>
+                </div>
             </div>
-            <div id="halamanDetail" style="display:none;"><div class="card"><div class="card-header"><h4 id="detailTitle"></h4><button class="btn btn-pastel-primary" id="btnKembali">Kembali</button></div><div class="card-body" id="detailContent"></div></div></div>
+
+            <!-- Halaman Detail (tampil saat card diklik) -->
+            <div id="halamanDetail" style="display: none;">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between"><h4 id="detailTitle"></h4><button id="btnKembali" class="btn btn-pastel-primary">Kembali</button></div>
+                    <div class="card-body" id="detailContent"></div>
+                </div>
+            </div>
         </div>
-        <footer class="footer">© LEGION 8.0 | Website ini dapat digunakan tanpa koneksi internet</footer>
+        <footer class="footer text-center py-3">© LEGION 8.0 | Website ini dapat digunakan tanpa koneksi internet</footer>
     </div>
+</div>
 
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="./src/usbFileManager.js"></script>
-    <script>
-        (function() {
-            "use strict";
-            // ========== CEK LOGIN ==========
-            if(!localStorage.getItem('currentUser')) { window.location.href = '../WebDivisiBahasa.html'; return; }
-            let currentUser = JSON.parse(localStorage.getItem('currentUser'));
-            document.getElementById('userFullName').innerText = currentUser.name;
-            document.getElementById('userRole').innerText = currentUser.role === 'admin' ? 'Administrator' : (currentUser.role === 'guru' ? 'Guru' : 'Musyrif');
-            let avatarSrc = currentUser.avatar ? `./assets/images/avatar/${currentUser.avatar}` : './assets/images/avatar/default.jpg';
-            document.getElementById('userAvatar').src = avatarSrc;
-            window.logout = () => { if(confirm('Keluar?')){ localStorage.removeItem('currentUser'); localStorage.removeItem('rememberedUser'); window.location.href='../WebDivisiBahasa.html'; } };
+<script>
+    (function() {
+        "use strict";
+        // ========== CEK LOGIN ==========
+        if(!localStorage.getItem('currentUser')) { window.location.href = '../WebDivisiBahasa.html'; return; }
+        let currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        document.getElementById('userFullName').innerText = currentUser.name;
+        document.getElementById('userRole').innerText = currentUser.role === 'admin' ? 'Administrator' : (currentUser.role === 'guru' ? 'Guru' : 'Musyrif');
+        let avatarSrc = currentUser.avatar ? `./assets/images/avatar/${currentUser.avatar}` : './assets/images/avatar/default.jpg';
+        document.getElementById('userAvatar').src = avatarSrc;
+        window.logout = () => { if(confirm('Keluar?')){ localStorage.removeItem('currentUser'); localStorage.removeItem('rememberedUser'); window.location.href='../WebDivisiBahasa.html'; } };
 
-            // ========== DARK MODE & JAM ==========
-            let darkMode = localStorage.getItem('darkMode') === 'true';
-            if(darkMode) document.body.classList.add('dark');
-            document.getElementById('darkModeToggle')?.addEventListener('click',()=>{ document.body.classList.toggle('dark'); localStorage.setItem('darkMode',document.body.classList.contains('dark')); });
-            document.getElementById('nav-toggle')?.addEventListener('click',()=>{ document.getElementById('sidebar').classList.toggle('show'); });
-            function updateClock() { const now = new Date(); document.getElementById('jamIndo').innerText = now.toLocaleTimeString('id-ID'); document.getElementById('jamArab').innerText = now.toLocaleTimeString('ar-SA'); }
-            updateClock(); setInterval(updateClock, 1000);
+        // ========== DARK MODE & JAM ==========
+        let darkMode = localStorage.getItem('darkMode') === 'true';
+        if(darkMode) document.body.classList.add('dark');
+        document.getElementById('darkModeBtn')?.addEventListener('click',()=>{ document.body.classList.toggle('dark'); localStorage.setItem('darkMode',document.body.classList.contains('dark')); });
+        document.getElementById('nav-toggle')?.addEventListener('click',()=>{ document.getElementById('sidebar').classList.toggle('show'); });
+        function updateClock() { const now = new Date(); document.getElementById('jamIndo').innerText = now.toLocaleTimeString('id-ID'); document.getElementById('jamArab').innerText = now.toLocaleTimeString('ar-SA'); }
+        updateClock(); setInterval(updateClock, 1000);
 
-            // ========== DATA STORAGE (utama: localStorage) ==========
-            let currentPelanggaran = JSON.parse(localStorage.getItem('data_pelanggaran') || "[]");
-            let currentReward = JSON.parse(localStorage.getItem('data_reward') || "[]");
-            let santriList = JSON.parse(localStorage.getItem('santri_data') || "[]");
-            let currentFiles = []; // untuk file upload USB (tidak disimpan di localStorage)
-            let pengajuanStatus = {};
+        // ========== DATA STORAGE (Prioritas: Drive -> localStorage) ==========
+        let currentPelanggaran = JSON.parse(localStorage.getItem('data_pelanggaran') || "[]");
+        let currentReward = JSON.parse(localStorage.getItem('data_reward') || "[]");
+        let santriList = JSON.parse(localStorage.getItem('santri_data') || "[]");
+        let currentFiles = []; // file upload USB (tidak disimpan di localStorage)
+        let pengajuanStatus = {};
 
-            function savePelanggaran() { localStorage.setItem('data_pelanggaran', JSON.stringify(currentPelanggaran)); updateStats(); }
-            function saveReward() { localStorage.setItem('data_reward', JSON.stringify(currentReward)); updateStats(); }
-            function saveSantri(data) { localStorage.setItem('santri_data', JSON.stringify(data)); santriList = data; }
+        // Fungsi penyimpanan ke localStorage
+        function savePelanggaran() { localStorage.setItem('data_pelanggaran', JSON.stringify(currentPelanggaran)); updateStats(); }
+        function saveReward() { localStorage.setItem('data_reward', JSON.stringify(currentReward)); updateStats(); }
+        function saveSantri(data) { localStorage.setItem('santri_data', JSON.stringify(data)); santriList = data; }
 
-            // ========== LOAD SANTRI DEFAULT (jika kosong) ==========
-            async function loadDefaultSantri() {
-                try {
-                    const resp = await fetch('./src/students-data.js');
-                    const text = await resp.text();
-                    eval(text);
-                    if(students && students.length) {
-                        saveSantri(students);
-                        return students;
-                    }
-                } catch(e) { console.warn(e); }
-                return [];
-            }
-
-            if(!santriList.length) { loadDefaultSantri().then(data => { if(data.length) updateStats(); }); }
-
-            // ========== STATS & CHARTS ==========
-            function updateStats() {
-                document.getElementById('countPelanggaran').innerText = currentPelanggaran.length;
-                let freq = {}; currentReward.forEach(r => { if(r.nis) freq[r.nis] = (freq[r.nis]||0)+1; });
-                document.getElementById('countRewardMin').innerText = Object.values(freq).filter(c=>c>=4).length;
-                document.getElementById('countRewardTotal').innerText = Object.keys(freq).length;
-                let pengajuanFiles = currentFiles.filter(f=>f.category==='pengajuan');
-                let lainFiles = currentFiles.filter(f=>f.category==='lainnya');
-                document.getElementById('countPengajuan').innerText = pengajuanFiles.length;
-                document.getElementById('countLainnya').innerText = lainFiles.length;
-                let diterima = pengajuanFiles.filter(f=>getFileStatus(f.name)==='diterima').length;
-                let ditolak = pengajuanFiles.filter(f=>getFileStatus(f.name)==='ditolak').length;
-                let pending = pengajuanFiles.filter(f=>getFileStatus(f.name)==='pending').length;
-                document.getElementById('statDiterima').innerText = diterima;
-                document.getElementById('statDitolak').innerText = ditolak;
-                document.getElementById('statPending').innerText = pending;
-                if(window.pelRewChart) window.pelRewChart.destroy();
-                window.pelRewChart = new Chart(document.getElementById('chartPelRew'), { type: 'line', data: { labels: ['Minggu 1','Minggu 2','Minggu 3','Minggu 4'], datasets: [{ label:'Pelanggaran', data: [currentPelanggaran.length,0,0,0], borderColor:'#ff8a8a', fill: false },{ label:'Reward', data: [currentReward.length,0,0,0], borderColor:'#8bc34a', fill: false }] } });
-                if(window.pieChart) window.pieChart.destroy();
-                window.pieChart = new Chart(document.getElementById('chartPengajuanPie'), { type: 'pie', data: { labels: ['Diterima','Ditolak','Pending'], datasets: [{ data: [diterima, ditolak, pending], backgroundColor: ['#8bc34a','#ff8a8a','#ffc107'] }] } });
-            }
-
-            // ========== USB (opsional) ==========
-            async function ensureFolder(showAlert=true) {
-                if (!usbFileManager.isSupported()) { if(showAlert) alert('Browser tidak mendukung USB'); return null; }
-                let handle = await usbFileManager.getRootHandle();
-                if (!handle) { handle = await usbFileManager.pilihFolder(); if (!handle && showAlert) alert('Pilih folder USB sebagai cadangan'); }
-                return handle;
-            }
-            async function loadFromUSB() {
-                let handle = await ensureFolder(false);
-                if(!handle) return;
-                try { let pel = await usbFileManager.readJSONFile('data_pelanggaran.json'); if(pel) currentPelanggaran = pel; savePelanggaran(); } catch(e) {}
-                try { let rew = await usbFileManager.readJSONFile('data_reward.json'); if(rew) currentReward = rew; saveReward(); } catch(e) {}
-                try { let santri = await usbFileManager.readJSONFile('santri_data.json'); if(santri && santri.length) saveSantri(santri); } catch(e) {}
-                try { let status = await usbFileManager.readJSONFile('pengajuan_status.json'); if(status) pengajuanStatus = status; } catch(e) {}
-                currentFiles = await usbFileManager.listFiles() || [];
-                updateStats();
-            }
-            async function saveToUSB() {
-                let handle = await ensureFolder(true);
-                if(!handle) return;
-                await usbFileManager.saveData('data_pelanggaran.json', currentPelanggaran);
-                await usbFileManager.saveData('data_reward.json', currentReward);
-                await usbFileManager.saveData('santri_data.json', santriList);
-                await usbFileManager.saveData('pengajuan_status.json', pengajuanStatus);
-                alert('Data disimpan ke USB');
-            }
-            function getFileStatus(filename) { return pengajuanStatus[filename] || 'pending'; }
-            async function setFileStatus(filename, status) { pengajuanStatus[filename] = status; await usbFileManager.saveData('pengajuan_status.json', pengajuanStatus); updateStats(); }
-            document.getElementById('folderStatusBtn').addEventListener('click', async() => { let handle = await ensureFolder(true); if(handle) document.getElementById('folderStatus').innerHTML = `<i class="fas fa-check-circle"></i> USB: ${handle.name}`; await loadFromUSB(); });
-            document.getElementById('btnUpload').addEventListener('click', async() => {
-                let files = document.getElementById('fileInput').files;
-                if(!files.length) return alert('Pilih file');
-                let handle = await ensureFolder(true);
-                if(!handle) return;
-                let cat = document.getElementById('fileCategory').value;
-                for(let f of files) { await usbFileManager.uploadFile(f, cat); if(cat==='pengajuan') await setFileStatus(f.name, 'pending'); }
-                alert('Upload selesai');
-                document.getElementById('fileInput').value = '';
-                await loadFromUSB();
-            });
-            document.getElementById('btnReset').addEventListener('click', async() => {
-                if(prompt('Password reset (lugoh123):') !== 'lugoh123') return;
-                if(!confirm('Reset semua data? Data santri tetap aman.')) return;
-                currentPelanggaran = []; currentReward = []; pengajuanStatus = {};
-                savePelanggaran(); saveReward();
-                if(usbFileManager.isSupported()) {
-                    let all = await usbFileManager.listFiles();
-                    for(let f of all) if(f.name !== 'santri_data.json') await usbFileManager.deleteFile(f.handle);
+        // ========== DEFAULT SANTRI (jika kosong) ==========
+        async function loadDefaultSantri() {
+            try {
+                let resp = await fetch('./src/students-data.js');
+                let text = await resp.text();
+                eval(text);
+                if(students && students.length) {
+                    saveSantri(students);
                 }
-                await loadFromUSB();
-                alert('Reset selesai');
-            });
+            } catch(e) { console.warn(e); }
+        }
+        if(!santriList.length) loadDefaultSantri();
 
-            // ========== GOOGLE DRIVE (2 arah) ==========
-            let tokenClient = null, accessToken = null, driveAuth = false, driveClientId = '', driveApiKey = '';
-            function loadDriveConfig() {
-                driveClientId = localStorage.getItem('google_drive_client_id') || '';
-                driveApiKey = localStorage.getItem('google_drive_api_key') || '';
-                const savedToken = localStorage.getItem('gdrive_access_token');
-                if(savedToken) { accessToken = savedToken; driveAuth = true; }
-                updateDriveButtons();
+        // ========== STATS & CHARTS ==========
+        function updateStats() {
+            document.getElementById('countPelanggaran').innerText = currentPelanggaran.length;
+            let freq = {}; currentReward.forEach(r => { if(r.nis) freq[r.nis] = (freq[r.nis]||0)+1; });
+            document.getElementById('countRewardMin').innerText = Object.values(freq).filter(c=>c>=4).length;
+            document.getElementById('countRewardTotal').innerText = Object.keys(freq).length;
+            document.getElementById('countPengajuan').innerText = currentFiles.filter(f=>f.category==='pengajuan').length;
+            document.getElementById('countLainnya').innerText = currentFiles.filter(f=>f.category==='lainnya').length;
+            let diterima = currentFiles.filter(f=>f.category==='pengajuan' && getFileStatus(f.name)==='diterima').length;
+            let ditolak = currentFiles.filter(f=>f.category==='pengajuan' && getFileStatus(f.name)==='ditolak').length;
+            let pending = currentFiles.filter(f=>f.category==='pengajuan' && getFileStatus(f.name)==='pending').length;
+            document.getElementById('statDiterima').innerText = diterima;
+            document.getElementById('statDitolak').innerText = ditolak;
+            document.getElementById('statPending').innerText = pending;
+            if(window.pelRewChart) window.pelRewChart.destroy();
+            window.pelRewChart = new Chart(document.getElementById('chartPelRew'), { type: 'line', data: { labels: ['Minggu 1','Minggu 2','Minggu 3','Minggu 4'], datasets: [{ label:'Pelanggaran', data: [currentPelanggaran.length,0,0,0], borderColor:'#ff8a8a', fill: false },{ label:'Reward', data: [currentReward.length,0,0,0], borderColor:'#8bc34a', fill: false }] } });
+            if(window.pieChart) window.pieChart.destroy();
+            window.pieChart = new Chart(document.getElementById('chartPengajuanPie'), { type: 'pie', data: { labels: ['Diterima','Ditolak','Pending'], datasets: [{ data: [diterima, ditolak, pending], backgroundColor: ['#8bc34a','#ff8a8a','#ffc107'] }] } });
+        }
+
+        // ========== USB OPSIONAL ==========
+        async function ensureFolder(showAlert=true) {
+            if(!usbFileManager.isSupported()) { if(showAlert) alert('Browser tidak mendukung USB'); return null; }
+            let handle = await usbFileManager.getRootHandle();
+            if(!handle) handle = await usbFileManager.pilihFolder();
+            if(!handle && showAlert) alert('Pilih folder USB (opsional)');
+            return handle;
+        }
+        async function loadFromUSB() {
+            let handle = await ensureFolder(false);
+            if(!handle) return;
+            try { let pel = await usbFileManager.readJSONFile('data_pelanggaran.json'); if(pel) { currentPelanggaran = pel; savePelanggaran(); } } catch(e) {}
+            try { let rew = await usbFileManager.readJSONFile('data_reward.json'); if(rew) { currentReward = rew; saveReward(); } } catch(e) {}
+            try { let s = await usbFileManager.readJSONFile('santri_data.json'); if(s && s.length) { saveSantri(s); } } catch(e) {}
+            try { let st = await usbFileManager.readJSONFile('pengajuan_status.json'); if(st) pengajuanStatus = st; } catch(e) {}
+            let allFiles = await usbFileManager.listFiles() || [];
+            currentFiles = allFiles.filter(f => !['santri_data.json','data_pelanggaran.json','data_reward.json','pengajuan_status.json','file_metadata.json'].includes(f.name));
+            updateStats();
+        }
+        async function saveToUSB() {
+            let handle = await ensureFolder(true);
+            if(!handle) return;
+            await usbFileManager.saveData('data_pelanggaran.json', currentPelanggaran);
+            await usbFileManager.saveData('data_reward.json', currentReward);
+            await usbFileManager.saveData('santri_data.json', santriList);
+            await usbFileManager.saveData('pengajuan_status.json', pengajuanStatus);
+            alert('Data disimpan ke USB');
+        }
+        function getFileStatus(filename) { return pengajuanStatus[filename] || 'pending'; }
+        async function setFileStatus(filename, status) { pengajuanStatus[filename] = status; await usbFileManager.saveData('pengajuan_status.json', pengajuanStatus); updateStats(); }
+        document.getElementById('folderStatusBtn').addEventListener('click', async() => {
+            let handle = await ensureFolder(true);
+            if(handle) { document.getElementById('folderStatus').innerHTML = `<i class="fas fa-check-circle"></i> USB: ${handle.name}`; await loadFromUSB(); }
+        });
+        document.getElementById('btnUpload').addEventListener('click', async() => {
+            let files = document.getElementById('fileInput').files;
+            if(!files.length) return alert('Pilih file');
+            let handle = await ensureFolder(true);
+            if(!handle) return;
+            let cat = document.getElementById('fileCategory').value;
+            for(let f of files) { await usbFileManager.uploadFile(f, cat); if(cat==='pengajuan') await setFileStatus(f.name, 'pending'); }
+            alert('Upload selesai');
+            document.getElementById('fileInput').value = '';
+            await loadFromUSB();
+        });
+        document.getElementById('btnReset').addEventListener('click', async() => {
+            if(prompt('Password reset (lugoh123):') !== 'lugoh123') return;
+            if(!confirm('Reset semua data pelanggaran & reward? Data santri tetap aman.')) return;
+            currentPelanggaran = []; currentReward = []; pengajuanStatus = {};
+            savePelanggaran(); saveReward();
+            if(usbFileManager.isSupported()) {
+                let all = await usbFileManager.listFiles();
+                for(let f of all) if(!['santri_data.json'].includes(f.name)) await usbFileManager.deleteFile(f.handle);
             }
-            function updateDriveButtons() {
-                let hasConfig = !!(driveClientId && driveApiKey);
-                document.getElementById('loginDriveBtn').disabled = !hasConfig || driveAuth;
-                document.getElementById('syncDriveBtn').disabled = !hasConfig || !driveAuth;
-                document.getElementById('uploadDriveBtn').disabled = !hasConfig || !driveAuth;
-                let statusDiv = document.getElementById('driveStatus');
-                if(!hasConfig) statusDiv.innerHTML = '⚠️ API belum dikonfigurasi';
-                else if(!driveAuth) statusDiv.innerHTML = '🔑 Belum login';
-                else statusDiv.innerHTML = '✅ Siap sinkronisasi';
-            }
-            function initializeGIS() {
-                if(!driveClientId) return false;
-                if(typeof google === 'undefined' || !google.accounts) return false;
-                tokenClient = google.accounts.oauth2.initTokenClient({
-                    client_id: driveClientId,
-                    scope: 'https://www.googleapis.com/auth/drive.file',
-                    callback: (resp) => {
-                        if(resp.error) { console.error(resp); driveAuth=false; accessToken=null; localStorage.removeItem('gdrive_access_token'); updateDriveButtons(); return; }
-                        accessToken = resp.access_token;
-                        driveAuth = true;
-                        localStorage.setItem('gdrive_access_token', accessToken);
-                        updateDriveButtons();
-                    }
-                });
-                return true;
-            }
-            function requestAccessToken() { if(tokenClient) tokenClient.requestAccessToken(); else alert('Konfigurasi API dulu'); }
-            async function uploadToDrive(fileName, data) {
-                if(!accessToken) throw new Error('Belum login');
-                const file = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
-                const metadata = { name: fileName, parents: ['root'] };
-                const form = new FormData();
-                form.append('metadata', new Blob([JSON.stringify(metadata)], {type: 'application/json'}));
-                form.append('file', file);
-                const resp = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
-                    method: 'POST', headers: { 'Authorization': `Bearer ${accessToken}` }, body: form
-                });
-                if(!resp.ok) throw new Error(await resp.text());
-                return true;
-            }
-            async function downloadFromDrive(fileName) {
-                if(!accessToken) throw new Error('Belum login');
-                const listResp = await fetch(`https://www.googleapis.com/drive/v3/files?q=name='${fileName}' and trashed=false&fields=files(id,name)`, {
-                    headers: { 'Authorization': `Bearer ${accessToken}` }
-                });
-                const list = await listResp.json();
-                if(!list.files || list.files.length===0) return null;
-                const fileId = list.files[0].id;
-                const download = await fetch(`https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`, {
-                    headers: { 'Authorization': `Bearer ${accessToken}` }
-                });
-                if(!download.ok) return null;
-                return await download.json();
-            }
-            document.getElementById('configDriveBtn').addEventListener('click', () => {
-                let id = prompt('Client ID', driveClientId);
-                let key = prompt('API Key', driveApiKey);
-                if(id) driveClientId = id.trim();
-                if(key) driveApiKey = key.trim();
-                localStorage.setItem('google_drive_client_id', driveClientId);
-                localStorage.setItem('google_drive_api_key', driveApiKey);
-                accessToken = null; driveAuth = false; tokenClient = null;
-                localStorage.removeItem('gdrive_access_token');
-                if(driveClientId) initializeGIS();
-                updateDriveButtons();
-            });
-            document.getElementById('loginDriveBtn').addEventListener('click', () => { if(driveClientId) { if(!tokenClient) initializeGIS(); requestAccessToken(); } else alert('Konfigurasi API dulu'); });
-            document.getElementById('syncDriveBtn').addEventListener('click', async () => {
-                if(!driveAuth) return alert('Login dulu');
-                document.getElementById('driveStatus').innerHTML = '🔄 Sinkronisasi...';
-                try {
-                    let pel = await downloadFromDrive('data_pelanggaran.json');
-                    let rew = await downloadFromDrive('data_reward.json');
-                    let santri = await downloadFromDrive('santri_data.json');
-                    if(pel) { currentPelanggaran = pel; savePelanggaran(); }
-                    if(rew) { currentReward = rew; saveReward(); }
-                    if(santri && santri.length) { saveSantri(santri); }
-                    updateStats();
-                    document.getElementById('driveStatus').innerHTML = '✅ Sinkron selesai';
-                    alert('Data dari Drive berhasil diimpor ke lokal');
-                } catch(e) { document.getElementById('driveStatus').innerHTML = '❌ Gagal: '+e.message; }
-            });
-            document.getElementById('uploadDriveBtn').addEventListener('click', async () => {
-                if(!driveAuth) return alert('Login dulu');
-                document.getElementById('driveStatus').innerHTML = '📤 Mengunggah...';
+            // Jika login ke Drive, upload data kosong ke Drive juga
+            if(driveAuth && navigator.onLine) {
                 try {
                     await uploadToDrive('data_pelanggaran.json', currentPelanggaran);
                     await uploadToDrive('data_reward.json', currentReward);
+                } catch(e) {}
+            }
+            await loadFromUSB();
+            alert('Reset selesai');
+        });
+
+        // ========== GOOGLE DRIVE (Sumber Utama) ==========
+        let tokenClient = null, accessToken = null, driveAuth = false, driveClientId = '', driveApiKey = '';
+        function loadDriveConfig() {
+            driveClientId = localStorage.getItem('google_drive_client_id') || '';
+            driveApiKey = localStorage.getItem('google_drive_api_key') || '';
+            let savedToken = localStorage.getItem('gdrive_access_token');
+            if(savedToken) { accessToken = savedToken; driveAuth = true; }
+            updateDriveButtons();
+            if(driveAuth && navigator.onLine) autoSyncFromDrive();
+        }
+        function updateDriveButtons() {
+            let hasConfig = !!(driveClientId && driveApiKey);
+            document.getElementById('loginDriveBtn').disabled = !hasConfig || driveAuth;
+            document.getElementById('syncDriveBtn').disabled = !hasConfig || !driveAuth;
+            document.getElementById('uploadDriveBtn').disabled = !hasConfig || !driveAuth;
+            let statusDiv = document.getElementById('driveStatus');
+            if(!hasConfig) statusDiv.innerHTML = '⚠️ API belum dikonfigurasi';
+            else if(!driveAuth) statusDiv.innerHTML = '🔑 Belum login ke Google Drive';
+            else statusDiv.innerHTML = '✅ Terhubung ke Drive (data utama)';
+        }
+        function initializeGIS() {
+            if(!driveClientId) return;
+            if(typeof google === 'undefined' || !google.accounts) return;
+            tokenClient = google.accounts.oauth2.initTokenClient({
+                client_id: driveClientId,
+                scope: 'https://www.googleapis.com/auth/drive.file',
+                callback: (resp) => {
+                    if(resp.error) { console.error(resp); driveAuth=false; accessToken=null; localStorage.removeItem('gdrive_access_token'); updateDriveButtons(); return; }
+                    accessToken = resp.access_token;
+                    driveAuth = true;
+                    localStorage.setItem('gdrive_access_token', accessToken);
+                    updateDriveButtons();
+                    if(navigator.onLine) autoSyncFromDrive();
+                }
+            });
+        }
+        function requestAccessToken() { if(tokenClient) tokenClient.requestAccessToken(); else alert('Konfigurasi API dulu'); }
+        async function uploadToDrive(fileName, data) {
+            if(!accessToken) throw new Error('Belum login');
+            let file = new Blob([JSON.stringify(data,null,2)], {type:'application/json'});
+            let metadata = { name: fileName, parents: ['root'] };
+            let form = new FormData();
+            form.append('metadata', new Blob([JSON.stringify(metadata)], {type:'application/json'}));
+            form.append('file', file);
+            let resp = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
+                method: 'POST', headers: { 'Authorization': `Bearer ${accessToken}` }, body: form
+            });
+            if(!resp.ok) throw new Error(await resp.text());
+            return true;
+        }
+        async function downloadFromDrive(fileName) {
+            if(!accessToken) throw new Error('Belum login');
+            let listResp = await fetch(`https://www.googleapis.com/drive/v3/files?q=name='${fileName}' and trashed=false&fields=files(id,name)`, {
+                headers: { 'Authorization': `Bearer ${accessToken}` }
+            });
+            let list = await listResp.json();
+            if(!list.files || list.files.length===0) return null;
+            let fileId = list.files[0].id;
+            let download = await fetch(`https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`, {
+                headers: { 'Authorization': `Bearer ${accessToken}` }
+            });
+            if(!download.ok) return null;
+            return await download.json();
+        }
+        async function autoSyncFromDrive() {
+            if(!driveAuth) return;
+            document.getElementById('driveStatus').innerHTML = '🔄 Menyinkronkan data dari Drive...';
+            try {
+                let pel = await downloadFromDrive('data_pelanggaran.json');
+                let rew = await downloadFromDrive('data_reward.json');
+                let santri = await downloadFromDrive('santri_data.json');
+                if(pel) { currentPelanggaran = pel; savePelanggaran(); }
+                if(rew) { currentReward = rew; saveReward(); }
+                if(santri && santri.length) { saveSantri(santri); }
+                // Jika tidak ada file di Drive, upload data lokal
+                if(!pel && !rew && !santri) {
+                    await uploadToDrive('data_pelanggaran.json', currentPelanggaran);
+                    await uploadToDrive('data_reward.json', currentReward);
                     await uploadToDrive('santri_data.json', santriList);
-                    document.getElementById('driveStatus').innerHTML = '✅ Upload berhasil';
-                    alert('Data lokal berhasil diunggah ke Drive');
-                } catch(e) { document.getElementById('driveStatus').innerHTML = '❌ Gagal: '+e.message; }
-            });
-
-            // ========== IMPOR XLSX (dengan pencarian NIS otomatis) ==========
-            function findNIS(nama, kelas) { return santriList.find(s => s.name.toLowerCase()===nama.toLowerCase().trim() && s.kelas===kelas.trim())?.nis || null; }
-            async function importPelanggaranExcel(file) {
-                return new Promise((resolve, reject) => {
-                    let reader = new FileReader();
-                    reader.onload = (e) => {
-                        let wb = XLSX.read(new Uint8Array(e.target.result), {type:'array'});
-                        let sheet = wb.Sheets[wb.SheetNames[0]];
-                        let json = XLSX.utils.sheet_to_json(sheet, {header:1});
-                        if(json.length<2) reject('File kosong');
-                        let headers = json[0];
-                        let map = ['Tanggal','Nama','Kelas','Pelanggaran','Pencatat','Tempat','Keterangan'].map(h => headers.indexOf(h));
-                        if(map.includes(-1)) reject('Format header salah');
-                        let rows = json.slice(1);
-                        let newData = [], notFound = [];
-                        rows.forEach((row, idx) => {
-                            let tanggal = row[map[0]]; let nama = (row[map[1]]||'').trim(); let kelas = (row[map[2]]||'').trim();
-                            let pel = row[map[3]]; let pencatat = row[map[4]]; let tempat = row[map[5]]; let ket = row[map[6]];
-                            if(!tanggal || !nama || !kelas || !pel || !pencatat) return;
-                            let nis = findNIS(nama, kelas);
-                            if(!nis) { notFound.push(`Baris ${idx+2}: ${nama} - ${kelas}`); return; }
-                            newData.push({ tanggal: tanggal.toString().split(' ')[0], nis, nama, kelas, pelanggaran: pel, pencatat, tempat, keterangan: ket });
-                        });
-                        if(notFound.length) reject(`Data santri tidak ditemukan:\n${notFound.join('\n')}`);
-                        resolve(newData);
-                    };
-                    reader.onerror = () => reject('Gagal baca file');
-                    reader.readAsArrayBuffer(file);
-                });
-            }
-            async function importRewardExcel(file) {
-                return new Promise((resolve, reject) => {
-                    let reader = new FileReader();
-                    reader.onload = (e) => {
-                        let wb = XLSX.read(new Uint8Array(e.target.result), {type:'array'});
-                        let sheet = wb.Sheets[wb.SheetNames[0]];
-                        let json = XLSX.utils.sheet_to_json(sheet, {header:1});
-                        if(json.length<2) reject('File kosong');
-                        let headers = json[0];
-                        let map = ['Tanggal','Nama','Kelas','Reward','Pencatat','Tempat','Keterangan'].map(h => headers.indexOf(h));
-                        if(map.includes(-1)) reject('Format header salah');
-                        let rows = json.slice(1);
-                        let newData = [], notFound = [];
-                        rows.forEach((row, idx) => {
-                            let tanggal = row[map[0]]; let nama = (row[map[1]]||'').trim(); let kelas = (row[map[2]]||'').trim();
-                            let reward = row[map[3]]; let pencatat = row[map[4]]; let tempat = row[map[5]]; let ket = row[map[6]];
-                            if(!tanggal || !nama || !kelas || !reward || !pencatat) return;
-                            let nis = findNIS(nama, kelas);
-                            if(!nis) { notFound.push(`Baris ${idx+2}: ${nama} - ${kelas}`); return; }
-                            newData.push({ tanggal: tanggal.toString().split(' ')[0], nis, nama, kelas, reward, pencatat, tempat, keterangan: ket });
-                        });
-                        if(notFound.length) reject(`Data santri tidak ditemukan:\n${notFound.join('\n')}`);
-                        resolve(newData);
-                    };
-                    reader.onerror = () => reject('Gagal baca file');
-                    reader.readAsArrayBuffer(file);
-                });
-            }
-            document.getElementById('btnImportPelanggaran').addEventListener('click', async () => {
-                let file = document.getElementById('importPelanggaranFile').files[0];
-                if(!file) return alert('Pilih file');
-                try {
-                    let newData = await importPelanggaranExcel(file);
-                    if(newData.length) { currentPelanggaran = currentPelanggaran.concat(newData); savePelanggaran(); alert(`Impor ${newData.length} data pelanggaran`); document.getElementById('importPelanggaranFile').value = ''; updateStats(); }
-                } catch(e) { alert('Gagal: '+e); }
-            });
-            document.getElementById('btnImportReward').addEventListener('click', async () => {
-                let file = document.getElementById('importRewardFile').files[0];
-                if(!file) return alert('Pilih file');
-                try {
-                    let newData = await importRewardExcel(file);
-                    if(newData.length) { currentReward = currentReward.concat(newData); saveReward(); alert(`Impor ${newData.length} data reward`); document.getElementById('importRewardFile').value = ''; updateStats(); }
-                } catch(e) { alert('Gagal: '+e); }
-            });
-
-            // ========== EKSPOR ==========
-            function exportToXLSX(data, filename) { if(!data.length) { alert('Data kosong'); return; } const ws = XLSX.utils.json_to_sheet(data); const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, 'Sheet1'); XLSX.writeFile(wb, filename); }
-            document.getElementById('exportPelanggaranBtn').onclick = () => exportToXLSX(currentPelanggaran, 'pelanggaran.xlsx');
-            document.getElementById('exportRewardBtn').onclick = () => exportToXLSX(currentReward, 'reward.xlsx');
-            document.getElementById('exportSantriBtn').onclick = () => exportToXLSX(santriList, 'santri.xlsx');
-
-            // ========== DETAIL CARD ==========
-            function showDetailPage(type) {
-                document.getElementById('beranda').style.display = 'none';
-                document.getElementById('halamanDetail').style.display = 'block';
-                let title = type === 'pelanggaran' ? 'Data Pelanggaran' : 'Data Reward';
-                document.getElementById('detailTitle').innerHTML = `<i class="fas ${type==='pelanggaran'?'fa-exclamation-triangle':'fa-gift'}"></i> ${title}`;
-                let data = type === 'pelanggaran' ? currentPelanggaran : currentReward;
-                let html = `<div class="table-responsive"><table class="table table-bordered"><thead><tr><th>#</th><th>Tanggal</th><th>NIS</th><th>Nama</th><th>Kelas</th><th>${type==='pelanggaran'?'Pelanggaran':'Reward'}</th><th>Pencatat</th><th>Tempat</th><th>Keterangan</th></tr></thead><tbody>`;
-                data.forEach((item, idx) => {
-                    html += `<tr><td>${idx+1}</td><td>${item.tanggal||''}</td><td>${item.nis||''}</td><td>${item.nama||''}</td><td>${item.kelas||''}</td><td>${type==='pelanggaran'?item.pelanggaran:item.reward}</td><td>${item.pencatat||''}</td><td>${item.tempat||''}</td><td>${item.keterangan||''}</td></tr>`;
-                });
-                html += `</tbody></table></div><div class="mt-3"><button class="btn btn-pastel-primary" onclick="exportCurrentData('${type}')">Ekspor XLSX</button></div>`;
-                document.getElementById('detailContent').innerHTML = html;
-            }
-            window.exportCurrentData = function(type) { exportToXLSX(type === 'pelanggaran' ? currentPelanggaran : currentReward, `${type}.xlsx`); };
-            document.getElementById('cardPelanggaran').onclick = () => showDetailPage('pelanggaran');
-            document.getElementById('cardReward').onclick = () => showDetailPage('reward');
-            document.getElementById('cardPengajuan').onclick = () => alert('File pengajuan tersimpan di USB');
-            document.getElementById('cardLainnya').onclick = () => alert('File lain tersimpan di USB');
-            document.getElementById('btnKembali').onclick = () => { document.getElementById('beranda').style.display = 'block'; document.getElementById('halamanDetail').style.display = 'none'; };
-
-            // ========== INISIALISASI ==========
-            updateStats();
-            loadDriveConfig();
+                }
+                updateStats();
+                document.getElementById('driveStatus').innerHTML = '✅ Data dari Drive dimuat';
+            } catch(e) { console.error(e); document.getElementById('driveStatus').innerHTML = '❌ Gagal sinkron: '+e.message; }
+        }
+        document.getElementById('configDriveBtn').addEventListener('click', () => {
+            let id = prompt('Client ID', driveClientId);
+            let key = prompt('API Key', driveApiKey);
+            if(id) driveClientId = id.trim();
+            if(key) driveApiKey = key.trim();
+            localStorage.setItem('google_drive_client_id', driveClientId);
+            localStorage.setItem('google_drive_api_key', driveApiKey);
+            accessToken = null; driveAuth = false; tokenClient = null; localStorage.removeItem('gdrive_access_token');
             if(driveClientId) initializeGIS();
-            if(usbFileManager.isSupported() && usbFileManager.getRootHandle) { usbFileManager.getRootHandle().then(h => { if(h) { document.getElementById('folderStatus').innerHTML = `<i class="fas fa-check-circle"></i> USB: ${h.name}`; loadFromUSB(); } }); }
-        })();
-    </script>
+            updateDriveButtons();
+        });
+        document.getElementById('loginDriveBtn').addEventListener('click', () => { if(driveClientId) { if(!tokenClient) initializeGIS(); requestAccessToken(); } else alert('Konfigurasi API dulu'); });
+        document.getElementById('syncDriveBtn').addEventListener('click', async () => {
+            if(!driveAuth) return alert('Login dulu');
+            document.getElementById('driveStatus').innerHTML = '🔄 Mengambil dari Drive...';
+            try {
+                let pel = await downloadFromDrive('data_pelanggaran.json');
+                let rew = await downloadFromDrive('data_reward.json');
+                let santri = await downloadFromDrive('santri_data.json');
+                if(pel) { currentPelanggaran = pel; savePelanggaran(); }
+                if(rew) { currentReward = rew; saveReward(); }
+                if(santri && santri.length) { saveSantri(santri); }
+                updateStats();
+                document.getElementById('driveStatus').innerHTML = '✅ Sinkron selesai';
+                alert('Data dari Drive berhasil diambil');
+            } catch(e) { document.getElementById('driveStatus').innerHTML = '❌ Gagal: '+e.message; alert('Gagal sinkron'); }
+        });
+        document.getElementById('uploadDriveBtn').addEventListener('click', async () => {
+            if(!driveAuth) return alert('Login dulu');
+            document.getElementById('driveStatus').innerHTML = '📤 Mengunggah ke Drive...';
+            try {
+                await uploadToDrive('data_pelanggaran.json', currentPelanggaran);
+                await uploadToDrive('data_reward.json', currentReward);
+                await uploadToDrive('santri_data.json', santriList);
+                document.getElementById('driveStatus').innerHTML = '✅ Upload berhasil';
+                alert('Data lokal berhasil diunggah ke Drive');
+            } catch(e) { document.getElementById('driveStatus').innerHTML = '❌ Gagal: '+e.message; alert('Gagal upload'); }
+        });
+
+        // ========== IMPOR XLSX (dengan pencarian NIS) ==========
+        function findNIS(nama, kelas) { return santriList.find(s => s.name.toLowerCase()===nama.toLowerCase().trim() && s.kelas===kelas.trim())?.nis || null; }
+        async function importPelanggaranExcel(file) {
+            return new Promise((resolve, reject) => {
+                let reader = new FileReader();
+                reader.onload = (e) => {
+                    let wb = XLSX.read(new Uint8Array(e.target.result), {type:'array'});
+                    let sheet = wb.Sheets[wb.SheetNames[0]];
+                    let json = XLSX.utils.sheet_to_json(sheet, {header:1});
+                    if(json.length<2) reject('File kosong');
+                    let headers = json[0];
+                    let map = ['Tanggal','Nama','Kelas','Pelanggaran','Pencatat','Tempat','Keterangan'].map(h => headers.indexOf(h));
+                    if(map.includes(-1)) reject('Format header salah');
+                    let rows = json.slice(1);
+                    let newData = [], notFound = [];
+                    rows.forEach((row, idx) => {
+                        let tanggal = row[map[0]]; let nama = (row[map[1]]||'').trim(); let kelas = (row[map[2]]||'').trim();
+                        let pel = row[map[3]]; let pencatat = row[map[4]]; let tempat = row[map[5]]; let ket = row[map[6]];
+                        if(!tanggal || !nama || !kelas || !pel || !pencatat) return;
+                        let nis = findNIS(nama, kelas);
+                        if(!nis) { notFound.push(`Baris ${idx+2}: ${nama} - ${kelas}`); return; }
+                        newData.push({ tanggal: tanggal.toString().split(' ')[0], nis, nama, kelas, pelanggaran: pel, pencatat, tempat, keterangan: ket });
+                    });
+                    if(notFound.length) reject(`Data santri tidak ditemukan:\n${notFound.join('\n')}`);
+                    resolve(newData);
+                };
+                reader.onerror = () => reject('Gagal baca file');
+                reader.readAsArrayBuffer(file);
+            });
+        }
+        async function importRewardExcel(file) {
+            return new Promise((resolve, reject) => {
+                let reader = new FileReader();
+                reader.onload = (e) => {
+                    let wb = XLSX.read(new Uint8Array(e.target.result), {type:'array'});
+                    let sheet = wb.Sheets[wb.SheetNames[0]];
+                    let json = XLSX.utils.sheet_to_json(sheet, {header:1});
+                    if(json.length<2) reject('File kosong');
+                    let headers = json[0];
+                    let map = ['Tanggal','Nama','Kelas','Reward','Pencatat','Tempat','Keterangan'].map(h => headers.indexOf(h));
+                    if(map.includes(-1)) reject('Format header salah');
+                    let rows = json.slice(1);
+                    let newData = [], notFound = [];
+                    rows.forEach((row, idx) => {
+                        let tanggal = row[map[0]]; let nama = (row[map[1]]||'').trim(); let kelas = (row[map[2]]||'').trim();
+                        let reward = row[map[3]]; let pencatat = row[map[4]]; let tempat = row[map[5]]; let ket = row[map[6]];
+                        if(!tanggal || !nama || !kelas || !reward || !pencatat) return;
+                        let nis = findNIS(nama, kelas);
+                        if(!nis) { notFound.push(`Baris ${idx+2}: ${nama} - ${kelas}`); return; }
+                        newData.push({ tanggal: tanggal.toString().split(' ')[0], nis, nama, kelas, reward, pencatat, tempat, keterangan: ket });
+                    });
+                    if(notFound.length) reject(`Data santri tidak ditemukan:\n${notFound.join('\n')}`);
+                    resolve(newData);
+                };
+                reader.onerror = () => reject('Gagal baca file');
+                reader.readAsArrayBuffer(file);
+            });
+        }
+        document.getElementById('btnImportPelanggaran').addEventListener('click', async () => {
+            let file = document.getElementById('importPelanggaranFile').files[0];
+            if(!file) return alert('Pilih file');
+            try {
+                let newData = await importPelanggaranExcel(file);
+                if(newData.length) { currentPelanggaran = currentPelanggaran.concat(newData); savePelanggaran(); alert(`Impor ${newData.length} data pelanggaran`); document.getElementById('importPelanggaranFile').value = ''; updateStats(); }
+            } catch(e) { alert('Gagal: '+e); }
+        });
+        document.getElementById('btnImportReward').addEventListener('click', async () => {
+            let file = document.getElementById('importRewardFile').files[0];
+            if(!file) return alert('Pilih file');
+            try {
+                let newData = await importRewardExcel(file);
+                if(newData.length) { currentReward = currentReward.concat(newData); saveReward(); alert(`Impor ${newData.length} data reward`); document.getElementById('importRewardFile').value = ''; updateStats(); }
+            } catch(e) { alert('Gagal: '+e); }
+        });
+
+        // ========== EKSPOR ==========
+        function exportToXLSX(data, filename) { if(!data.length){ alert('Data kosong'); return; } const ws = XLSX.utils.json_to_sheet(data); const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, 'Sheet1'); XLSX.writeFile(wb, filename); }
+        document.getElementById('exportPelanggaranBtn').onclick = () => exportToXLSX(currentPelanggaran, 'pelanggaran.xlsx');
+        document.getElementById('exportRewardBtn').onclick = () => exportToXLSX(currentReward, 'reward.xlsx');
+        document.getElementById('exportSantriBtn').onclick = () => exportToXLSX(santriList, 'santri.xlsx');
+
+        // ========== DETAIL CARD (tampilkan data pelanggaran/reward) ==========
+        function showDetailPage(type) {
+            document.getElementById('beranda').style.display = 'none';
+            document.getElementById('halamanDetail').style.display = 'block';
+            let title = type === 'pelanggaran' ? 'Data Pelanggaran' : 'Data Reward';
+            document.getElementById('detailTitle').innerHTML = `<i class="fas ${type==='pelanggaran'?'fa-exclamation-triangle':'fa-gift'}"></i> ${title}`;
+            let data = type === 'pelanggaran' ? currentPelanggaran : currentReward;
+            let html = `<div class="table-responsive"><table class="table table-bordered"><thead><tr><th>#</th><th>Tanggal</th><th>NIS</th><th>Nama</th><th>Kelas</th><th>${type==='pelanggaran'?'Pelanggaran':'Reward'}</th><th>Pencatat</th><th>Tempat</th><th>Keterangan</th></tr></thead><tbody>`;
+            data.forEach((item, idx) => {
+                html += `<tr><td class="text-center">${idx+1}</td><td>${item.tanggal||''}</td><td>${item.nis||''}</td><td>${item.nama||''}</td><td>${item.kelas||''}</td><td>${type==='pelanggaran'?item.pelanggaran:item.reward}</td><td>${item.pencatat||''}</td><td>${item.tempat||''}</td><td>${item.keterangan||''}</td></tr>`;
+            });
+            html += `</tbody></table></div><div class="mt-3"><button class="btn btn-pastel-primary" onclick="exportCurrentData('${type}')">Ekspor XLSX</button></div>`;
+            document.getElementById('detailContent').innerHTML = html;
+        }
+        window.exportCurrentData = function(type) { exportToXLSX(type === 'pelanggaran' ? currentPelanggaran : currentReward, `${type}.xlsx`); };
+        document.getElementById('cardPelanggaran').onclick = () => showDetailPage('pelanggaran');
+        document.getElementById('cardReward').onclick = () => showDetailPage('reward');
+        document.getElementById('cardPengajuan').onclick = () => alert('File pengajuan tersimpan di USB');
+        document.getElementById('cardLainnya').onclick = () => alert('File lain tersimpan di USB');
+        document.getElementById('btnKembali').onclick = () => { document.getElementById('beranda').style.display = 'block'; document.getElementById('halamanDetail').style.display = 'none'; };
+
+        // ========== INISIALISASI ==========
+        updateStats();
+        loadDriveConfig();
+        if(driveClientId) initializeGIS();
+        if(usbFileManager.isSupported() && usbFileManager.getRootHandle) {
+            usbFileManager.getRootHandle().then(h => { if(h) { document.getElementById('folderStatus').innerHTML = `<i class="fas fa-check-circle"></i> USB: ${h.name}`; loadFromUSB(); } });
+        }
+    })();
+</script>
 </body>
 </html>
